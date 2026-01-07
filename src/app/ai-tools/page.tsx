@@ -20,13 +20,20 @@ export default async function AIToolsPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const resolvedSearchParams = await searchParams
-  // Fetch initial data for SEO
-  const tools = await db.tool.findMany({
-    where: { published: true },
-    include: { category: true },
-    take: 12,
-    orderBy: { views: 'desc' },
-  })
+  let tools: any[] = []
+
+  try {
+    // Fetch initial data for SEO
+    tools = await db.tool.findMany({
+      where: { published: true },
+      include: { category: true },
+      take: 12,
+      orderBy: { views: 'desc' },
+    })
+  } catch (error) {
+    console.error('Error fetching tools for SEO:', error)
+    // Fallback to empty array, the client component will try to fetch again
+  }
 
   const toolsForSchema: Tool[] = tools.map((t) =>
     ({

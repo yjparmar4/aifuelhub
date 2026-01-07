@@ -68,9 +68,10 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
-      : {}),
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "YOUR_VERIFICATION_CODE",
+    other: {
+      "msvalidate.01": "YOUR_BING_VERIFICATION_CODE", // Optional
+    },
   },
   alternates: {
     canonical: SITE_URL,
@@ -96,7 +97,7 @@ export default function RootLayout({
               strategy="afterInteractive"
             />
             <Script
-              id="ga4"
+              id="google-analytics"
               strategy="afterInteractive"
               dangerouslySetInnerHTML={{
                 __html: `window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${gaId}', { anonymize_ip: true });`,
@@ -104,6 +105,10 @@ export default function RootLayout({
             />
           </>
         ) : null}
+
+        {/* AdSense Script (Uncomment after approval) */}
+        {/* <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ADSENSE_ID" crossorigin="anonymous" /> */}
+
         <JsonLd />
         <Navbar />
         <div className="pt-24 min-h-screen">
