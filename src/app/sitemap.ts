@@ -3,31 +3,31 @@ import { db } from '@/lib/db'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-  
+
   // Get all tools
   const tools = await db.tool.findMany({
     where: { published: true },
     select: { slug: true, updatedAt: true },
   })
-  
+
   // Get all categories
   const categories = await db.category.findMany({
     where: { published: true },
     select: { slug: true, updatedAt: true },
   })
-  
+
   // Get all blog posts
   const blogPosts = await db.blogPost.findMany({
     where: { published: true },
     select: { slug: true, updatedAt: true },
   })
-  
+
   // Get all comparisons
   const comparisons = await db.comparison.findMany({
     where: { published: true },
     select: { slug: true, updatedAt: true },
   })
-  
+
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -73,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
   ]
-  
+
   // Tool pages
   const toolPages: MetadataRoute.Sitemap = tools.map(tool => ({
     url: `${baseUrl}/tool/${tool.slug}`,
@@ -81,15 +81,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }))
-  
+
   // Category pages
   const categoryPages: MetadataRoute.Sitemap = categories.map(category => ({
-    url: `${baseUrl}/category/${category.slug}`,
+    url: `${baseUrl}/categories/${category.slug}`,
     lastModified: category.updatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }))
-  
+
   // Blog post pages
   const blogPages: MetadataRoute.Sitemap = blogPosts.map(post => ({
     url: `${baseUrl}/blog/${post.slug}`,
@@ -97,7 +97,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }))
-  
+
   // Comparison pages
   const comparisonPages: MetadataRoute.Sitemap = comparisons.map(comp => ({
     url: `${baseUrl}/vs/${comp.slug}`,
@@ -105,7 +105,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }))
-  
+
   return [
     ...staticPages,
     ...toolPages,

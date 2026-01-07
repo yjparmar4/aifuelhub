@@ -27,7 +27,7 @@ export function generateMetadata({
   noIndex = false,
   canonical,
 }: SEOMetaProps): Metadata {
-  const defaultTitle = 'AI Tools Directory - Discover the Best AI Tools'
+  const defaultTitle = 'AI Fuel Hub - Discover the Best AI Tools'
   const defaultDescription =
     'Find and compare the best AI tools for every task. Expert reviews, detailed comparisons, and comprehensive guides for AI-powered software.'
 
@@ -55,7 +55,7 @@ export function generateMetadata({
       publishedTime,
       modifiedTime,
       ...(url && { url }),
-      siteName: 'AI Tools Directory',
+      siteName: 'AI Fuel Hub',
     },
     twitter: {
       card: 'summary_large_image',

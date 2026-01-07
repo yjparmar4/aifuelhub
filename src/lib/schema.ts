@@ -36,12 +36,12 @@ export function generateToolSchema(tool: Tool) {
     },
     aggregateRating: tool.rating
       ? {
-          '@type': 'AggregateRating',
-          ratingValue: tool.rating,
-          reviewCount: tool.reviewCount,
-          bestRating: '5',
-          worstRating: '1',
-        }
+        '@type': 'AggregateRating',
+        ratingValue: tool.rating,
+        reviewCount: tool.reviewCount,
+        bestRating: '5',
+        worstRating: '1',
+      }
       : undefined,
     featureList: features,
     category: tool.category?.name,
@@ -73,11 +73,11 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
     dateModified: blogPost.updatedAt.toISOString(),
     author: {
       '@type': 'Organization',
-      name: 'AI Tools Directory',
+      name: 'AI Fuel Hub',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'AI Tools Directory',
+      name: 'AI Fuel Hub',
       logo: {
         '@type': 'ImageObject',
         url: `${SITE_URL}/logo.png`,
@@ -131,7 +131,7 @@ export function generateWebSiteSchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'ToolAtlas',
+    name: 'AI Fuel Hub',
     url: SITE_URL,
     description: 'Discover, compare, and review the best AI tools',
     potentialAction: {
@@ -152,7 +152,7 @@ export function generateOrganizationSchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'ToolAtlas',
+    name: 'AI Fuel Hub',
     url: SITE_URL,
     logo: `${SITE_URL}/logo.svg`,
     description: 'The leading directory for AI tools and software reviews',
