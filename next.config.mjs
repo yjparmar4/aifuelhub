@@ -6,6 +6,10 @@ const nextConfig = {
     // Compression
     compress: true,
 
+    experimental: {
+        // ppr: true, (Disabled for now to fix build issues)
+    },
+
     typescript: {
         ignoreBuildErrors: true,
     },
@@ -55,11 +59,27 @@ const nextConfig = {
     },
 
     // Redirects
+    // Redirects
     async redirects() {
         return [
             {
                 source: '/home',
                 destination: '/',
+                permanent: true,
+            },
+            {
+                source: '/submit',
+                destination: '/submit-tool',
+                permanent: true,
+            },
+            {
+                source: '/privacy',
+                destination: '/privacy-policy',
+                permanent: true,
+            },
+            {
+                source: '/terms',
+                destination: '/terms-and-conditions',
                 permanent: true,
             },
         ]
