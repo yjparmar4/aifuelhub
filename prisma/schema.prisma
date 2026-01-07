@@ -98,10 +98,11 @@ model Tool {
   comparisons     ComparisonTool[]
 
   @@index([slug])
-  @@index([categoryId])
-  @@index([published])
-  @@index([featured])
-  @@index([trending])
+  // Composite indexes for common query patterns
+  @@index([published, categoryId]) // Category pages
+  @@index([published, featured]) // Featured tools
+  @@index([published, trending]) // Trending tools
+  @@index([published, views]) // Popular tools
 }
 
 // User Reviews for Tools
@@ -197,10 +198,11 @@ model BlogPost {
   tags            Tag[]   @relation("BlogPostTags")
 
   @@index([slug])
-  @@index([published])
-  @@index([publishedAt])
   @@index([categoryId])
-  @@index([featured])
+  // Composite indexes for common query patterns
+  @@index([published, publishedAt]) // Main blog feed
+  @@index([published, featured]) // Featured posts section
+  @@index([published, views]) // Popular posts
 }
 
 // Tool Submissions (admin queue)

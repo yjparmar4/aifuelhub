@@ -11,7 +11,7 @@ export const metadata: Metadata = generateMetadata({
   type: 'website',
 })
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 export default async function BlogListingPage() {
   const [posts, categories] = await Promise.all([
