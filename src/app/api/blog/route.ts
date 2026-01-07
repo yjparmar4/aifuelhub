@@ -36,8 +36,8 @@ export async function GET(request: NextRequest) {
           tags: true,
         },
         orderBy: [
-          { featured: 'desc' },
           { publishedAt: 'desc' },
+          { featured: 'desc' },
           { views: 'desc' },
         ],
         skip,

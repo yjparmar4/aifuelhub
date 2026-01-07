@@ -11,6 +11,8 @@ export const metadata: Metadata = generateMetadata({
   type: 'website',
 })
 
+export const dynamic = 'force-dynamic'
+
 export default async function BlogListingPage() {
   const [posts, categories] = await Promise.all([
     db.blogPost.findMany({
