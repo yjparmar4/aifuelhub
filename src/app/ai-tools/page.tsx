@@ -17,8 +17,9 @@ export const metadata: Metadata = generateMetadata({
 export default async function AIToolsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  const resolvedSearchParams = await searchParams
   // Fetch initial data for SEO
   const tools = await db.tool.findMany({
     where: { published: true },
@@ -63,7 +64,7 @@ export default async function AIToolsPage({
         },
         toolsForSchema
       )} />
-      <AIToolsDirectory searchParams={searchParams} />
+      <AIToolsDirectory searchParams={resolvedSearchParams} />
     </>
   )
 }
