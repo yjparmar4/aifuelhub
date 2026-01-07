@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
 
     const category = searchParams.get('category')
+    const search = searchParams.get('search')
     const featured = searchParams.get('featured') === 'true'
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '12')
@@ -25,6 +26,14 @@ export async function GET(request: NextRequest) {
 
     if (featured) {
       where.featured = true
+    }
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search } },
+        { excerpt: { contains: search } },
+        { content: { contains: search } },
+      ]
     }
 
     // Get blog posts with pagination
