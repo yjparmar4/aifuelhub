@@ -1,0 +1,270 @@
+// This is your Prisma schema file for AI Tools Directory
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Tool Categories (e.g., Writing, Design, Coding, Marketing)
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String
+  icon        String?
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tools       Tool[]
+  blogPosts   BlogPost[]
+
+  @@index([slug])
+  @@index([order])
+}
+
+// Tags for flexible content organization
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  tools     Tool[]   @relation("ToolTags")
+  blogPosts BlogPost[] @relation("BlogPostTags")
+
+  @@index([slug])
+}
+
+// Main AI Tools
+model Tool {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  tagline         String?
+  description     String
+  longDescription String?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Pricing
+  pricingType     String   // Free, Freemium, Paid
+  startingPrice   String?  // e.g., "$9/mo"
+
+  // Links
+  websiteUrl      String
+  affiliateLink   String?
+  affiliateCTA    String?  @default("Try Now")
+
+  // Organization
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id])
+
+  // Stats & Display
+  views           Int      @default(0)
+  rating          Float?   @default(0)
+  reviewCount     Int      @default(0)
+  featured        Boolean  @default(false)
+  trending        Boolean  @default(false)
+  sponsored       Boolean  @default(false)
+  sponsoredBy     String?
+
+  // Content
+  features        String   // JSON string array
+  pros            String?  // JSON string array
+  cons            String?  // JSON string array
+  useCases        String?  // JSON string array
+
+  // FAQ Section (JSON array of Q&A)
+  faqs            String?  // JSON string
+
+  // Target Audience
+  targetAudience  String?
+
+  // Status
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tags            Tag[]             @relation("ToolTags")
+  reviews         Review[]
+  comparisons     ComparisonTool[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([published])
+  @@index([featured])
+  @@index([trending])
+}
+
+// User Reviews for Tools
+model Review {
+  id        String   @id @default(cuid())
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id])
+  author    String
+  email     String?
+  rating    Int      // 1-5
+  title     String?
+  content   String
+  verified  Boolean  @default(false)
+  helpful   Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([toolId])
+  @@index([published])
+}
+
+// Tool Comparisons (e.g., ChatGPT vs Claude)
+model Comparison {
+  id          String           @id @default(cuid())
+  title       String
+  slug        String           @unique
+  description String?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  verdict     String?
+  verdictText String?
+
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tools       ComparisonTool[]
+
+  @@index([slug])
+  @@index([published])
+}
+
+// Many-to-many relationship for Comparisons
+model ComparisonTool {
+  id           String     @id @default(cuid())
+  comparisonId String
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  toolId       String
+  tool         Tool       @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  featureData String     // JSON object of tool features for comparison
+
+  @@unique([comparisonId, toolId])
+  @@index([comparisonId])
+  @@index([toolId])
+}
+
+// Blog Posts
+model BlogPost {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?
+  content         String
+  coverImage      String?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  focusKeyword    String?
+
+  // Organization
+  categoryId      String?
+  category        Category? @relation(fields: [categoryId], references: [id])
+
+  // Stats
+  views           Int      @default(0)
+  featured        Boolean  @default(false)
+  sponsored       Boolean  @default(false)
+  sponsoredBy     String?
+
+  // Content
+  publishedAt     DateTime?
+  published       Boolean  @default(false)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tags            Tag[]   @relation("BlogPostTags")
+
+  @@index([slug])
+  @@index([published])
+  @@index([publishedAt])
+  @@index([categoryId])
+  @@index([featured])
+}
+
+// Tool Submissions (admin queue)
+model ToolSubmission {
+  id              String   @id @default(cuid())
+  name            String
+  description     String
+  longDescription String?
+  websiteUrl      String
+  pricingType     String
+  startingPrice   String?
+  categoryName    String
+  features        String
+  submittedBy     String?
+  submitterEmail  String?
+
+  // Status
+  status          String   @default("pending") // pending, approved, rejected
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  reviewNotes     String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Email Subscribers for lead generation
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String?  // Where they subscribed from
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([active])
+}
+
+// Deals & Coupons
+model Deal {
+  id          String    @id @default(cuid())
+  toolName    String
+  description String
+  discount    String    // e.g., "20% OFF", "$50 CREDIT"
+  code        String    // Coupon code
+  logo        String?   // Emoji or icon
+  category    String?   // e.g., "Writing", "Design"
+  url         String    // Affiliate or tool URL
+  
+  // Automatic expiration
+  expiresAt   DateTime? // When the deal expires (null = never expires)
+  isActive    Boolean   @default(true)  // Manual on/off toggle
+  
+  // Display order
+  order       Int       @default(0)
+  featured    Boolean   @default(false)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive])
+  @@index([expiresAt])
+  @@index([order])
+}
