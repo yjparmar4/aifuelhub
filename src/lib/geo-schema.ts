@@ -1,59 +1,56 @@
 // GEO (Graphical Entity Optimization) Schema Markup
 // This helps Google understand entities, relationships, and knowledge graph signals
 
+const siteUrl = 'https://www.aifuelhub.com'
+const brandName = 'AI Fuel Hub'
+
+export const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteUrl}/#organization`,
+  "name": brandName,
+  "url": siteUrl,
+  "logo": `${siteUrl}/logo.png`,
+  "sameAs": [
+    "https://twitter.com/aifuelhub",
+    "https://linkedin.com/company/aifuelhub",
+    "https://github.com/aifuelhub"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "hello@aifuelhub.com",
+    "contactType": "customer support"
+  }
+}
+
+export const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  "url": siteUrl,
+  "name": brandName,
+  "publisher": {
+    "@id": `${siteUrl}/#organization`
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": `${siteUrl}/ai-tools?search={search_term_string}`
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+
 export function generateEntitySchema() {
   return {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://toolatlas.com/#organization",
-        "name": "ToolAtlas",
-        "url": "https://toolatlas.com",
-        "logo": "https://toolatlas.com/logo.png",
-        "description": "AI Tools Directory - Expert reviews and comparisons of 118+ AI tools",
-        "sameAs": [
-          "https://twitter.com/toolatlas",
-          "https://linkedin.com/company/toolatlas",
-          "https://github.com/toolatlas"
-        ],
-        "knowsAbout": [
-          "Artificial Intelligence",
-          "Machine Learning",
-          "AI Tools",
-          "ChatGPT",
-          "Midjourney",
-          "Claude",
-          "AI Image Generation",
-          "AI Writing",
-          "AI Coding",
-          "Natural Language Processing",
-          "Computer Vision",
-          "Large Language Models"
-        ],
-        "areaServed": "Worldwide"
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://toolatlas.com/#website",
-        "url": "https://toolatlas.com",
-        "name": "ToolAtlas",
-        "description": "The ultimate AI tools directory with 118+ verified tools",
-        "publisher": {
-          "@id": "https://toolatlas.com/#organization"
-        },
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": "https://toolatlas.com/ai-tools?search={search_term_string}"
-          },
-          "query-input": "required name=search_term_string"
-        }
-      },
+      organizationSchema,
+      websiteSchema,
       {
         "@type": "SoftwareApplication",
-        "name": "ToolAtlas Platform",
+        "name": "AI Fuel Hub Platform",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web",
         "offers": {
@@ -69,99 +66,121 @@ export function generateEntitySchema() {
           "worstRating": "1"
         }
       },
-      // Entity relationships for knowledge graph
-      {
-        "@type": "Thing",
-        "name": "AI Tools",
-        "description": "Software applications powered by artificial intelligence",
-        "sameAs": [
-          "https://en.wikipedia.org/wiki/Artificial_intelligence",
-          "https://www.wikidata.org/wiki/Q11660"
-        ]
-      },
-      {
-        "@type": "Thing",
-        "name": "ChatGPT",
-        "description": "AI chatbot by OpenAI",
-        "sameAs": [
-          "https://en.wikipedia.org/wiki/ChatGPT",
-          "https://www.wikidata.org/Q115498451"
-        ]
-      },
-      {
-        "@type": "Thing",
-        "name": "Midjourney",
-        "description": "AI image generation tool",
-        "sameAs": [
-          "https://en.wikipedia.org/wiki/Midjourney"
-        ]
-      },
-      {
-        "@type": "Thing",
-        "name": "Claude",
-        "description": "AI assistant by Anthropic",
-        "sameAs": [
-          "https://en.wikipedia.org/wiki/Claude_(chatbot)"
-        ]
-      },
-      {
-        "@type": "Person",
-        "name": "ToolAtlas Editorial Team",
-        "jobTitle": "AI Tools Reviewers",
-        "worksFor": {
-          "@id": "https://toolatlas.com/#organization"
-        },
-        "knowsAbout": [
-          "AI Technology",
-          "Software Reviews",
-          "Product Comparison",
-          "User Experience Testing"
-        ]
-      },
       {
         "@type": "Service",
         "name": "AI Tool Reviews",
         "description": "Expert reviews and comparisons of AI tools",
         "provider": {
-          "@id": "https://toolatlas.com/#organization"
+          "@id": `${siteUrl}/#organization`
         },
         "serviceType": "Review Service",
         "areaServed": "Worldwide"
       }
     ]
-  };
+  }
 }
 
-export function generateToolEntitySchema(toolName: string, toolSlug: string, category: string) {
+// ... helper to generate platform schema
+export function generatePlatformSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": toolName,
-    "applicationCategory": category,
-    "operatingSystem": "Web",
+    "@type": "WebApplication",
+    "name": "AI Fuel Hub Platform",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "All",
     "offers": {
       "@type": "Offer",
-      "availability": "https://schema.org/InStock",
-      "url": `https://toolatlas.com/tool/${toolSlug}`
-    },
-    "sameAs": [
-      `https://toolatlas.com/tool/${toolSlug}`
-    ]
-  };
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
 }
 
-export function generateCategoryEntitySchema(categoryName: string, categorySlug: string, toolCount: number) {
+// ... other schema generators
+export function generateAuthorSchema(name: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": name,
+    "url": `${siteUrl}/about`,
+    "jobTitle": "AI Researcher",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "AI Fuel Hub Editorial Team",
+      "url": siteUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/logo.png`
+      },
+      "@id": `${siteUrl}/#organization`
+    }
+  }
+}
+
+export function generateCollectionPageSchema(title: string, description: string, url: string) {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": `${categoryName} AI Tools`,
-    "description": `Browse ${toolCount} AI tools in the ${categoryName} category`,
-    "url": `https://toolatlas.com/category/${categorySlug}`,
-    "numberOfItems": toolCount,
-    "about": {
-      "@type": "Thing",
-      "name": categoryName,
-      "description": `AI tools for ${categoryName.toLowerCase()}`
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": []
+    },
+    "name": title,
+    "description": description,
+    "url": url,
+    "publisher": {
+      "@id": `${siteUrl}/#organization`
     }
-  };
+  }
+}
+
+export const generateBreadcrumbSchema = (items: { name: string; url: string }[]) => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": items.map((item, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.name,
+      "item": item.url,
+    })),
+  }
+}
+
+export const generateToolSchema = (tool: any) => {
+  const toolSlug = tool.slug // Access slug directly
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": tool.name,
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": tool.pricing === "Free" ? "0" : "Paid",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": tool.rating || "4.5",
+      "ratingCount": tool.reviews || "10"
+    },
+    "url": `${siteUrl}/tool/${toolSlug}`
+  }
+}
+
+export const generateCategorySchema = (category: any) => {
+  const categorySlug = category.slug // Access slug directly
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": `${category.name} AI Tools`,
+    "description": `Best ${category.name} tools reviewed and compared.`,
+    "url": `${siteUrl}/category/${categorySlug}`,
+    "publisher": {
+      "@id": `${siteUrl}/#organization`
+    }
+  }
 }

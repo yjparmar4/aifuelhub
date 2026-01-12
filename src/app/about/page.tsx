@@ -6,21 +6,20 @@ export default function AboutPage() {
     return (
         <div className="min-h-screen pb-20">
             <PageHeader
-                title="About ToolAtlas"
-                description="We are on a mission to organize the world's AI tools and make them accessible to everyone."
-                breadcrumbs={[
-                    { name: 'Home', href: '/' },
-                    { name: 'About', href: '/about' }
-                ]}
+                title="About AI Fuel Hub"
+                description="Our mission is to empower creators and businesses with the best AI technology."
             />
-            <div className="container mx-auto px-4 max-w-4xl">
-                <div className="prose prose-lg max-w-none mb-16">
-                    <p className="lead text-xl text-slate-600">
-                        ToolAtlas is the world's leading destination for discovering, comparing, and tracking the best AI tools.
-                    </p>
-                    <p>
-                        Founded in 2024, we recognized that the AI explosion was creating a fragmented landscape where users struggled to find the right tools for their needs. Our platform solves this by providing a centralized, verified, and community-driven directory.
-                    </p>
+
+            <div className="container mx-auto px-4 py-16">
+                <div className="max-w-3xl mx-auto space-y-8">
+                    <section className="prose prose-lg dark:prose-invert">
+                        <p className="lead text-xl text-muted-foreground">
+                            AI Fuel Hub is the world's leading destination for discovering, comparing, and tracking the best AI tools.
+                        </p>
+                        <p>
+                            Founded in 2024, we recognized that the AI explosion was creating a fragmented landscape where users struggled to find the right tools for their needs. Our platform solves this by providing a centralized, verified, and community-driven directory.
+                        </p>
+                    </section>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

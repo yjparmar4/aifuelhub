@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 export const metadata = {
-    title: 'AI Tool Categories | ToolAtlas',
+    title: 'AI Tool Categories | AI Fuel Hub',
     description: 'Browse our comprehensive directory of AI tools organized by category. Find the perfect AI solution for writing, coding, design, and more.',
 }
 

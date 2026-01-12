@@ -32,19 +32,19 @@ export default function ContactPage() {
                                         <Mail className="w-6 h-6 text-purple-600" />
                                     </div>
                                     <div>
-                                        <div className="font-bold">Email Us</div>
-                                        <div className="text-slate-600">hello@toolatlas.com</div>
+                                        <div className="font-medium text-lg">General Inquiries</div>
+                                        <div className="text-slate-600">hello@aifuelhub.com</div>
                                     </div>
                                 </CardContent>
                             </Card>
                             <Card>
                                 <CardContent className="p-6 flex items-center gap-4">
-                                    <div className="bg-blue-100 p-3 rounded-full">
-                                        <MessageSquare className="w-6 h-6 text-blue-600" />
+                                    <div className="w-12 h-12 rounded-full bg-violet-100 flex items-center justify-center shrink-0">
+                                        <MessageSquare className="w-6 h-6 text-violet-600" />
                                     </div>
                                     <div>
-                                        <div className="font-bold">Support</div>
-                                        <div className="text-slate-600">support@toolatlas.com</div>
+                                        <div className="font-medium text-lg">Support</div>
+                                        <div className="text-slate-600">support@aifuelhub.com</div>
                                     </div>
                                 </CardContent>
                             </Card>

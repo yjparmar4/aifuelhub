@@ -106,8 +106,13 @@ export default function RootLayout({
           </>
         ) : null}
 
-        {/* AdSense Script (Uncomment after approval) */}
-        {/* <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_ADSENSE_ID" crossorigin="anonymous" /> */}
+        {/* AdSense Script */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
 
         <JsonLd />
         <Navbar />

@@ -9,7 +9,7 @@ import { SITE_URL } from '@/lib/seo'
 
 export const metadata: Metadata = generateMetadata({
   title: 'AI Tools Directory - Find & Compare AI Tools',
-  description: 'Browse ToolAtlas to discover, filter, and compare the best AI tools by category, pricing, and rating.',
+  description: 'Browse AI Fuel Hub to discover, filter, and compare the best AI tools by category, pricing, and rating.',
   type: 'website',
   canonical: `${SITE_URL}/ai-tools`,
 })

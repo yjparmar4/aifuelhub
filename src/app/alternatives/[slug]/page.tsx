@@ -83,7 +83,7 @@ export default async function AlternativesPage({
     isPartOf: {
       '@type': 'WebSite',
       url: SITE_URL,
-      name: 'ToolAtlas',
+      name: 'AI Fuel Hub',
     },
     numberOfItems: alternatives.length,
     itemListElement: alternatives.map((alt, index) => ({

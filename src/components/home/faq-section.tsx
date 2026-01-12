@@ -7,8 +7,8 @@ import { JsonLd } from '@/components/json-ld'
 
 const faqs = [
   {
-    question: "What is ToolAtlas and how does it work?",
-    answer: "ToolAtlas is the most comprehensive AI tools directory with 118+ verified and expert-tested AI applications. We provide detailed comparisons, unbiased reviews, and feature analysis to help you find the perfect AI tool for your specific needs. Simply browse by category, search for tools, or use our comparison feature to see tools side-by-side."
+    question: "What is AI Fuel Hub and how does it work?",
+    answer: "AI Fuel Hub is the most comprehensive AI tools directory with 118+ verified and expert-tested AI applications. We provide detailed comparisons, unbiased reviews, and feature analysis to help you find the perfect AI tool for your specific needs. Simply browse by category, search for tools, or use our comparison feature to see tools side-by-side."
   },
   {
     question: "Are the AI tool reviews unbiased?",
@@ -19,7 +19,7 @@ const faqs = [
     answer: "We update our directory daily with new AI tools, updated pricing information, and fresh reviews. Our team continuously monitors the AI landscape to add emerging tools and update existing tool information. We also regularly re-test featured tools to ensure our reviews remain accurate and up-to-date."
   },
   {
-    question: "Can I submit my own AI tool to ToolAtlas?",
+    question: "Can I submit my own AI tool to AI Fuel Hub?",
     answer: "Yes! We welcome submissions from AI tool creators. You can submit your tool through our submission page for review. Our editorial team will evaluate your tool based on features, user experience, pricing, and overall value. Approved tools are added to our directory within 5-7 business days."
   },
   {
@@ -27,8 +27,8 @@ const faqs = [
     answer: "We evaluate AI tools based on multiple factors: ease of use, feature set, output quality, pricing value, customer support, integration capabilities, and user reviews. Each tool is tested by our team with real-world use cases. We also consider community feedback and adoption rates to provide a comprehensive rating."
   },
   {
-    question: "Is ToolAtlas free to use?",
-    answer: "Yes, ToolAtlas is completely free to use. You can browse all tools, read reviews, and use our comparison features without any cost. Some tools we list may have affiliate links, but this doesn't affect our reviews or recommendations. We're committed to providing free, unbiased access to AI tool information."
+    question: "Is AI Fuel Hub free to use?",
+    answer: "Yes, AI Fuel Hub is completely free to use. You can browse all tools, read reviews, and use our comparison features without any cost. Some tools we list may have affiliate links, but this doesn't affect our reviews or recommendations. We're committed to providing free, unbiased access to AI tool information."
   },
   {
     question: "How do I choose the right AI tool for my needs?",
@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     question: "Do you offer enterprise solutions or team plans?",
-    answer: "While ToolAtlas itself is a free directory, many of the tools we feature offer enterprise and team plans. We highlight pricing tiers for each tool, including free, freemium, and paid options. Our comparison feature helps you quickly see which tools offer enterprise features like SSO, priority support, and team collaboration."
+    answer: "While AI Fuel Hub itself is a free directory, many of the tools we feature offer enterprise and team plans. We highlight pricing tiers for each tool, including free, freemium, and paid options. Our comparison feature helps you quickly see which tools offer enterprise features like SSO, priority support, and team collaboration."
   }
 ]
 

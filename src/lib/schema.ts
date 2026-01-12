@@ -2,19 +2,24 @@ import { Tool, FAQ, BlogPost, Category } from '@/types'
 import { SITE_URL } from '@/lib/seo'
 
 // Product/Review Schema for tools
+// Product/Review Schema for tools
 export function generateToolSchema(tool: Tool) {
   const features = JSON.parse(tool.features || '[]')
-  const faqs = tool.faqs ? (JSON.parse(tool.faqs) as FAQ[]) : []
+  // Parse Pros and Cons for Schema
+  const pros = tool.pros ? JSON.parse(tool.pros) : []
+  const cons = tool.cons ? JSON.parse(tool.cons) : []
 
   const toolImageUrl = `${SITE_URL}/logo.svg`
 
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'SoftwareApplication',
     name: tool.name,
     description: tool.description,
     image: toolImageUrl,
     url: `${SITE_URL}/tool/${tool.slug}`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
     brand: {
       '@type': 'Brand',
       name: tool.name,
@@ -44,17 +49,40 @@ export function generateToolSchema(tool: Tool) {
       }
       : undefined,
     featureList: features,
-    category: tool.category?.name,
-    ...(faqs.length > 0 && {
-      mainEntity: faqs.map(faq => ({
-        '@type': 'Question',
-        name: faq.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: faq.answer,
+
+    // Editorial Review with Pros/Cons
+    review: {
+      '@type': 'Review',
+      author: {
+        '@type': 'Organization',
+        name: 'AI Fuel Hub',
+      },
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: tool.rating || '4.5',
+        bestRating: '5',
+      },
+      ...(pros.length > 0 && {
+        positiveNotes: {
+          '@type': 'ItemList',
+          itemListElement: pros.map((pro: string, index: number) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: pro,
+          })),
         },
-      })),
-    }),
+      }),
+      ...(cons.length > 0 && {
+        negativeNotes: {
+          '@type': 'ItemList',
+          itemListElement: cons.map((con: string, index: number) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: con,
+          })),
+        },
+      }),
+    }
   }
 
   return JSON.stringify(schema)

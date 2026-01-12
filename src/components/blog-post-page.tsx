@@ -3,7 +3,7 @@
 import { BlogPost } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { InlineAd } from '@/components/ad-placeholder'
+import { GoogleAd } from '@/components/google-ad'
 import { Calendar, Eye, Tag, Share2, BookOpen, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { motion, useScroll } from 'framer-motion'
@@ -88,10 +88,12 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
                   })}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Eye className="w-5 h-5 text-blue-500" />
-                <span className="font-medium">{post.views} views</span>
-              </div>
+              {post.views > 100 && (
+                <>
+                  <Eye className="w-5 h-5 text-blue-500" />
+                  <span className="font-medium">{post.views} views</span>
+                </>
+              )}
               <Button
                 onClick={handleShare}
                 variant="ghost"
@@ -108,6 +110,10 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
 
       {/* Premium Article Content */}
       <main className="container mx-auto max-w-4xl px-4 pb-24">
+        {/* Top Banner Ad */}
+        <div className="mb-12">
+          <GoogleAd slot="1234567890" style={{ height: '90px' }} className="w-full flex justify-center" />
+        </div>
         {post.coverImage && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -152,6 +158,11 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             })}
           </nav>
         </motion.div>
+
+        {/* Sidebar Ad (visible on desktop) */}
+        <div className="hidden lg:block float-right ml-8 mb-8 w-[300px]">
+          <GoogleAd slot="9876543210" style={{ height: '600px', width: '300px' }} />
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}
@@ -220,6 +231,11 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             </div>
           </div>
         </motion.div>
+
+        {/* Bottom Banner Ad */}
+        <div className="mt-16">
+          <GoogleAd slot="5555555555" style={{ height: '280px' }} format="rectangle" />
+        </div>
       </main>
     </article>
   )

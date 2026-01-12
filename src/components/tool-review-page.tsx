@@ -28,7 +28,7 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
   const takeaways: string[] = [
     tool.pricingType === 'Free'
       ? 'Free to use (no paid plan required to get started).'
-      : tool.startingPrice
+      : (tool.startingPrice && tool.startingPrice !== 'undefined')
         ? `Pricing starts at ${tool.startingPrice}.`
         : 'Paid pricing (see official site for latest plans).',
     tool.rating ? `User rating: ${tool.rating}/5 (${tool.reviewCount} reviews).` : 'Ratings: not enough public data yet.',
@@ -248,8 +248,8 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
                   </div>
                   <p className="text-muted-foreground">
                     {tool.pricingType === 'Free' && `${tool.name} is completely free to use with no hidden costs.`}
-                    {tool.pricingType === 'Freemium' && `${tool.name} offers a free tier with limited features. Upgrade to unlock advanced capabilities starting at ${tool.startingPrice}.`}
-                    {tool.pricingType === 'Paid' && `${tool.name} requires a subscription starting at ${tool.startingPrice}. Various pricing plans are available to suit different needs.`}
+                    {tool.pricingType === 'Freemium' && `${tool.name} offers a free tier with limited features. ${tool.startingPrice && tool.startingPrice !== 'undefined' ? `Upgrade to unlock advanced capabilities starting at ${tool.startingPrice}.` : 'Upgrade options available for advanced capabilities.'}`}
+                    {tool.pricingType === 'Paid' && `${tool.name} requires a subscription${tool.startingPrice && tool.startingPrice !== 'undefined' ? ` starting at ${tool.startingPrice}` : ''}. Various pricing plans are available to suit different needs.`}
                   </p>
                 </CardContent>
               </Card>
@@ -416,7 +416,7 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
                     </p>
                     <p className="text-muted-foreground">
                       With its {tool.pricingType.toLowerCase()} pricing model{' '}
-                      {tool.startingPrice && `starting at ${tool.startingPrice}`}, it's{' '}
+                      {(tool.startingPrice && tool.startingPrice !== 'undefined') ? `starting at ${tool.startingPrice}` : ''}, it's{' '}
                       {tool.pricingType === 'Free' ? 'accessible to everyone' :
                         tool.pricingType === 'Freemium' ? 'great for getting started' :
                           'worth the investment for serious users'}.
@@ -437,7 +437,7 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
               <NewsletterSignup
                 source={`tool:${tool.slug}`}
                 title="Get new tools & deals weekly"
-                description="Join ToolAtlas for weekly AI tool updates, comparisons, and discounts."
+                description="Join AI Fuel Hub for weekly AI tool updates, comparisons, and discounts."
               />
             </section>
           </div>
@@ -522,6 +522,34 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
                         </Link>
                       ))}
                     </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Popular Alternatives (SEO Links) */}
+              {relatedTools && relatedTools.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" />
+                      Popular Alternatives
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {relatedTools.slice(0, 4).map(alt => (
+                      <div key={alt.id} className="flex flex-col text-sm">
+                        <Link href={`/tool/${alt.slug}`} className="font-medium hover:underline">
+                          {alt.name}
+                        </Link>
+                        <Link href={`/alternatives/${alt.slug}`} className="text-xs text-muted-foreground hover:text-primary">
+                          View {alt.name} alternatives →
+                        </Link>
+                      </div>
+                    ))}
+                    <Separator className="my-2" />
+                    <Link href={`/alternatives/${tool.slug}`} className="block text-center text-sm font-medium text-primary hover:underline">
+                      See all {tool.name} alternatives
+                    </Link>
                   </CardContent>
                 </Card>
               )}

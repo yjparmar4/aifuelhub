@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const category = await db.category.findUnique({ where: { slug } })
     if (!category) return { title: 'Category Not Found' }
     return {
-        title: `Best ${category.name} AI Tools (2025) | ToolAtlas`,
+        title: `Best ${category.name} AI Tools (2025) | AI Fuel Hub`,
         description: category.description || `Discover and compare the best ${category.name} AI tools to boost your productivity.`,
     }
 }
