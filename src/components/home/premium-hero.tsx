@@ -12,7 +12,7 @@ export function PremiumHero() {
       {/* Animated Background Orbs */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -24,7 +24,7 @@ export function PremiumHero() {
           }}
         />
         <motion.div
-          className="absolute top-1/3 right-1/4 w-80 h-80 bg-rose-500/10 rounded-full blur-3xl"
+          className="absolute top-1/3 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.4, 0.3, 0.4],
@@ -36,7 +36,7 @@ export function PremiumHero() {
           }}
         />
         <motion.div
-          className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl"
+          className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-violet-500/10 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.3, 1],
             opacity: [0.3, 0.4, 0.3],
@@ -64,7 +64,7 @@ export function PremiumHero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 text-white shadow-xl shadow-violet-500/30 mb-8"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30 mb-8"
           >
             <Sparkles className="w-4 h-4" />
             <span className="text-sm font-semibold">118+ Verified AI Tools & Growing</span>
@@ -72,14 +72,14 @@ export function PremiumHero() {
 
           {/* Main Heading */}
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[1.05]">
-            <span className="bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">Find the Perfect</span>
+            <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">Find the Perfect</span>
             <br />
             <span className="text-slate-900">AI Tool for Your Business</span>
           </h1>
 
           {/* Subheading */}
           <p className="text-xl md:text-2xl text-slate-600 max-w-4xl mx-auto mb-12 leading-relaxed font-medium">
-            Compare features, pricing, and reviews of <span className="font-black text-violet-600">118+ AI tools</span> across 50+ categories. Expert-tested, unbiased recommendations to supercharge your workflow in 2026.
+            Compare features, pricing, and reviews of <span className="font-black text-indigo-600">118+ AI tools</span> across 50+ categories. Expert-tested, unbiased recommendations to supercharge your workflow in 2026.
           </p>
 
           {/* Search Bar */}
@@ -90,7 +90,7 @@ export function PremiumHero() {
             className="max-w-2xl mx-auto mb-8"
           >
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
               <div className="relative flex items-center bg-white rounded-2xl shadow-2xl border border-gray-100 p-2">
                 <Search className="w-6 h-6 text-gray-400 ml-4" />
                 <Input
@@ -99,7 +99,7 @@ export function PremiumHero() {
                   className="flex-1 border-0 focus-visible:ring-0 text-lg placeholder:text-gray-400"
                 />
                 <Link href="/ai-tools">
-                  <Button size="lg" className="rounded-xl px-8 bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 hover:from-violet-700 hover:via-rose-700 hover:to-amber-700 shadow-lg">
+                  <Button size="lg" className="rounded-xl px-8 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg">
                     <Zap className="w-5 h-5 mr-2" />
                     Explore
                   </Button>
@@ -122,7 +122,7 @@ export function PremiumHero() {
               { value: "10K+", label: "Users", desc: "Monthly" },
             ].map((stat, i) => (
               <div key={i} className="text-center px-4">
-                <div className="text-3xl md:text-4xl font-black bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 bg-clip-text text-transparent">{stat.value}</div>
+                <div className="text-3xl md:text-4xl font-black bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">{stat.value}</div>
                 <div className="text-sm font-semibold text-slate-700 mt-1">{stat.label}</div>
                 <div className="text-xs text-slate-500">{stat.desc}</div>
               </div>
@@ -143,7 +143,7 @@ export function PremiumHero() {
               </Button>
             </Link>
             <Link href="/compare">
-              <Button size="lg" className="rounded-xl px-8 bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 hover:from-violet-700 hover:via-rose-700 hover:to-amber-700 shadow-lg">
+              <Button size="lg" className="rounded-xl px-8 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg">
                 Compare Tools
               </Button>
             </Link>
@@ -161,9 +161,9 @@ export function PremiumHero() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-6 h-10 border-2 border-violet-300 rounded-full flex items-start justify-center p-2"
+          className="w-6 h-10 border-2 border-indigo-200 rounded-full flex items-start justify-center p-2"
         >
-          <div className="w-1.5 h-3 bg-violet-400 rounded-full" />
+          <div className="w-1.5 h-3 bg-indigo-500 rounded-full" />
         </motion.div>
       </motion.div>
     </section>

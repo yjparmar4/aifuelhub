@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Check, Loader2, ArrowLeft, Search, Zap, Info, ArrowRight, Scale, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -251,7 +252,10 @@ function CompareContent() {
                                 </div>
 
                                 <div className="mt-8 pt-6 border-t border-slate-100">
-                                    <Button className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800" onClick={() => router.push(`/tool/${tool.slug}`)}>
+                                    <Button
+                                        className="w-full h-12 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg shadow-violet-200 transition-all duration-300 hover:scale-[1.02]"
+                                        onClick={() => router.push(`/tool/${tool.slug}`)}
+                                    >
                                         Go to {tool.name}
                                     </Button>
                                 </div>
@@ -348,11 +352,11 @@ function CompareContent() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {[
                             ['chatgpt', 'claude'],
-                            ['jasper', 'copy-ai'],
-                            ['midjourney', 'dalle-3'],
-                            ['notion-ai', 'obsidian'],
+                            ['midjourney', 'dall-e'],
+                            ['jasper', 'writesonic'],
                             ['github-copilot', 'cursor'],
-                            ['perplexity', 'you']
+                            ['notion', 'clickup'],
+                            ['perplexity', 'gemini']
                         ].map(([a, b], i) => (
                             <div
                                 key={i}

@@ -191,7 +191,7 @@ function AIToolsContent({ searchParams }: { searchParams: { [key: string]: strin
               className={cn(
                 "w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 flex items-center gap-3 font-medium",
                 selectedCategory === ''
-                  ? 'bg-violet-600 text-white shadow-md'
+                  ? 'bg-indigo-600 text-white shadow-md'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               )}
             >
@@ -204,7 +204,7 @@ function AIToolsContent({ searchParams }: { searchParams: { [key: string]: strin
                 className={cn(
                   "w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 flex items-center gap-3 font-medium",
                   selectedCategory === cat.slug
-                    ? 'bg-violet-600 text-white shadow-md'
+                    ? 'bg-indigo-600 text-white shadow-md'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 )}
               >
@@ -230,7 +230,7 @@ function AIToolsContent({ searchParams }: { searchParams: { [key: string]: strin
               <Checkbox
                 checked={selectedPricing.includes(type)}
                 onCheckedChange={() => handlePricingChange(type)}
-                className="border-slate-300 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600 rounded w-4 h-4"
+                className="border-slate-300 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600 rounded w-4 h-4"
               />
               <span className={`text-sm group-hover:text-slate-900 transition-colors ${selectedPricing.includes(type) ? 'font-medium text-slate-900' : 'text-slate-600'}`}>
                 {type}
@@ -301,7 +301,7 @@ function AIToolsContent({ searchParams }: { searchParams: { [key: string]: strin
               placeholder="Search tools, categories, or features..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-full py-4 pl-12 pr-12 shadow-sm hover:shadow-md focus:shadow-md focus:border-violet-500 focus:outline-none transition-all text-base placeholder:text-slate-400"
+              className="w-full bg-white border border-slate-200 rounded-full py-4 pl-12 pr-12 shadow-sm hover:shadow-md focus:shadow-md focus:border-indigo-500 focus:outline-none transition-all text-base placeholder:text-slate-400"
             />
             {searchTerm && (
               <button
@@ -347,7 +347,7 @@ function AIToolsContent({ searchParams }: { searchParams: { [key: string]: strin
                   <SheetTrigger asChild>
                     <Button variant="outline" className="gap-2 border-slate-200">
                       <SlidersHorizontal className="w-4 h-4" /> Filters
-                      {hasActiveFilters && <span className="w-2 h-2 rounded-full bg-violet-600" />}
+                      {hasActiveFilters && <span className="w-2 h-2 rounded-full bg-indigo-600" />}
                     </Button>
                   </SheetTrigger>
                   <SheetContent side="left" className="w-[300px] sm:w-[350px] overflow-y-auto">
@@ -388,7 +388,7 @@ function AIToolsContent({ searchParams }: { searchParams: { [key: string]: strin
                   className="flex flex-wrap gap-2 mb-8 overflow-hidden"
                 >
                   {searchTerm && (
-                    <Badge variant="secondary" className="px-3 py-1 bg-violet-50 text-violet-700 hover:bg-violet-100 border-violet-100 gap-1.5 transition-colors">
+                    <Badge variant="secondary" className="px-3 py-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-100 gap-1.5 transition-colors">
                       "{searchTerm}"
                       <X className="w-3 h-3 cursor-pointer" onClick={() => setSearchTerm('')} />
                     </Badge>
@@ -494,7 +494,7 @@ export default function AIToolsDirectory({
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
       </div>
     }>
       <AIToolsContent searchParams={searchParams} />

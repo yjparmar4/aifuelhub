@@ -53,7 +53,9 @@ const config: Config = {
 				},
 			},
 			fontFamily: {
-				heading: ['var(--font-sans)', 'sans-serif'],
+				heading: ['var(--font-heading)', 'sans-serif'],
+				sans: ['var(--font-sans)', 'sans-serif'],
+				serif: ['var(--font-serif)', 'serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

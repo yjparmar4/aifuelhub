@@ -24,17 +24,7 @@ export function GoogleAd({ slot, style, format = 'auto', layoutKey, className }:
         }
     }, []);
 
-    // Development placeholder to visualize where ads will be
-    if (process.env.NODE_ENV === 'development') {
-        return (
-            <div
-                className={`bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 p-4 w-full ${className || ''}`}
-                style={{ minHeight: '100px', ...style }}
-            >
-                <span>Google AdSense Placeholder (Slot: {slot})</span>
-            </div>
-        );
-    }
+
 
     return (
         <div className={className}>

@@ -36,25 +36,7 @@ export function AdPlaceholder({ type = 'in-content', size = 'medium', label }: A
     }
   }
 
-  return (
-    <Card className={`w-full ${type === 'sticky' ? 'sticky top-4' : ''} ${size === 'large' ? 'bg-gradient-to-br from-muted/20 to-muted/10' : ''}`}>
-      <CardContent className="p-0">
-        <div className={`relative flex items-center justify-center bg-muted/30 ${sizes[size]} border border-dashed border-muted-foreground/20`}>
-          <div className="text-center space-y-2">
-            <Badge variant="outline" className="bg-background">
-              {label || getTypeLabel()}
-            </Badge>
-            <div className="text-xs text-muted-foreground">
-              {dimensions[size]}
-            </div>
-            <div className="text-xs text-muted-foreground/50">
-              Ad Space
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
+  return null
 }
 
 // Inline ad component for content areas

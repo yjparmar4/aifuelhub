@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Inter } from "next/font/google"; // Premium fonts
+import { Plus_Jakarta_Sans, Inter, Merriweather } from "next/font/google"; // Premium fonts
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { JsonLd } from "@/components/JsonLd";
+import { JsonLd } from "@/components/json-ld";
+import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/schema";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { SITE_URL } from "@/lib/seo";
@@ -20,6 +21,13 @@ const inter = Inter({
   variable: "--font-sans",
   display: "swap",
   weight: ["300", "400", "500", "600", "700"],
+});
+
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+  weight: ["300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -88,7 +96,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${plusJakartaSans.variable} ${inter.variable} font-sans antialiased`}
+        className={`${plusJakartaSans.variable} ${inter.variable} ${merriweather.variable} font-sans antialiased`}
       >
         {gaId ? (
           <>
@@ -114,7 +122,8 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
 
-        <JsonLd />
+        <JsonLd data={generateOrganizationSchema()} />
+        <JsonLd data={generateWebSiteSchema()} />
         <Navbar />
         <div className="pt-24 min-h-screen">
           {children}

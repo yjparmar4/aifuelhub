@@ -44,7 +44,7 @@ export function Navbar() {
                     <div className="flex items-center justify-between">
                         {/* Logo Section */}
                         <Link href="/" className="flex items-center gap-2.5 group">
-                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-600 via-rose-600 to-amber-600 flex items-center justify-center shadow-sm">
+                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 via-primary to-violet-600 flex items-center justify-center shadow-sm">
                                 <Zap className="w-5 h-5 text-white" />
                             </div>
                             <span className="text-xl font-bold tracking-tight text-slate-900">
@@ -58,7 +58,7 @@ export function Navbar() {
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className="text-sm font-medium text-slate-600 hover:text-violet-600 px-4 py-2 rounded-lg hover:bg-violet-50 transition-all"
+                                    className="text-sm font-medium text-slate-600 hover:text-indigo-600 px-4 py-2 rounded-lg hover:bg-slate-50 transition-all"
                                 >
                                     {item.name}
                                 </Link>
@@ -74,7 +74,7 @@ export function Navbar() {
                                     className="pl-9 h-9 w-48 bg-slate-50 border-slate-200 focus:w-56 transition-all text-sm"
                                 />
                             </div>
-                            <Button asChild className="h-9 px-4 rounded-lg bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 hover:opacity-90 text-white font-medium text-sm">
+                            <Button asChild className="h-9 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm border-0 shadow-sm">
                                 <Link href="/submit">Submit Tool</Link>
                             </Button>
                         </div>
@@ -104,7 +104,7 @@ export function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-base font-medium p-3 hover:bg-violet-50 rounded-lg text-slate-700 hover:text-violet-600 transition-colors"
+                                    className="text-base font-medium p-3 hover:bg-slate-50 rounded-lg text-slate-700 hover:text-indigo-600 transition-colors"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     {link.name}
@@ -112,7 +112,7 @@ export function Navbar() {
                             ))}
                             <div className="mt-4 pt-4 border-t border-slate-100">
                                 <Link href="/submit" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Button className="w-full bg-gradient-to-r from-violet-600 via-rose-600 to-amber-600 hover:opacity-90 text-white py-3 rounded-lg">
+                                    <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg">
                                         Submit Tool
                                     </Button>
                                 </Link>

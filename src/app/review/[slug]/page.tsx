@@ -86,7 +86,7 @@ export default async function ToolReviewSpecificPage({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="md:col-span-2 space-y-8">
                         {/* Verdict Card */}
-                        <Card className="bg-gradient-to-br from-violet-50/50 to-white dark:from-violet-950/20">
+                        <Card className="bg-gradient-to-br from-indigo-50/50 to-white dark:from-indigo-950/20">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <ThumbsUp className="w-5 h-5 text-primary" />

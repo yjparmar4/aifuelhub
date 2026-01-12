@@ -172,24 +172,25 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             prose-headings:font-heading prose-headings:font-bold prose-headings:scroll-mt-24
             prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium
             prose-img:rounded-2xl prose-img:shadow-xl
-            prose-p:text-lg prose-p:leading-8 prose-p:text-slate-700
+            prose-p:text-xl prose-p:leading-9 prose-p:text-slate-800 prose-p:font-serif
+            prose-li:text-lg prose-li:leading-8 prose-li:text-slate-700 prose-li:font-serif
             prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-8 prose-h2:text-gradient
             prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-6
             prose-strong:text-foreground prose-strong:font-semibold
-            prose-blockquote:not-italic prose-blockquote:text-lg
+            prose-blockquote:not-italic prose-blockquote:text-lg prose-blockquote:font-serif
           "
         >
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
             components={{
-              h2: ({ ...props }) => <h2 id={`heading-${props.children?.toString().length}`} {...props} className="text-3xl font-bold mt-12 mb-6" />,
-              h3: ({ ...props }) => <h3 id={`heading-${props.children?.toString().length}`} {...props} className="text-2xl font-semibold mt-8 mb-4 text-foreground/90" />,
-              p: ({ ...props }) => <p {...props} className="leading-8 text-muted-foreground/90 mb-6" />,
+              h2: ({ ...props }) => <h2 id={`heading-${props.children?.toString().length}`} {...props} className="text-3xl font-bold mt-12 mb-6 font-heading" />,
+              h3: ({ ...props }) => <h3 id={`heading-${props.children?.toString().length}`} {...props} className="text-2xl font-semibold mt-8 mb-4 text-foreground/90 font-heading" />,
+              p: ({ ...props }) => <p {...props} className="leading-9 text-slate-800 mb-6 font-serif text-xl" />,
               blockquote: ({ ...props }) => (
-                <blockquote {...props} className="border-l-4 border-primary pl-6 py-2 my-8 italic text-lg text-muted-foreground bg-muted/20 pr-4 rounded-r-lg" />
+                <blockquote {...props} className="border-l-4 border-primary pl-6 py-2 my-8 italic text-xl text-muted-foreground bg-muted/20 pr-4 rounded-r-lg font-serif" />
               ),
-              ul: ({ ...props }) => <ul {...props} className="my-6 space-y-2 list-disc pl-6 text-muted-foreground" />,
+              ul: ({ ...props }) => <ul {...props} className="my-6 space-y-2 list-disc pl-6 text-slate-700 font-serif text-lg leading-8" />,
               li: ({ ...props }) => <li {...props} className="pl-1" />,
             }}
           >

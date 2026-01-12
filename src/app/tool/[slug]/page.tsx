@@ -8,12 +8,51 @@ import ToolReviewPage from '@/components/tool-review-page'
 import { Tool } from '@/types'
 import { SITE_URL } from '@/lib/seo'
 
+import { unstable_cache } from 'next/cache'
+
+// Cached data fetcher for tool details
+const getTool = unstable_cache(
+  async (slug: string) => {
+    return db.tool.findUnique({
+      where: { slug, published: true },
+      include: {
+        category: true,
+        tags: true,
+        reviews: {
+          where: { published: true },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+      },
+    })
+  },
+  ['tool-by-slug'],
+  { revalidate: 3600, tags: ['tool'] }
+)
+
+// Cached data fetcher for related tools
+const getRelatedTools = unstable_cache(
+  async (categoryId: string, excludeId: string) => {
+    return db.tool.findMany({
+      where: {
+        categoryId,
+        id: { not: excludeId },
+        published: true,
+      },
+      take: 3,
+      orderBy: { views: 'desc' },
+      include: {
+        category: true,
+      }
+    })
+  },
+  ['related-tools'],
+  { revalidate: 3600, tags: ['tool', 'related'] }
+)
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const tool = await db.tool.findUnique({
-    where: { slug, published: true },
-    include: { category: true },
-  })
+  const tool = await getTool(slug)
 
   if (!tool) {
     return {
@@ -42,37 +81,14 @@ export async function generateStaticParams() {
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-
-  const tool = await db.tool.findUnique({
-    where: { slug, published: true },
-    include: {
-      category: true,
-      tags: true,
-      reviews: {
-        where: { published: true },
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-      },
-    },
-  })
+  const tool = await getTool(slug)
 
   if (!tool) {
     notFound()
   }
 
   // Fetch related tools (Alternatives)
-  const relatedTools = await db.tool.findMany({
-    where: {
-      categoryId: tool.categoryId,
-      id: { not: tool.id },
-      published: true,
-    },
-    take: 3,
-    orderBy: { views: 'desc' },
-    include: {
-      category: true,
-    }
-  })
+  const relatedTools = await getRelatedTools(tool.categoryId, tool.id)
 
   const defaultVsTarget = relatedTools[0]?.slug
 
