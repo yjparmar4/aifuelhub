@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { generateMetadata as generateSeoMetadata } from '@/lib/seo'
 import { JsonLd } from '@/components/json-ld'
 import { db } from '@/lib/db'
-import { generateToolSchema, generateFAQSchema } from '@/lib/schema'
+import { generateToolSchema, generateFAQSchema, generateBreadcrumbSchema } from '@/lib/schema'
 import { notFound } from 'next/navigation'
 import ToolReviewPage from '@/components/tool-review-page'
 import { Tool } from '@/types'
@@ -138,6 +138,16 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     <>
       <JsonLd data={toolSchema} />
       {faqSchema && <JsonLd data={faqSchema} />}
+      <JsonLd
+        data={generateBreadcrumbSchema([
+          { name: 'Home', url: SITE_URL },
+          { name: 'Categories', url: `${SITE_URL}/categories` },
+          ...(toolData.category
+            ? [{ name: toolData.category.name, url: `${SITE_URL}/categories/${toolData.category.slug}` }]
+            : []),
+          { name: toolData.name, url: `${SITE_URL}/tool/${toolData.slug}` },
+        ])}
+      />
       <div className="container mx-auto max-w-7xl px-4 pt-6">
         <div className="glass rounded-2xl p-4 text-sm text-muted-foreground flex flex-wrap gap-2 items-center">
           <span>More:</span>

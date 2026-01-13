@@ -6,6 +6,9 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Sparkles } from 'lucide-react'
 import { Tool } from '@/types'
+import { JsonLd } from '@/components/json-ld'
+import { SITE_URL } from '@/lib/seo'
+import { generateBreadcrumbSchema } from '@/lib/schema'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
@@ -47,6 +50,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
     return (
         <div className="min-h-screen bg-background text-foreground">
+            <JsonLd
+                data={generateBreadcrumbSchema([
+                    { name: 'Home', url: SITE_URL },
+                    { name: 'Categories', url: `${SITE_URL}/categories` },
+                    { name: category.name, url: `${SITE_URL}/categories/${category.slug}` },
+                ])}
+            />
             {/* Hero */}
             <section className="relative pt-32 pb-20 overflow-hidden mesh-background-deep">
                 <div className="absolute inset-0 bg-white/40 pointer-events-none" />
