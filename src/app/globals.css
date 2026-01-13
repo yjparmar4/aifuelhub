@@ -246,29 +246,30 @@
   }
 
   /* Components: Blog Callouts - Enhanced Spacing & Readability */
+  /* Components: Blog Callouts - Minimal & Clean */
   .blog-callout {
-    @apply my-10 rounded-xl border-2 p-6 sm:p-8 mx-auto;
+    @apply my-8 rounded-r-lg border-l-4 p-6 mx-auto bg-gray-50/50 dark:bg-gray-900/50;
     max-width: 100%;
   }
 
   .blog-callout h3 {
-    @apply mb-4 flex items-center gap-3 font-bold text-lg;
+    @apply mb-3 flex items-center gap-2 font-bold text-lg leading-tight;
   }
 
   .blog-callout p {
-    @apply m-0 text-base leading-relaxed;
+    @apply m-0 text-base leading-relaxed text-gray-700 dark:text-gray-300;
   }
 
   .callout-info {
-    @apply border-indigo-200 bg-indigo-50/50 text-indigo-900 dark:border-indigo-900/50 dark:bg-indigo-950/30 dark:text-indigo-200;
+    @apply border-blue-500 bg-blue-50/30 dark:bg-blue-900/10;
   }
 
   .callout-info h3 {
-    @apply text-indigo-700 dark:text-indigo-300;
+    @apply text-blue-700 dark:text-blue-300;
   }
 
   .callout-warning {
-    @apply border-amber-200 bg-amber-50/50 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200;
+    @apply border-amber-500 bg-amber-50/30 dark:bg-amber-900/10;
   }
 
   .callout-warning h3 {
@@ -276,7 +277,7 @@
   }
 
   .callout-danger {
-    @apply border-red-200 bg-red-50/50 text-red-900 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200;
+    @apply border-red-500 bg-red-50/30 dark:bg-red-900/10;
   }
 
   .callout-danger h3 {
@@ -284,7 +285,7 @@
   }
 
   .callout-success {
-    @apply border-emerald-200 bg-emerald-50/50 text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-200;
+    @apply border-emerald-500 bg-emerald-50/30 dark:bg-emerald-900/10;
   }
 
   .callout-success h3 {
@@ -292,75 +293,63 @@
   }
 
   .callout-premium {
-    @apply border-violet-200 bg-violet-50/50 text-violet-900 dark:border-violet-900/50 dark:bg-violet-950/30 dark:text-violet-200;
+    @apply border-purple-500 bg-purple-50/30 dark:bg-purple-900/10;
   }
 
   .callout-premium h3 {
-    @apply text-violet-700 dark:text-violet-300;
+    @apply text-purple-700 dark:text-purple-300;
   }
 
   .callout-gradient {
-    @apply border-0 bg-gradient-to-br from-indigo-500/10 via-violet-500/10 to-purple-500/10 text-slate-800 dark:from-indigo-500/20 dark:via-violet-500/20 dark:to-purple-500/20 dark:text-slate-200;
-    background-size: 200% 200%;
-    animation: gradient-shift 8s ease infinite;
+    @apply border-indigo-500 bg-indigo-50/30 dark:bg-indigo-900/10;
   }
 
   .callout-gradient h3 {
     @apply text-indigo-700 dark:text-indigo-300;
   }
 
-  @keyframes gradient-shift {
-
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-
-    50% {
-      background-position: 100% 50%;
-    }
-  }
+  /* Removed animation for cleaner look */
 
   /* Enhanced callout list styling */
   .blog-callout ul {
-    @apply space-y-3 mt-4 mb-0 pl-0 list-none;
+    @apply space-y-2 mt-3 mb-0 pl-0 list-none;
   }
 
   .blog-callout ol {
-    @apply space-y-3 mt-4 mb-0 pl-6 list-decimal;
+    @apply space-y-2 mt-3 mb-0 pl-5 list-decimal;
   }
 
   .blog-callout li {
-    @apply text-base leading-relaxed;
+    @apply text-base text-gray-700 dark:text-gray-300;
   }
 
   .blog-callout ul li::before {
     content: "•";
-    @apply mr-3 font-bold text-lg;
+    @apply mr-2 font-bold;
   }
 
   .callout-success ul li::before {
-    @apply text-emerald-600 dark:text-emerald-400;
+    @apply text-emerald-600;
   }
 
   .callout-danger ul li::before {
-    @apply text-red-600 dark:text-red-400;
+    @apply text-red-600;
   }
 
   .callout-warning ul li::before {
-    @apply text-amber-600 dark:text-amber-400;
+    @apply text-amber-600;
   }
 
   .callout-info ul li::before {
-    @apply text-indigo-600 dark:text-indigo-400;
+    @apply text-blue-600;
   }
 
   .callout-premium ul li::before {
-    @apply text-violet-600 dark:text-violet-400;
+    @apply text-purple-600;
   }
 
   .callout-gradient ul li::before {
-    @apply text-indigo-600 dark:text-indigo-400;
+    @apply text-indigo-600;
   }
 
   /* Components: Prose */
@@ -376,19 +365,27 @@
   }
 
   .prose p {
-    @apply leading-7 [&:not(:first-child)]:mt-6 text-justify;
+    @apply leading-8 [&:not(:first-child)]:mt-6;
   }
 
   .prose a {
-    @apply font-medium text-primary underline underline-offset-4 hover:text-primary/80;
+    @apply font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary hover:text-primary/80;
   }
 
   .prose blockquote {
-    @apply border-l-4 border-primary pl-6 italic text-muted-foreground;
+    @apply my-8 border-l-4 border-primary/70 bg-primary/5 pl-6 pr-4 py-4 not-italic text-foreground/80 rounded-r-lg;
   }
 
   .prose ul {
     @apply my-6 ml-6 list-disc [&>li]:mt-2;
+  }
+
+  .prose ol {
+    @apply my-6 ml-6 list-decimal [&>li]:mt-2;
+  }
+
+  .prose li::marker {
+    @apply text-foreground/40;
   }
 
   .prose code {
@@ -396,11 +393,23 @@
   }
 
   .prose pre {
-    @apply mb-4 mt-6 overflow-x-auto rounded-lg bg-slate-950 p-4;
+    @apply mb-6 mt-8 overflow-x-auto rounded-xl bg-slate-950 p-5 border border-border/50;
   }
 
   .prose pre code {
     @apply bg-transparent p-0 text-white font-normal;
+  }
+
+  .prose img {
+    @apply my-10;
+  }
+
+  .prose figure {
+    @apply my-10;
+  }
+
+  .prose figcaption {
+    @apply mt-3 text-sm text-muted-foreground text-center;
   }
 
   .prose table {
@@ -433,7 +442,7 @@
   }
 
   .prose>p {
-    @apply mb-6;
+    @apply mb-6 text-slate-700 dark:text-slate-200/90;
   }
 
   .prose>ul,
@@ -442,10 +451,14 @@
   }
 
   .prose>h2 {
-    @apply mt-16 mb-8 pt-8 border-t border-slate-200;
+    @apply mt-16 mb-8 pt-8 border-t border-slate-200/80 dark:border-slate-800/80;
   }
 
   .prose>h3 {
     @apply mt-10 mb-6;
+  }
+
+  .prose>h4 {
+    @apply mt-8 mb-4;
   }
 }

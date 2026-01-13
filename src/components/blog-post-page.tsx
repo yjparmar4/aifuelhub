@@ -25,159 +25,126 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
   }
 
   return (
-    <article className="min-h-screen bg-gradient-to-b from-background to-slate-50/50">
+    <article className="min-h-screen bg-white dark:bg-slate-950">
       {/* Reading Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 z-50 origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-primary z-50 origin-left"
         style={{ scaleX: useScroll().scrollYProgress }}
       />
 
-      {/* Sticky Breadcrumb */}
-      <nav className="py-4 px-4 border-b bg-white/80 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto max-w-3xl">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground whitespace-nowrap overflow-hidden">
-            <Link href="/" className="hover:text-primary hover:underline transition-all">Home</Link>
-            <span className="text-slate-300">/</span>
-            <Link href="/blog" className="hover:text-primary hover:underline transition-all">Blog</Link>
-            <span className="text-slate-300">/</span>
-            <span className="text-foreground font-medium truncate">{post.title}</span>
+      {/* Minimal Sticky Nav */}
+      <nav className="border-b bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-40 transition-all">
+        <div className="container mx-auto max-w-2xl px-4 h-14 flex items-center justify-between">
+          <Link href="/blog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+            <ArrowRight className="w-4 h-4 rotate-180" /> Back to Blog
+          </Link>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleShare}
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+            >
+              <Share2 className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </nav>
 
       {/* Article Header */}
-      <header className="relative py-16 md:py-20 px-4 overflow-hidden bg-gradient-to-b from-purple-50/50 to-transparent">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-48 bg-gradient-to-b from-purple-500/5 to-transparent blur-3xl pointer-events-none" />
-
-        <div className="container mx-auto max-w-3xl relative z-10">
+      <header className="pt-12 pb-8 px-4">
+        <div className="container mx-auto max-w-2xl text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center"
           >
-            <div className="flex flex-wrap items-center gap-3 mb-6">
+            {/* Category & Date */}
+            <div className="flex items-center gap-3 text-sm text-muted-foreground mb-6 font-medium">
               {post.category && (
-                <Link href={`/blog?category=${post.category.slug}`}>
-                  <Badge className="bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-purple-200 hover:from-purple-200 hover:to-blue-200 transition-all font-semibold px-4 py-1.5">
-                    {post.category.name}
-                  </Badge>
+                <Link href={`/blog?category=${post.category.slug}`} className="text-primary hover:underline uppercase tracking-wider text-xs font-bold">
+                  {post.category.name}
                 </Link>
               )}
+              <span className="text-gray-300">•</span>
+              <span>
+                {new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </span>
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 font-heading leading-tight tracking-tight text-foreground">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 font-heading leading-[1.15] tracking-tight text-gray-900 dark:text-gray-50 text-center">
               {post.title}
             </h1>
 
             {post.excerpt && (
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 font-light leading-relaxed">
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 font-heading leading-relaxed text-center max-w-xl mx-auto">
                 {post.excerpt}
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground border-t border-border/50 pt-6">
-              {/* Author */}
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-medium text-foreground">AI Fuel Hub Team</span>
+            {/* Author Minimal */}
+            <div className="flex items-center gap-3 justify-center mb-8">
+              <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                <User className="w-5 h-5 text-gray-500" />
               </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-purple-500" />
-                <span>
-                  {new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </span>
+              <div className="text-left">
+                <span className="block font-semibold text-sm text-gray-900 dark:text-gray-100 leading-none mb-1">AI Fuel Hub Team</span>
+                <span className="block text-xs text-muted-foreground">Editorial Staff</span>
               </div>
-              {post.views > 100 && (
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-blue-500" />
-                  <span>{post.views.toLocaleString()} views</span>
-                </div>
-              )}
-              <Button
-                onClick={handleShare}
-                variant="ghost"
-                size="sm"
-                className="ml-auto hover:bg-purple-50 hover:text-purple-600 transition-all"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
             </div>
           </motion.div>
         </div>
       </header>
 
-      {/* Article Content */}
-      <main className="container mx-auto max-w-3xl px-4 pb-24">
-        {/* Top Banner Ad */}
-        <div className="mb-10">
-          <GoogleAd slot="1234567890" style={{ height: '90px' }} className="w-full flex justify-center" />
-        </div>
+      {/* Main Content */}
+      <main className="container mx-auto max-w-2xl px-4 pb-24">
 
         {post.coverImage && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="relative overflow-hidden rounded-2xl mb-10 shadow-xl shadow-purple-500/10 border border-border/50"
-          >
+          <div className="mb-12">
             <img
               src={post.coverImage}
               alt={post.title}
-              className="w-full object-cover aspect-video"
+              className="w-full rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 aspect-[21/9] object-cover"
             />
-          </motion.div>
+          </div>
         )}
 
-        {/* Table of Contents */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="mb-12 p-6 rounded-2xl bg-gradient-to-br from-white to-purple-50/30 border border-purple-100 shadow-md"
-        >
-          <h3 className="font-bold mb-4 flex items-center gap-3 text-sm uppercase tracking-wide text-muted-foreground">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-              <BookOpen className="w-3.5 h-3.5 text-white" />
-            </div>
-            Quick Navigation
+        {/* Minimal Table of Contents Box */}
+        <div className="mb-12 p-6 bg-gray-50 dark:bg-gray-900/50 rounded-lg border-l-4 border-gray-300 dark:border-gray-700">
+          <h3 className="font-bold text-sm uppercase tracking-wider text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <BookOpen className="w-4 h-4" /> In this article
           </h3>
-          <nav className="grid gap-2">
+          <nav className="space-y-2">
             {content.split('\n').filter(line => line.trim().startsWith('## ')).slice(0, 8).map((line, idx) => (
               <a
                 key={idx}
                 href={`#section-${idx}`}
-                className="text-sm text-foreground/80 hover:text-primary hover:pl-1 truncate transition-all duration-200 py-1.5 block border-l-2 border-slate-200 hover:border-purple-500 pl-3"
+                className="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors pl-2 border-l border-gray-200 hover:border-primary"
               >
                 {line.replace(/^#+\s*/, '').trim()}
               </a>
             ))}
           </nav>
-        </motion.div>
-@@
-        {/* Main Article Body */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="prose prose-lg prose-slate dark:prose-invert max-w-none
-            prose-headings:font-heading prose-headings:font-bold prose-headings:scroll-mt-24
-            prose-a:text-primary prose-a:underline prose-a:underline-offset-4 hover:prose-a:text-primary/80
-            prose-img:rounded-xl prose-img:shadow-lg
-            prose-p:text-[1.0625rem] prose-p:leading-8 prose-p:font-serif
-            prose-li:text-[1.02rem] prose-li:leading-7 prose-li:font-serif
-            prose-strong:text-foreground dark:prose-strong:text-slate-100 prose-strong:font-semibold
-            prose-blockquote:not-italic prose-blockquote:font-serif
-            prose-code:font-mono
-            prose-pre:rounded-xl prose-pre:border prose-pre:border-border/50
-          "
-        >
+        </div>
+
+        {/* Article Body */}
+        <article className="prose prose-lg prose-gray dark:prose-invert max-w-none
+          prose-p:text-[1.125rem] prose-p:leading-[1.8] prose-p:text-gray-800 dark:prose-p:text-gray-300 prose-p:font-serif
+          prose-headings:font-heading prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-50
+          prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:tracking-tight
+          prose-h2:border-l-0 prose-h2:pl-0
+          prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary hover:prose-a:bg-primary/5
+          prose-img:rounded-lg prose-img:my-8
+          prose-li:text-[1.125rem] prose-li:leading-[1.7] prose-li:text-gray-800 dark:prose-li:text-gray-300 prose-li:font-serif
+          prose-blockquote:border-l-4 prose-blockquote:border-primary/50 prose-blockquote:bg-transparent prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700
+          prose-pre:bg-slate-900 prose-pre:rounded-lg prose-pre:shadow-lg
+          prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-primary
+        ">
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
@@ -190,127 +157,58 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
                 const text = typeof children === 'string' ? children : Array.isArray(children) ? children.join('') : ''
                 const idx = Math.max(0, headings.findIndex((h) => h === text))
                 return (
-                  <h2
-                    id={`section-${idx >= 0 ? idx : 0}`}
-                    {...props}
-                    className="text-2xl font-bold mt-14 mb-6 font-heading text-foreground border-l-4 border-purple-500 pl-4 -ml-4"
-                  >
+                  <h2 id={`section-${idx >= 0 ? idx : 0}`} {...props}>
                     {children}
                   </h2>
                 )
               },
               blockquote: ({ children, ...props }) => (
-                <blockquote
-                  {...props}
-                  className="relative border-l-4 border-amber-400 bg-amber-50/50 pl-6 pr-4 py-4 my-8 text-base text-slate-700 rounded-r-lg font-serif"
-                >
-                  <Lightbulb className="absolute -left-3 top-4 w-6 h-6 text-amber-500 bg-white rounded-full p-0.5" />
+                <blockquote {...props} className="border-l-4 border-amber-400 pl-4 py-2 italic my-6 text-gray-700 dark:text-gray-300 bg-amber-50 dark:bg-transparent pr-2 rounded-r">
                   {children}
                 </blockquote>
               ),
-              li: ({ ...props }) => (
-                <li {...props} className="pl-1" />
-              ),
+              /* Ensure tables are scrollable */
               table: ({ ...props }) => (
-                <div className="overflow-x-auto my-8 rounded-lg border border-border">
+                <div className="overflow-x-auto my-8 rounded-lg border border-gray-200 dark:border-gray-800">
                   <table {...props} className="w-full text-sm" />
                 </div>
               ),
               th: ({ ...props }) => (
-                <th {...props} className="bg-slate-100 px-4 py-3 text-left font-semibold text-foreground border-b" />
+                <th {...props} className="bg-gray-50 dark:bg-gray-900 px-4 py-3 text-left font-semibold text-gray-900 dark:text-gray-100 border-b dark:border-gray-800" />
               ),
               td: ({ ...props }) => (
-                <td {...props} className="px-4 py-3 border-b border-border/50 text-slate-600" />
+                <td {...props} className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400" />
               ),
             }}
           >
             {content}
           </ReactMarkdown>
-        </motion.div>
+        </article>
 
-        {/* Author Bio Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-16 p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-white border border-border/50 flex flex-col sm:flex-row items-start gap-5"
-        >
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shrink-0">
-            <Sparkles className="w-7 h-7 text-white" />
+        {/* Footer: Newsletter & Related */}
+        <div className="mt-20 pt-10 border-t border-gray-100 dark:border-gray-800">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-8 text-center mb-12">
+            <h3 className="text-xl font-bold mb-2">Subscribe to our newsletter</h3>
+            <p className="text-muted-foreground mb-6">Get the latest AI tools and reviews delivered to your inbox.</p>
+            <div className="max-w-md mx-auto">
+              <NewsletterSignup source={`blog:${post.slug}`} />
+            </div>
           </div>
-          <div>
-            <h4 className="font-bold text-foreground mb-1">Written by AI Fuel Hub Team</h4>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Our editorial team rigorously tests and reviews AI tools to bring you trustworthy, up-to-date insights. We're passionate about helping you discover the best AI solutions for your workflow.
-            </p>
-            <Link href="/about" className="text-sm text-primary font-medium mt-3 inline-flex items-center gap-1 hover:underline">
-              Learn more about us <ArrowRight className="w-3 h-3" />
-            </Link>
-          </div>
-        </motion.div>
 
-        {/* Tags Section */}
-        {post.tags && post.tags.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mt-10 pt-8 border-t border-border/50"
-          >
-            <div className="flex flex-wrap gap-2">
+          {/* Tags */}
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-12 justify-center">
               {post.tags.map((tag) => (
                 <Link key={tag.id} href={`/blog?tags=${tag.slug}`}>
-                  <Badge className="px-3 py-1.5 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200 hover:border-slate-300 transition-all font-medium text-xs">
+                  <Badge variant="secondary" className="px-3 py-1 font-normal text-xs uppercase tracking-wide">
                     # {tag.name}
                   </Badge>
                 </Link>
               ))}
             </div>
-          </motion.div>
-        )}
-
-        {/* Related Posts Placeholder */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65 }}
-          className="mt-14"
-        >
-          <h3 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-purple-500" />
-            Continue Reading
-          </h3>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Link href="/blog" className="group p-4 rounded-xl border border-border/50 hover:border-purple-200 hover:bg-purple-50/30 transition-all">
-              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Explore More AI Guides</span>
-              <p className="text-xs text-muted-foreground mt-1">Discover our latest articles on AI tools and trends.</p>
-            </Link>
-            <Link href="/ai-tools" className="group p-4 rounded-xl border border-border/50 hover:border-purple-200 hover:bg-purple-50/30 transition-all">
-              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">Browse AI Tools Directory</span>
-              <p className="text-xs text-muted-foreground mt-1">Find the perfect AI tool for your needs.</p>
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Newsletter Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="mt-16"
-        >
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600 via-blue-600 to-purple-600 p-8 md:p-10 text-white">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtOS45NDEgMC0xOCA4LjA1OS0xOCAxOHM4LjA1OSAxOCAxOCAxOGM5Ljk0MSAwIDE4LTguMDU5IDE4LTE4cy04LjA1OS0xOC0xOC0xOHptMCAzMmMtNy43MzIgMC0xNC02LjI2OC0xNC0xNHM2LjI2OC0xNCAxNC0xNHMxNCA2LjI2OCAxNCAxNC02LjI2OCAxNC0xNCAxNHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvZz48L3N2Zz4=')] opacity-20" />
-            <div className="relative z-10">
-              <NewsletterSignup source={`blog:${post.slug}`} />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Bottom Banner Ad */}
-        <div className="mt-12">
-          <GoogleAd slot="5555555555" style={{ height: '250px' }} format="rectangle" />
+          )}
         </div>
+
       </main>
     </article>
   )
