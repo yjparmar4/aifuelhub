@@ -32,9 +32,9 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
         style={{ scaleX: useScroll().scrollYProgress }}
       />
 
-      {/* Minimal Sticky Nav */}
+      /* Minimal Sticky Nav */
       <nav className="border-b bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-40 transition-all">
-        <div className="container mx-auto max-w-2xl px-4 h-14 flex items-center justify-between">
+        <div className="container mx-auto max-w-4xl px-4 h-14 flex items-center justify-between">
           <Link href="/blog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
             <ArrowRight className="w-4 h-4 rotate-180" /> Back to Blog
           </Link>
@@ -53,7 +53,7 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
 
       {/* Article Header */}
       <header className="pt-12 pb-8 px-4">
-        <div className="container mx-auto max-w-2xl text-center">
+        <div className="container mx-auto max-w-4xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -82,7 +82,7 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             </h1>
 
             {post.excerpt && (
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 font-heading leading-relaxed text-center max-w-xl mx-auto">
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 font-heading leading-relaxed text-center max-w-2xl mx-auto">
                 {post.excerpt}
               </p>
             )}
@@ -102,7 +102,7 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto max-w-2xl px-4 pb-24">
+      <main className="container mx-auto max-w-4xl px-4 pb-24">
 
         {post.coverImage && (
           <div className="mb-12">
