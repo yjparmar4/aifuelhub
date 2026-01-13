@@ -160,7 +160,7 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             ))}
           </nav>
         </motion.div>
-
+@@
         {/* Main Article Body */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -168,14 +168,14 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
           transition={{ delay: 0.4 }}
           className="prose prose-lg prose-slate dark:prose-invert max-w-none
             prose-headings:font-heading prose-headings:font-bold prose-headings:scroll-mt-24
-            prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium
+            prose-a:text-primary prose-a:underline prose-a:underline-offset-4 hover:prose-a:text-primary/80
             prose-img:rounded-xl prose-img:shadow-lg
-            prose-p:text-lg prose-p:leading-8 prose-p:text-slate-700 prose-p:font-serif prose-p:mb-6
-            prose-li:text-base prose-li:leading-7 prose-li:text-slate-600 prose-li:font-serif
-            prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-6 prose-h2:text-foreground
-            prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4 prose-h3:text-foreground/90
-            prose-strong:text-foreground prose-strong:font-semibold
-            prose-blockquote:not-italic prose-blockquote:text-base prose-blockquote:font-serif
+            prose-p:text-[1.0625rem] prose-p:leading-8 prose-p:font-serif
+            prose-li:text-[1.02rem] prose-li:leading-7 prose-li:font-serif
+            prose-strong:text-foreground dark:prose-strong:text-slate-100 prose-strong:font-semibold
+            prose-blockquote:not-italic prose-blockquote:font-serif
+            prose-code:font-mono
+            prose-pre:rounded-xl prose-pre:border prose-pre:border-border/50
           "
         >
           <ReactMarkdown
@@ -183,7 +183,12 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             remarkPlugins={[remarkGfm]}
             components={{
               h2: ({ children, ...props }) => {
-                const idx = content.split('\n').filter(l => l.startsWith('## ')).findIndex(l => l.includes(children?.toString() || ''))
+                const headings = content
+                  .split('\n')
+                  .filter((line) => line.trim().startsWith('## '))
+                  .map((line) => line.replace(/^#+\s*/, '').trim())
+                const text = typeof children === 'string' ? children : Array.isArray(children) ? children.join('') : ''
+                const idx = Math.max(0, headings.findIndex((h) => h === text))
                 return (
                   <h2
                     id={`section-${idx >= 0 ? idx : 0}`}
@@ -194,12 +199,6 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
                   </h2>
                 )
               },
-              h3: ({ ...props }) => (
-                <h3 {...props} className="text-xl font-semibold mt-10 mb-4 text-foreground/90 font-heading" />
-              ),
-              p: ({ ...props }) => (
-                <p {...props} className="leading-8 text-slate-700 mb-6 font-serif text-lg" />
-              ),
               blockquote: ({ children, ...props }) => (
                 <blockquote
                   {...props}
@@ -208,9 +207,6 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
                   <Lightbulb className="absolute -left-3 top-4 w-6 h-6 text-amber-500 bg-white rounded-full p-0.5" />
                   {children}
                 </blockquote>
-              ),
-              ul: ({ ...props }) => (
-                <ul {...props} className="my-6 space-y-3 list-disc pl-6 text-slate-600 font-serif text-base leading-7" />
               ),
               li: ({ ...props }) => (
                 <li {...props} className="pl-1" />
