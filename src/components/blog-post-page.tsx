@@ -4,7 +4,7 @@ import { BlogPost } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { GoogleAd } from '@/components/google-ad'
-import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles } from 'lucide-react'
+import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Info, Target, ExternalLink, Image as ImageIcon, Heart } from 'lucide-react'
 import Link from 'next/link'
 import { motion, useScroll } from 'framer-motion'
 import { NewsletterSignup } from '@/components/newsletter-signup'
@@ -32,7 +32,8 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
         style={{ scaleX: useScroll().scrollYProgress }}
       />
 
-      /* Minimal Sticky Nav */
+
+      {/* Minimal Sticky Nav */}
       <nav className="border-b bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-40 transition-all">
         <div className="container mx-auto max-w-4xl px-4 h-14 flex items-center justify-between">
           <Link href="/blog" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
@@ -114,17 +115,18 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
           </div>
         )}
 
-        {/* Minimal Table of Contents Box */}
-        <div className="mb-12 p-6 bg-gray-50 dark:bg-gray-900/50 rounded-lg border-l-4 border-gray-300 dark:border-gray-700">
-          <h3 className="font-bold text-sm uppercase tracking-wider text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+        {/* Enhanced Table of Contents Box with Gradient */}
+        <div className="mb-12 p-6 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 rounded-2xl border border-purple-200 dark:border-purple-800 shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-300/20 to-blue-300/20 dark:from-purple-500/10 dark:to-blue-500/10 rounded-full blur-3xl" />
+          <h3 className="font-bold text-sm uppercase tracking-wider text-purple-900 dark:text-purple-100 mb-4 flex items-center gap-2 relative z-10">
             <BookOpen className="w-4 h-4" /> In this article
           </h3>
-          <nav className="space-y-2">
+          <nav className="space-y-2 relative z-10">
             {content.split('\n').filter(line => line.trim().startsWith('## ')).slice(0, 8).map((line, idx) => (
               <a
                 key={idx}
                 href={`#section-${idx}`}
-                className="block text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors pl-2 border-l border-gray-200 hover:border-primary"
+                className="block text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all pl-3 border-l-2 border-purple-200 dark:border-purple-800 hover:border-purple-500 dark:hover:border-purple-400 hover:pl-4 hover:font-medium"
               >
                 {line.replace(/^#+\s*/, '').trim()}
               </a>
@@ -132,23 +134,25 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
           </nav>
         </div>
 
-        {/* Article Body */}
+        {/* Article Body - Premium Decorative Styling */}
         <article className="prose prose-lg prose-gray dark:prose-invert max-w-none
-          prose-p:text-[1.125rem] prose-p:leading-[1.8] prose-p:text-gray-800 dark:prose-p:text-gray-300 prose-p:font-serif
+          prose-p:text-[1.125rem] prose-p:leading-[1.85] prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:font-serif
           prose-headings:font-heading prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-gray-50
-          prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:tracking-tight
-          prose-h2:border-l-0 prose-h2:pl-0
-          prose-a:text-primary prose-a:no-underline prose-a:border-b prose-a:border-primary/30 hover:prose-a:border-primary hover:prose-a:bg-primary/5
-          prose-img:rounded-lg prose-img:my-8
-          prose-li:text-[1.125rem] prose-li:leading-[1.7] prose-li:text-gray-800 dark:prose-li:text-gray-300 prose-li:font-serif
-          prose-blockquote:border-l-4 prose-blockquote:border-primary/50 prose-blockquote:bg-transparent prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700
-          prose-pre:bg-slate-900 prose-pre:rounded-lg prose-pre:shadow-lg
-          prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-primary
+          prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mt-14 prose-h2:mb-6 prose-h2:tracking-tight
+          prose-a:text-primary prose-a:font-medium prose-a:no-underline hover:prose-a:underline
+          prose-img:rounded-xl prose-img:my-10 prose-img:shadow-md
+          prose-li:text-[1.1rem] prose-li:leading-[1.8] prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-li:font-serif
+          prose-blockquote:border-l-4 prose-blockquote:border-amber-400 prose-blockquote:bg-amber-50/50 dark:prose-blockquote:bg-amber-900/10 prose-blockquote:pl-6 prose-blockquote:py-4 prose-blockquote:pr-4 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+          prose-pre:bg-slate-900 prose-pre:rounded-xl prose-pre:shadow-lg prose-pre:border prose-pre:border-slate-700
+          prose-code:bg-primary/10 prose-code:text-primary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-[''] prose-code:after:content-['']
+          prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-bold
+          prose-ul:my-6 prose-ol:my-6
         ">
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
             components={{
+              /* Decorative H2 with gradient border and contextual icon */
               h2: ({ children, ...props }) => {
                 const headings = content
                   .split('\n')
@@ -156,28 +160,167 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
                   .map((line) => line.replace(/^#+\s*/, '').trim())
                 const text = typeof children === 'string' ? children : Array.isArray(children) ? children.join('') : ''
                 const idx = Math.max(0, headings.findIndex((h) => h === text))
+
+                // Contextual emoji based on heading content
+                const getIcon = (t: string) => {
+                  const lower = t.toLowerCase()
+                  if (lower.includes('best') || lower.includes('top')) return '🏆'
+                  if (lower.includes('how') || lower.includes('guide')) return '📖'
+                  if (lower.includes('price') || lower.includes('cost') || lower.includes('pricing')) return '💰'
+                  if (lower.includes('feature')) return '✨'
+                  if (lower.includes('verdict') || lower.includes('conclusion')) return '⚖️'
+                  if (lower.includes('faq') || lower.includes('question')) return '❓'
+                  if (lower.includes('compare') || lower.includes('vs')) return '⚔️'
+                  if (lower.includes('pros') || lower.includes('cons')) return '📊'
+                  if (lower.includes('tip') || lower.includes('trick')) return '💡'
+                  if (lower.includes('step')) return '🎯'
+                  if (lower.includes('benefit')) return '🎁'
+                  if (lower.includes('warning') || lower.includes('avoid')) return '⚠️'
+                  if (lower.includes('important') || lower.includes('note')) return '📝'
+                  if (lower.includes('example')) return '💎'
+                  if (lower.includes('result') || lower.includes('outcome')) return '🚀'
+                  return '📌'
+                }
+
                 return (
-                  <h2 id={`section-${idx >= 0 ? idx : 0}`} {...props}>
-                    {children}
+                  <h2
+                    id={`section-${idx >= 0 ? idx : 0}`}
+                    {...props}
+                    className="flex items-center gap-3 text-2xl md:text-3xl font-bold mt-14 mb-6 pb-4 border-b-2 border-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 relative"
+                  >
+                    <span className="text-3xl filter drop-shadow-lg">{getIcon(text)}</span>
+                    <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 dark:from-purple-400 dark:via-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                      {children}
+                    </span>
                   </h2>
                 )
               },
-              blockquote: ({ children, ...props }) => (
-                <blockquote {...props} className="border-l-4 border-amber-400 pl-4 py-2 italic my-6 text-gray-700 dark:text-gray-300 bg-amber-50 dark:bg-transparent pr-2 rounded-r">
-                  {children}
-                </blockquote>
+              /* Enhanced blockquote with multiple styles */
+              blockquote: ({ children, ...props }) => {
+                const childStr = String(children).toLowerCase()
+                const isWarning = childStr.includes('warning') || childStr.includes('avoid') || childStr.includes('caution')
+                const isTip = childStr.includes('tip') || childStr.includes('pro tip')
+                const isImportant = childStr.includes('important') || childStr.includes('note')
+                const isExample = childStr.includes('example')
+
+                if (isWarning) {
+                  return (
+                    <blockquote {...props} className="relative border-l-4 border-red-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-red-50 to-red-50/30 dark:from-red-950/30 dark:to-transparent rounded-r-xl">
+                      <span className="absolute -left-3 top-4 text-2xl">⚠️</span>
+                      <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
+                        {children}
+                      </div>
+                    </blockquote>
+                  )
+                }
+                if (isTip) {
+                  return (
+                    <blockquote {...props} className="relative border-l-4 border-emerald-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-emerald-50 to-emerald-50/30 dark:from-emerald-950/30 dark:to-transparent rounded-r-xl">
+                      <span className="absolute -left-3 top-4 text-2xl">💡</span>
+                      <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
+                        {children}
+                      </div>
+                    </blockquote>
+                  )
+                }
+                if (isImportant) {
+                  return (
+                    <blockquote {...props} className="relative border-l-4 border-blue-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-blue-50 to-blue-50/30 dark:from-blue-950/30 dark:to-transparent rounded-r-xl">
+                      <span className="absolute -left-3 top-4 text-2xl">📝</span>
+                      <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
+                        {children}
+                      </div>
+                    </blockquote>
+                  )
+                }
+                if (isExample) {
+                  return (
+                    <blockquote {...props} className="relative border-l-4 border-purple-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-purple-50 to-purple-50/30 dark:from-purple-950/30 dark:to-transparent rounded-r-xl">
+                      <span className="absolute -left-3 top-4 text-2xl">💎</span>
+                      <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
+                        {children}
+                      </div>
+                    </blockquote>
+                  )
+                }
+                return (
+                  <blockquote {...props} className="relative border-l-4 border-amber-400 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-amber-50 to-amber-50/30 dark:from-amber-900/20 dark:to-transparent rounded-r-xl">
+                    <span className="absolute -left-3 top-4 text-2xl">💡</span>
+                    <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
+                      {children}
+                    </div>
+                  </blockquote>
+                )
+              },
+              /* Styled unordered lists with colored icons */
+              ul: ({ ...props }) => (
+                <ul {...props} className="my-6 space-y-3 list-none pl-0" />
               ),
-              /* Ensure tables are scrollable */
+              li: ({ children, ...props }) => {
+                const childStr = String(children).toLowerCase()
+                let icon = <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                if (childStr.includes('warning') || childStr.includes('avoid') || childStr.includes("don't")) {
+                  icon = <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('tip') || childStr.includes('pro')) {
+                  icon = <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('important') || childStr.includes('note')) {
+                  icon = <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('benefit') || childStr.includes('advantage')) {
+                  icon = <Heart className="w-5 h-5 text-pink-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('step') || childStr.includes('first') || childStr.includes('next')) {
+                  icon = <Target className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('feature') || childStr.includes('include')) {
+                  icon = <Sparkles className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+                }
+                return (
+                  <li {...props} className="flex items-start gap-3 text-[1.1rem] leading-[1.8] text-gray-700 dark:text-gray-300 font-serif">
+                    {icon}
+                    <span className="flex-1">{children}</span>
+                  </li>
+                )
+              },
+              /* Links with external icon and hover effects */
+              a: ({ href, children, ...props }) => {
+                const isExternal = href?.startsWith('http') && !href?.includes('aifuelhub.com')
+                return (
+                  <a
+                    href={href}
+                    {...props}
+                    className="text-purple-600 dark:text-purple-400 font-medium hover:text-purple-800 dark:hover:text-purple-300 hover:underline inline-flex items-center gap-1 transition-all hover:translate-x-1"
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'noopener noreferrer' : undefined}
+                  >
+                    {children}
+                    {isExternal && <ExternalLink className="w-3.5 h-3.5 opacity-70" />}
+                  </a>
+                )
+              },
+              /* Enhanced tables with hover effects and gradient headers */
               table: ({ ...props }) => (
-                <div className="overflow-x-auto my-8 rounded-lg border border-gray-200 dark:border-gray-800">
+                <div className="overflow-x-auto my-10 rounded-2xl border-2 border-purple-200 dark:border-purple-800 shadow-lg">
                   <table {...props} className="w-full text-sm" />
                 </div>
               ),
               th: ({ ...props }) => (
-                <th {...props} className="bg-gray-50 dark:bg-gray-900 px-4 py-3 text-left font-semibold text-gray-900 dark:text-gray-100 border-b dark:border-gray-800" />
+                <th {...props} className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white px-5 py-4 text-left font-bold uppercase text-xs tracking-wider" />
               ),
               td: ({ ...props }) => (
-                <td {...props} className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 text-gray-600 dark:text-gray-400" />
+                <td {...props} className="px-5 py-4 border-b border-purple-100 dark:border-purple-900 text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-950/50 transition-colors" />
+              ),
+              /* Enhanced images with captions and decorative border */
+              img: ({ alt, ...props }) => (
+                <figure className="my-10">
+                  <div className="relative">
+                    <img {...props} alt={alt} className="w-full rounded-2xl shadow-xl border-2 border-purple-200 dark:border-purple-800" />
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-purple-500/10 to-blue-500/10 pointer-events-none" />
+                  </div>
+                  {alt && (
+                    <figcaption className="mt-4 text-center text-sm text-purple-700 dark:text-purple-300 italic flex items-center justify-center gap-2">
+                      <ImageIcon className="w-4 h-4" />
+                      {alt}
+                    </figcaption>
+                  )}
+                </figure>
               ),
             }}
           >
@@ -185,15 +328,8 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
           </ReactMarkdown>
         </article>
 
-        {/* Footer: Newsletter & Related */}
+        {/* Footer: Tags */}
         <div className="mt-20 pt-10 border-t border-gray-100 dark:border-gray-800">
-          <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-8 text-center mb-12">
-            <h3 className="text-xl font-bold mb-2">Subscribe to our newsletter</h3>
-            <p className="text-muted-foreground mb-6">Get the latest AI tools and reviews delivered to your inbox.</p>
-            <div className="max-w-md mx-auto">
-              <NewsletterSignup source={`blog:${post.slug}`} />
-            </div>
-          </div>
 
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (
