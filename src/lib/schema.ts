@@ -107,8 +107,7 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
       '@type': 'Organization',
       name: 'AI Fuel Hub',
       logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/logo.png`,
+        url: `${SITE_URL}/logo.svg`,
       },
     },
     mainEntityOfPage: {
