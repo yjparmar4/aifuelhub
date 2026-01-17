@@ -139,7 +139,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: 'monthly' as const,
-    priority: 0.6,
+    priority: 0.8,
   }))
 
   // Comparison pages (Priority 0.6)

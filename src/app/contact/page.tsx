@@ -6,9 +6,13 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Mail, MessageSquare } from 'lucide-react'
 
+import { JsonLd } from '@/components/json-ld'
+import { generateContactPageSchema } from '@/lib/schema'
+
 export default function ContactPage() {
     return (
         <div className="min-h-screen pb-20">
+            <JsonLd data={generateContactPageSchema()} />
             <PageHeader
                 title="Contact Us"
                 description="Have questions or suggestions? We'd love to hear from you."

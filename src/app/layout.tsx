@@ -33,11 +33,11 @@ const merriweather = Merriweather({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "AI Fuel Hub - Discover & Compare 118+ AI Tools | Expert Reviews 2026",
+    default: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (Jan 2026)",
     template: "%s | AI Fuel Hub",
   },
-  description: "The ultimate AI tools directory with 118+ verified tools. Find fuel for your creativity with ChatGPT, Midjourney, Claude, and more. Expert-tested, unbiased recommendations.",
-  keywords: ["AI tools", "artificial intelligence", "AI directory", "ChatGPT alternatives", "Midjourney alternatives", "AI writing tools", "AI image generators", "AI coding tools", "best AI software 2026", "AEO", "GEO"],
+  description: "Stop overpaying for AI tools. We tested 118+ AI tools so you don't have to. See real comparisons, honest pricing, and which tools are actually worth it in 2026.",
+  keywords: ["best AI tools 2026", "AI tool reviews", "ChatGPT alternatives free", "Midjourney alternatives", "AI writing tools comparison", "AI image generators free", "AI coding tools", "Ahrefs alternatives free", "Moz Pro alternatives"],
   authors: [{ name: "AI Fuel Hub Team" }],
   creator: "AI Fuel Hub Team",
   publisher: "AI Fuel Hub",
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "AI Fuel Hub - Discover & Compare 118+ AI Tools | Expert Reviews 2026",
-    description: "The ultimate AI tools directory with 118+ verified tools. Expert-tested, unbiased recommendations.",
+    title: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (Jan 2026)",
+    description: "Stop overpaying for AI tools. We tested 118+ AI tools so you don't have to. Real comparisons, honest pricing.",
     siteName: "AI Fuel Hub",
     images: [
       {
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Fuel Hub - Discover & Compare 118+ AI Tools",
-    description: "The ultimate AI tools directory with 118+ verified tools. Expert-tested, unbiased recommendations.",
+    title: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews",
+    description: "Stop overpaying for AI tools. We tested 118+ so you don't have to. See real comparisons & honest pricing.",
     images: ["/og-image.png"],
     creator: "@aifuelhub",
   },

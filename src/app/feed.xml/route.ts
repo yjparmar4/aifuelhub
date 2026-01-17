@@ -67,6 +67,7 @@ export async function GET() {
       <description><![CDATA[${post.excerpt}]]></description>
       ${post.category?.name ? `<category>${escapeXml(post.category.name)}</category>` : ''}
       ${imageUrl ? `<media:content url="${escapeXml(imageUrl)}" medium="image" />` : ''}
+      <content:encoded><![CDATA[${post.content}]]></content:encoded>
     </item>`;
     }).join('');
 

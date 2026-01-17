@@ -27,9 +27,9 @@ export function generateMetadata({
   noIndex = false,
   canonical,
 }: SEOMetaProps): Metadata {
-  const defaultTitle = 'AI Fuel Hub - Discover the Best AI Tools'
+  const defaultTitle = 'AI Fuel Hub - 118+ AI Tools Compared & Reviewed (2026)'
   const defaultDescription =
-    'Find and compare the best AI tools for every task. Expert reviews, detailed comparisons, and comprehensive guides for AI-powered software.'
+    'Discover the best AI tools for writing, images, coding & more. Expert-tested reviews, real comparisons, and honest pricing. Updated Jan 2026.'
 
   const openGraphType: 'website' | 'article' = type === 'article' ? 'article' : 'website'
 
@@ -38,7 +38,7 @@ export function generateMetadata({
   return {
     title: title || defaultTitle,
     description: description || defaultDescription,
-    keywords: keywords || 'AI tools, artificial intelligence, software reviews, AI directory, best AI apps',
+    keywords: keywords || 'best AI tools 2026, AI tool reviews, ChatGPT alternatives, free AI tools, AI writing tools, AI image generators, Midjourney alternatives, AI for business',
     authors: metadataAuthors,
     openGraph: {
       type: openGraphType,

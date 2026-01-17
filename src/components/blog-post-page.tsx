@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { GoogleAd } from '@/components/google-ad'
 import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Info, Target, ExternalLink, Image as ImageIcon, Heart } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, useScroll } from 'framer-motion'
 import { NewsletterSignup } from '@/components/newsletter-signup'
 import ReactMarkdown from 'react-markdown'
@@ -83,7 +84,7 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             </h1>
 
             {post.excerpt && (
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 font-heading leading-relaxed text-center max-w-2xl mx-auto">
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 font-heading leading-relaxed text-center max-w-2xl mx-auto speakable-summary">
                 {post.excerpt}
               </p>
             )}
@@ -107,10 +108,13 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
 
         {post.coverImage && (
           <div className="mb-12">
-            <img
+            <Image
               src={post.coverImage}
               alt={post.title}
+              width={1200}
+              height={630}
               className="w-full rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 aspect-[21/9] object-cover"
+              priority
             />
           </div>
         )}

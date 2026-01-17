@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   return generateSeoMetadata({
-    title: tool.metaTitle || `${tool.name} Review 2025: Features, Pricing & Alternatives`,
+    title: tool.metaTitle || `${tool.name} Review 2026: Features, Pricing & Alternatives`,
     description: tool.metaDescription || tool.description,
     type: 'review',
     canonical: `${SITE_URL}/tool/${tool.slug}`,

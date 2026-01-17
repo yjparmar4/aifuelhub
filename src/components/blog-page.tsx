@@ -81,7 +81,7 @@ export default function BlogPage({ initialPosts }: BlogPageProps) {
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimatePresence mode="wait">
           {loading ? (
-            <motion.div 
+            <motion.div
               key="loading"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -95,7 +95,7 @@ export default function BlogPage({ initialPosts }: BlogPageProps) {
               <p className="text-slate-600 dark:text-slate-400 font-medium">Searching articles...</p>
             </motion.div>
           ) : posts.length === 0 ? (
-            <motion.div 
+            <motion.div
               key="empty"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -111,11 +111,11 @@ export default function BlogPage({ initialPosts }: BlogPageProps) {
               </Button>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="posts"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="grid gap-6 md:gap-8"
+              className="grid gap-6 md:gap-8 md:grid-cols-2"
             >
               {posts.map((post, idx) => (
                 <motion.div
@@ -125,64 +125,58 @@ export default function BlogPage({ initialPosts }: BlogPageProps) {
                   transition={{ delay: idx * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                   whileHover={{ y: -4 }}
                 >
-                  <Link href={`/blog/${post.slug}`} className="group block">
-                    <article className="relative bg-white dark:bg-slate-900/80 rounded-3xl overflow-hidden border border-slate-200/60 dark:border-slate-700/60 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500">
-                      <div className="flex flex-col lg:flex-row h-auto lg:h-72">
-                        <div className="lg:w-[40%] relative overflow-hidden h-56 lg:h-full shrink-0">
-                          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          <Image
-                            src={post.coverImage || '/placeholder-blog.jpg'}
-                            alt={post.title}
-                            width={600}
-                            height={400}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  <Link href={`/blog/${post.slug}`} className="group block h-full">
+                    <article className="relative bg-white dark:bg-slate-900/80 rounded-3xl overflow-hidden border border-slate-200/60 dark:border-slate-700/60 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 h-full flex flex-col">
+                      <div className="relative overflow-hidden h-48 shrink-0">
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
+                        <Image
+                          src={post.coverImage || '/placeholder-blog.jpg'}
+                          alt={post.title}
+                          width={600}
+                          height={400}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      </div>
+
+                      <div className="flex-1 p-6 flex flex-col">
+                        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                          <span className="px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-primary/5 text-primary font-medium">
+                            {post.category?.name || 'Uncategorized'}
+                          </span>
+                          <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                            <Clock className="w-3 h-3" />
+                            {getReadTime(post.content)}
+                          </span>
+                          {idx === 0 && (
+                            <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                              <TrendingUp className="w-3 h-3" />
+                              Featured
+                            </span>
+                          )}
                         </div>
 
-                        <div className="flex-1 p-6 lg:p-8 flex flex-col justify-center">
-                          <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
-                            <span className="px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-primary/5 text-primary font-medium">
-                              {post.category?.name || 'Uncategorized'}
-                            </span>
-                            <span className="text-slate-400">•</span>
-                            <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
-                              <Clock className="w-3.5 h-3.5" />
-                              {getReadTime(post.content)}
-                            </span>
-                            {idx === 0 && (
-                              <>
-                                <span className="text-slate-400">•</span>
-                                <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                                  <TrendingUp className="w-3.5 h-3.5" />
-                                  Featured
-                                </span>
-                              </>
-                            )}
+                        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-primary transition-colors leading-tight line-clamp-2">
+                          {post.title}
+                        </h2>
+
+                        <p className="text-slate-600 dark:text-slate-400 line-clamp-2 mb-4 leading-relaxed text-sm flex-grow">
+                          {post.excerpt}
+                        </p>
+
+                        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+                          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5" />
+                            {new Date(post.publishedAt || post.createdAt).toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            })}
                           </div>
-
-                          <h2 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3 group-hover:text-primary transition-colors leading-tight">
-                            {post.title}
-                          </h2>
-
-                          <p className="text-slate-600 dark:text-slate-400 line-clamp-2 lg:line-clamp-2 mb-5 leading-relaxed text-sm lg:text-base">
-                            {post.excerpt}
-                          </p>
-
-                          <div className="mt-auto flex items-center justify-between pt-2">
-                            <div className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2">
-                              <Calendar className="w-4 h-4" />
-                              {new Date(post.publishedAt || post.createdAt).toLocaleDateString(undefined, {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric'
-                              })}
-                            </div>
-                            <div className="flex items-center gap-2 text-primary font-medium text-sm group-hover:gap-3 transition-all duration-300">
-                              <span>Read more</span>
-                              <ArrowRight className="w-4 h-4" />
-                            </div>
+                          <div className="flex items-center gap-1.5 text-primary font-medium text-sm group-hover:gap-2.5 transition-all duration-300">
+                            <span>Read</span>
+                            <ArrowRight className="w-4 h-4" />
                           </div>
                         </div>
                       </div>

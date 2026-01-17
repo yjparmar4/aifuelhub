@@ -27,19 +27,31 @@ export function generateToolSchema(tool: Tool) {
     offers: {
       '@type': 'Offer',
       url: tool.affiliateLink || tool.websiteUrl,
-      price: tool.startingPrice || '0',
+      price: tool.startingPrice ? tool.startingPrice.replace(/[^0-9.]/g, '') || '0' : '0',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
-      ...(tool.pricingType === 'Free' && {
-        price: '0',
-        priceSpecification: {
-          '@type': 'PriceSpecification',
-          price: '0',
-          priceCurrency: 'USD',
+      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 30,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn'
+      },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: '0',
+          currency: 'USD'
         },
-      }),
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'US'
+        }
+      }
     },
-    aggregateRating: tool.rating
+    aggregateRating: tool.rating && tool.reviewCount > 0
       ? {
         '@type': 'AggregateRating',
         ratingValue: tool.rating,
@@ -95,7 +107,7 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
     '@type': 'Article',
     headline: blogPost.title,
     description: blogPost.excerpt || blogPost.metaDescription || '',
-    image: blogPost.coverImage,
+    image: blogPost.coverImage?.startsWith('http') ? blogPost.coverImage : `${SITE_URL}${blogPost.coverImage}`,
     url: `${SITE_URL}/blog/${blogPost.slug}`,
     datePublished: blogPost.publishedAt?.toISOString(),
     dateModified: blogPost.updatedAt.toISOString(),
@@ -109,6 +121,10 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
       logo: {
         url: `${SITE_URL}/logo.svg`,
       },
+    },
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.speakable-summary']
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -207,6 +223,37 @@ export function generateCategorySchema(category: Category, tools: Tool[]) {
         url: `${SITE_URL}/tool/${tool.slug}`,
       },
     })),
+  }
+
+  return JSON.stringify(schema)
+}
+
+// Contact Page Schema
+export function generateContactPageSchema() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contact AI Fuel Hub',
+    description: 'Get in touch with the AI Fuel Hub team for support, suggestions, or inquiries.',
+    url: `${SITE_URL}/contact`,
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'AI Fuel Hub',
+      url: SITE_URL,
+      email: 'hello@aifuelhub.com',
+      contactPoint: [
+        {
+          '@type': 'ContactPoint',
+          contactType: 'customer support',
+          email: 'support@aifuelhub.com',
+        },
+        {
+          '@type': 'ContactPoint',
+          contactType: 'general inquiries',
+          email: 'hello@aifuelhub.com',
+        },
+      ],
+    },
   }
 
   return JSON.stringify(schema)
