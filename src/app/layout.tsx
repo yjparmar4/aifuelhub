@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     default: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (Jan 2026)",
     template: "%s | AI Fuel Hub",
   },
-  description: "Stop overpaying for AI tools. We tested 118+ AI tools so you don't have to. See real comparisons, honest pricing, and which tools are actually worth it in 2026.",
+  description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives. Find the best tool for your needs.",
   keywords: ["best AI tools 2026", "AI tool reviews", "ChatGPT alternatives free", "Midjourney alternatives", "AI writing tools comparison", "AI image generators free", "AI coding tools", "Ahrefs alternatives free", "Moz Pro alternatives"],
   authors: [{ name: "AI Fuel Hub Team" }],
   creator: "AI Fuel Hub Team",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     title: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (Jan 2026)",
-    description: "Stop overpaying for AI tools. We tested 118+ AI tools so you don't have to. Real comparisons, honest pricing.",
+    description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives.",
     siteName: "AI Fuel Hub",
     images: [
       {
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews",
-    description: "Stop overpaying for AI tools. We tested 118+ so you don't have to. See real comparisons & honest pricing.",
+    description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives.",
     images: ["/og-image.png"],
     creator: "@aifuelhub",
   },

@@ -54,14 +54,73 @@ const nextConfig = {
                         value: 'camera=(), microphone=(), geolocation=()'
                     }
                 ]
+            },
+            // Cache-Control headers for static assets (images, fonts, etc.)
+            {
+                source: '/images/:path*',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=31536000, immutable'
+                    }
+                ]
+            },
+            {
+                source: '/_next/image/:path*',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=31536000, immutable'
+                    }
+                ]
+            },
+            {
+                source: '/_next/static/:path*',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=31536000, immutable'
+                    }
+                ]
+            },
+            {
+                source: '/fonts/:path*',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=31536000, immutable'
+                    }
+                ]
+            },
+            // Cache for other static file types
+            {
+                source: '/:path*.(jpg|jpeg|png|gif|webp|avif|svg|ico)',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=31536000, immutable'
+                    }
+                ]
             }
         ]
     },
 
     // Redirects
-    // Redirects
     async redirects() {
         return [
+            // WWW to non-WWW redirect (301 permanent)
+            // This ensures canonical URL consistency for SEO
+            {
+                source: '/:path*',
+                has: [
+                    {
+                        type: 'host',
+                        value: 'www.aifuelhub.com',
+                    },
+                ],
+                destination: 'https://aifuelhub.com/:path*',
+                permanent: true,
+            },
             {
                 source: '/home',
                 destination: '/',

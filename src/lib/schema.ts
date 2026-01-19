@@ -102,6 +102,9 @@ export function generateToolSchema(tool: Tool) {
 
 // Article Schema for blog posts
 export function generateBlogPostSchema(blogPost: BlogPost) {
+  // Calculate word count for E-E-A-T signal
+  const wordCount = blogPost.content ? blogPost.content.split(/\s+/).length : 0
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -111,17 +114,24 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
     url: `${SITE_URL}/blog/${blogPost.slug}`,
     datePublished: blogPost.publishedAt?.toISOString(),
     dateModified: blogPost.updatedAt.toISOString(),
+    // E-E-A-T: Author information
     author: {
       '@type': 'Organization',
       name: 'AI Fuel Hub',
+      url: SITE_URL,
+      logo: `${SITE_URL}/logo.svg`,
+      // Could be enhanced with Person schema in future
     },
     publisher: {
       '@type': 'Organization',
       name: 'AI Fuel Hub',
+      url: SITE_URL,
       logo: {
+        '@type': 'ImageObject',
         url: `${SITE_URL}/logo.svg`,
       },
     },
+    // AEO: Speakable content for voice search
     speakable: {
       '@type': 'SpeakableSpecification',
       cssSelector: ['h1', '.speakable-summary']
@@ -130,6 +140,20 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
       '@type': 'WebPage',
       '@id': `${SITE_URL}/blog/${blogPost.slug}`,
     },
+    // E-E-A-T signals
+    wordCount: wordCount,
+    // Category as 'about' for entity relationship
+    ...(blogPost.category && {
+      about: {
+        '@type': 'Thing',
+        name: blogPost.category.name,
+        url: `${SITE_URL}/categories/${blogPost.category.slug}`,
+      },
+    }),
+    // Keywords for topic clustering
+    ...(blogPost.tags && blogPost.tags.length > 0 && {
+      keywords: blogPost.tags.map(tag => tag.name).join(', '),
+    }),
   }
 
   return JSON.stringify(schema)
@@ -486,3 +510,61 @@ export function generateWebPageSchema(
   return JSON.stringify(schema)
 }
 
+// ClaimReview Schema for fact-checking - Critical for AEO
+export function generateClaimReviewSchema(
+  claim: string,
+  verdict: 'True' | 'False' | 'Misleading',
+  reviewedBy: string,
+  datePublished: string,
+  url?: string,
+  source?: string
+) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ClaimReview',
+    claimReviewed: claim,
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: verdict === 'True' ? 5 : verdict === 'False' ? 1 : 3,
+      bestRating: 5,
+      worstRating: 1,
+      alternateName: verdict,
+    },
+    author: {
+      '@type': 'Organization',
+      name: reviewedBy,
+      url: SITE_URL,
+    },
+    datePublished: datePublished,
+    ...(url && { url: url }),
+    ...(source && {
+      itemReviewed: {
+        '@type': 'Claim',
+        author: {
+          '@type': 'Organization',
+          name: source,
+        },
+        datePublished: datePublished,
+        appearance: {
+          '@type': 'CreativeWork',
+          url: source,
+        },
+      },
+    }),
+  }
+
+  return JSON.stringify(schema)
+}
+
+// Entity mention helper - marks tools, companies, etc. for better NLP
+export function generateEntityMention(
+  name: string,
+  type: 'SoftwareApplication' | 'Organization' | 'Product',
+  url?: string
+) {
+  return {
+    '@type': type,
+    name: name,
+    ...(url && { url: url }),
+  }
+}
