@@ -153,6 +153,79 @@ export function generateFAQSchema(faqs: FAQ[]) {
   return JSON.stringify(schema)
 }
 
+// Extract FAQs from blog content for rich snippets
+// Looks for common FAQ patterns like "## FAQ" sections or Q&A formatted content
+export function extractFAQsFromContent(content: string): FAQ[] {
+  const faqs: FAQ[] = []
+
+  // Pattern 1: Look for FAQ section with question/answer format
+  // Matches patterns like "**Q: Question?**" followed by answer or "### Question?" followed by answer
+  const faqSectionMatch = content.match(/##\s*(FAQ|Frequently Asked Questions|Common Questions)[^\n]*\n([\s\S]*?)(?=##[^#]|$)/i)
+
+  if (faqSectionMatch) {
+    const faqContent = faqSectionMatch[2]
+
+    // Pattern: ### Question? followed by answer paragraph
+    const questionPattern = /###\s*([^\n?]+\??)\s*\n+([\s\S]*?)(?=###|\n##[^#]|$)/gi
+    let match
+
+    while ((match = questionPattern.exec(faqContent)) !== null) {
+      const question = match[1].trim().replace(/^\*+|\*+$/g, '')
+      let answer = match[2].trim()
+
+      // Clean up the answer - remove markdown formatting
+      answer = answer
+        .replace(/\*\*/g, '')
+        .replace(/^\s*[-*]\s*/gm, '')
+        .split('\n\n')[0] // Take first paragraph
+        .trim()
+
+      if (question && answer && question.length > 10 && answer.length > 20) {
+        faqs.push({ question, answer })
+      }
+    }
+
+    // Pattern: **Q: Question?** or **Question?** followed by answer
+    if (faqs.length === 0) {
+      const boldQuestionPattern = /\*\*(?:Q:\s*)?([^*?]+\??)\*\*[:\s]*\n*([\s\S]*?)(?=\*\*(?:Q:|[A-Z])|\n##|$)/gi
+
+      while ((match = boldQuestionPattern.exec(faqContent)) !== null) {
+        const question = match[1].trim()
+        let answer = match[2].trim()
+          .replace(/\*\*/g, '')
+          .replace(/^A:\s*/i, '')
+          .split('\n\n')[0]
+          .trim()
+
+        if (question && answer && question.length > 10 && answer.length > 20) {
+          faqs.push({ question, answer })
+        }
+      }
+    }
+  }
+
+  // Pattern 2: Look for numbered questions throughout the content
+  if (faqs.length === 0) {
+    const numberedPattern = /(?:^|\n)\d+\.\s*\*\*([^*?]+\??)\*\*[:\s]*\n*([\s\S]*?)(?=\n\d+\.\s*\*\*|\n##|$)/gi
+    let match
+
+    while ((match = numberedPattern.exec(content)) !== null) {
+      const question = match[1].trim()
+      let answer = match[2].trim()
+        .replace(/\*\*/g, '')
+        .split('\n\n')[0]
+        .trim()
+
+      if (question && answer && question.includes('?') && question.length > 10 && answer.length > 20) {
+        faqs.push({ question, answer })
+      }
+    }
+  }
+
+  // Limit to 10 FAQs maximum for schema
+  return faqs.slice(0, 10)
+}
+
 // BreadcrumbList Schema
 export function generateBreadcrumbSchema(items: { name: string; url: string }[]) {
   const schema = {
@@ -258,3 +331,158 @@ export function generateContactPageSchema() {
 
   return JSON.stringify(schema)
 }
+
+// HowTo Schema for tutorial content - AEO optimization for "how to" queries
+interface HowToStep {
+  name: string
+  text: string
+  image?: string
+}
+
+export function generateHowToSchema(
+  title: string,
+  description: string,
+  steps: HowToStep[],
+  totalTime?: string, // ISO 8601 duration format, e.g., "PT30M"
+  tools?: string[],
+  supplies?: string[]
+) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: title,
+    description: description,
+    ...(totalTime && { totalTime }),
+    ...(tools && tools.length > 0 && {
+      tool: tools.map(tool => ({
+        '@type': 'HowToTool',
+        name: tool,
+      })),
+    }),
+    ...(supplies && supplies.length > 0 && {
+      supply: supplies.map(supply => ({
+        '@type': 'HowToSupply',
+        name: supply,
+      })),
+    }),
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+      ...(step.image && { image: step.image }),
+    })),
+  }
+
+  return JSON.stringify(schema)
+}
+
+// Extract HowTo steps from content - for automatic schema generation
+export function extractHowToSteps(content: string): HowToStep[] {
+  const steps: HowToStep[] = []
+
+  // Pattern: "Step 1:" or "### Step 1" followed by content
+  const stepPattern = /(?:###?\s*)?(?:Step\s*)?(\d+)[:.]\s*([^\n]+)\n+([\s\S]*?)(?=(?:###?\s*)?(?:Step\s*)?\d+[:.]\s*|##[^#]|$)/gi
+
+  let match
+  while ((match = stepPattern.exec(content)) !== null) {
+    const name = match[2].trim().replace(/\*\*/g, '')
+    let text = match[3].trim()
+      .replace(/\*\*/g, '')
+      .split('\n\n')[0]
+      .trim()
+
+    if (name && text && name.length > 5 && text.length > 20) {
+      steps.push({ name, text })
+    }
+  }
+
+  return steps.slice(0, 15) // Limit to 15 steps
+}
+
+// ItemList Schema for listicle content - helps with rich snippets
+export function generateItemListSchema(
+  title: string,
+  items: { name: string; url?: string; description?: string }[],
+  listType: 'ordered' | 'unordered' = 'ordered'
+) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: title,
+    itemListOrder: listType === 'ordered' ? 'https://schema.org/ItemListOrderAscending' : 'https://schema.org/ItemListUnordered',
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      ...(item.url && { url: item.url }),
+      ...(item.description && { description: item.description }),
+    })),
+  }
+
+  return JSON.stringify(schema)
+}
+
+// VideoObject Schema for embedded videos - AEO for video content
+export function generateVideoSchema(
+  title: string,
+  description: string,
+  thumbnailUrl: string,
+  uploadDate: string,
+  duration?: string, // ISO 8601 duration
+  embedUrl?: string,
+  contentUrl?: string
+) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: title,
+    description: description,
+    thumbnailUrl: thumbnailUrl,
+    uploadDate: uploadDate,
+    ...(duration && { duration }),
+    ...(embedUrl && { embedUrl }),
+    ...(contentUrl && { contentUrl }),
+    publisher: {
+      '@type': 'Organization',
+      name: 'AI Fuel Hub',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/logo.svg`,
+      },
+    },
+  }
+
+  return JSON.stringify(schema)
+}
+
+// WebPage Schema with speakable for AEO
+export function generateWebPageSchema(
+  title: string,
+  description: string,
+  url: string,
+  speakableSelectors?: string[]
+) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description: description,
+    url: url,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'AI Fuel Hub',
+      url: SITE_URL,
+    },
+    ...(speakableSelectors && speakableSelectors.length > 0 && {
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: speakableSelectors,
+      },
+    }),
+  }
+
+  return JSON.stringify(schema)
+}
+

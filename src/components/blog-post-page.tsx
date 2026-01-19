@@ -4,16 +4,22 @@ import { BlogPost } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { GoogleAd } from '@/components/google-ad'
-import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Info, Target, ExternalLink, Image as ImageIcon, Heart } from 'lucide-react'
+import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Info, Target, ExternalLink, Image as ImageIcon, Heart, Clock, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useScroll } from 'framer-motion'
 import { NewsletterSignup } from '@/components/newsletter-signup'
+import { RelatedPosts } from '@/components/related-posts'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
-export default function BlogPostPage({ post }: { post: BlogPost }) {
+interface BlogPostPageProps {
+  post: BlogPost
+  relatedPosts?: BlogPost[]
+}
+
+export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPageProps) {
   const content = post.content
 
   const handleShare = () => {
@@ -62,21 +68,45 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center"
           >
-            {/* Category & Date */}
-            <div className="flex items-center gap-3 text-sm text-muted-foreground mb-6 font-medium">
+            {/* Category & Date with Last Updated */}
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6 font-medium justify-center">
               {post.category && (
                 <Link href={`/blog?category=${post.category.slug}`} className="text-primary hover:underline uppercase tracking-wider text-xs font-bold">
                   {post.category.name}
                 </Link>
               )}
-              <span className="text-gray-300">•</span>
-              <span>
+              <span className="text-gray-300 hidden sm:inline">•</span>
+              <time dateTime={new Date(post.publishedAt || post.createdAt).toISOString()} className="flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5" />
                 {new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
                   month: 'long',
                   day: 'numeric',
                   year: 'numeric',
                 })}
-              </span>
+              </time>
+              {/* Last Updated Badge - Important for SEO freshness signal */}
+              {post.updatedAt && new Date(post.updatedAt) > new Date(post.publishedAt || post.createdAt) && (
+                <>
+                  <span className="text-gray-300 hidden sm:inline">•</span>
+                  <time
+                    dateTime={new Date(post.updatedAt).toISOString()}
+                    className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full text-xs font-semibold"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    Updated {new Date(post.updatedAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </time>
+                </>
+              )}
+              {/* Freshness badge for recent content */}
+              {new Date(post.updatedAt || post.publishedAt || post.createdAt).getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000 && (
+                <Badge className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs px-2 py-0.5">
+                  ✨ Fresh for 2026
+                </Badge>
+              )}
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 font-heading leading-[1.15] tracking-tight text-gray-900 dark:text-gray-50 text-center">
@@ -346,6 +376,11 @@ export default function BlogPostPage({ post }: { post: BlogPost }) {
                 </Link>
               ))}
             </div>
+          )}
+
+          {/* Related Posts Section - Important for Internal Linking SEO */}
+          {relatedPosts && relatedPosts.length > 0 && (
+            <RelatedPosts posts={relatedPosts} title="You May Also Like" />
           )}
         </div>
 
