@@ -14,6 +14,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params
     const category = await db.category.findUnique({ where: { slug } })
     if (!category) return { title: 'Category Not Found' }
+    const toolsCount = await db.tool.count({
+        where: {
+            published: true,
+            categoryId: category.id
+        }
+    })
+
+    // If no tools in category, don't index (Soft 404 fix)
+    if (toolsCount === 0) {
+        return {
+            title: `Best ${category.name} AI Tools (2025) | AI Fuel Hub`,
+            description: category.description || `Discover and compare the best ${category.name} AI tools to boost your productivity.`,
+            robots: {
+                index: false,
+                follow: true,
+            }
+        }
+    }
+
     return {
         title: `Best ${category.name} AI Tools (2025) | AI Fuel Hub`,
         description: category.description || `Discover and compare the best ${category.name} AI tools to boost your productivity.`,

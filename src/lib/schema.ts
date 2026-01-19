@@ -51,7 +51,7 @@ export function generateToolSchema(tool: Tool) {
         }
       }
     },
-    aggregateRating: tool.rating && tool.reviewCount > 0
+    aggregateRating: tool.rating && tool.rating > 0 && tool.reviewCount && tool.reviewCount > 0
       ? {
         '@type': 'AggregateRating',
         ratingValue: tool.rating,

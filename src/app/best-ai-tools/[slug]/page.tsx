@@ -59,6 +59,27 @@ export async function generateMetadata({
         })
     }
 
+    const toolsCount = await db.tool.count({
+        where: {
+            published: true,
+            tags: {
+                some: {
+                    id: tag.id
+                }
+            }
+        }
+    })
+
+    // If no tools found for this tag, don't index the page (Soft 404 fix)
+    if (toolsCount === 0) {
+        return generateSeoMetadata({
+            title: `Best AI Tools for ${tag.name} (2025) - Top Picks`,
+            description: `Discover the best AI tools for ${tag.name}. Browse our curated list of top-rated software designed for ${tag.name}.`,
+            type: 'website',
+            noIndex: true,
+        })
+    }
+
     return generateSeoMetadata({
         title: `Best AI Tools for ${tag.name} (2025) - Top Picks`,
         description: `Discover the best AI tools for ${tag.name}. Browse our curated list of top-rated software designed for ${tag.name}.`,

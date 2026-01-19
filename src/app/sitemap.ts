@@ -6,19 +6,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_URL
 
   // Get all tools
+  // Get all published tools
   const tools = await db.tool.findMany({
     where: { published: true },
-    select: { slug: true, updatedAt: true },
+    select: { id: true, slug: true, updatedAt: true, categoryId: true },
   })
 
-  // Get all categories
+  // Get categories that have at least one published tool
   const categories = await db.category.findMany({
-    where: { published: true },
+    where: {
+      published: true,
+      tools: { some: { published: true } }
+    },
     select: { slug: true, updatedAt: true },
   })
 
-  // Get all tags (for Best AI Tools pages)
+  // Get tags that have at least one published tool
   const tags = await db.tag.findMany({
+    where: {
+      tools: { some: { published: true } }
+    },
     select: { slug: true },
   })
 
@@ -33,6 +40,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     where: { published: true },
     select: { slug: true, updatedAt: true },
   })
+
+  // Calculate category counts for alternatives filtering
+  // A tool has alternatives if its category has > 1 tool
+  const categoryCounts: Record<string, number> = {}
+  tools.forEach(tool => {
+    if (tool.categoryId) {
+      categoryCounts[tool.categoryId] = (categoryCounts[tool.categoryId] || 0) + 1
+    }
+  })
+
+  const toolsWithAlternatives = tools.filter(tool =>
+    tool.categoryId && categoryCounts[tool.categoryId] > 1
+  )
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -103,6 +123,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   // Pricing pages (Priority 0.7)
+  // Assuming all tools have pricing or at least a pricing page structure
   const pricingPages: MetadataRoute.Sitemap = tools.map(tool => ({
     url: `${baseUrl}/pricing/${tool.slug}`,
     lastModified: tool.updatedAt,
@@ -110,15 +131,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // Alternatives pages (Priority 0.7)
-  const alternativesPages: MetadataRoute.Sitemap = tools.map(tool => ({
+  // Alternatives pages (Priority 0.7) - Filtered
+  const alternativesPages: MetadataRoute.Sitemap = toolsWithAlternatives.map(tool => ({
     url: `${baseUrl}/alternatives/${tool.slug}`,
     lastModified: tool.updatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }))
 
-  // Category pages (Priority 0.7)
+  // Category pages (Priority 0.7) - Filtered
   const categoryPages: MetadataRoute.Sitemap = categories.map(category => ({
     url: `${baseUrl}/categories/${category.slug}`,
     lastModified: category.updatedAt,
@@ -126,7 +147,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // Best-For pages (Priority 0.7)
+  // Best-For pages (Priority 0.7) - Filtered
   const bestForPages: MetadataRoute.Sitemap = tags.map(tag => ({
     url: `${baseUrl}/best-ai-tools/${tag.slug}`,
     lastModified: new Date(),

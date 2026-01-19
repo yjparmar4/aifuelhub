@@ -33,6 +33,24 @@ export async function generateMetadata({
     })
   }
 
+  const alternativesCount = await db.tool.count({
+    where: {
+      published: true,
+      categoryId: tool.categoryId,
+      id: { not: tool.id },
+    },
+  })
+
+  // If no alternatives found, don't index this page (Soft 404 fix)
+  if (alternativesCount === 0) {
+    return generateSeoMetadata({
+      title: `${tool.name} Alternatives (2025) - Best Similar AI Tools`,
+      description: `Explore the best alternatives to ${tool.name}. Compare features, pricing, ratings, and pick the best tool for your workflow.`.slice(0, 155),
+      type: 'website',
+      noIndex: true,
+    })
+  }
+
   return generateSeoMetadata({
     title: `${tool.name} Alternatives (2025) - Best Similar AI Tools`,
     description: `Explore the best alternatives to ${tool.name}. Compare features, pricing, ratings, and pick the best tool for your workflow.`
