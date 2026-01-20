@@ -110,17 +110,7 @@ const nextConfig = {
         return [
             // WWW to non-WWW redirect (301 permanent)
             // This ensures canonical URL consistency for SEO
-            {
-                source: '/:path*',
-                has: [
-                    {
-                        type: 'host',
-                        value: 'www.aifuelhub.com',
-                    },
-                ],
-                destination: 'https://aifuelhub.com/:path*',
-                permanent: true,
-            },
+            // WWW to non-WWW redirect removed to prevent conflicts with Vercel settings
             {
                 source: '/home',
                 destination: '/',
