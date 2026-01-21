@@ -424,6 +424,259 @@ export function extractHowToSteps(content: string): HowToStep[] {
   return steps.slice(0, 15) // Limit to 15 steps
 }
 
+// Video Schema for video content - helps with rich snippets and video search
+export function generateVideoSchema({
+  title,
+  description,
+  thumbnailUrl,
+  uploadDate,
+  duration,
+  contentUrl,
+  embedUrl,
+  author
+}: {
+  title: string
+  description: string
+  thumbnailUrl: string
+  uploadDate: string
+  duration?: string // ISO 8601 duration format, e.g., "PT5M30S"
+  contentUrl?: string
+  embedUrl?: string
+  author?: string
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: title,
+    description,
+    thumbnailUrl,
+    uploadDate,
+    ...(duration && { duration }),
+    ...(contentUrl && { contentUrl }),
+    ...(embedUrl && { embedUrl }),
+    ...(author && {
+      author: {
+        '@type': 'Organization',
+        name: author
+      }
+    })
+  }
+
+  return JSON.stringify(schema)
+}
+
+// Person Schema for author profiles - enhances E-E-A-T
+export function generatePersonSchema({
+  name,
+  jobTitle,
+  description,
+  url,
+  image,
+  sameAs,
+  worksFor
+}: {
+  name: string
+  jobTitle: string
+  description: string
+  url: string
+  image?: string
+  sameAs?: string[]
+  worksFor?: string
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name,
+    jobTitle,
+    description,
+    url,
+    ...(image && { image }),
+    ...(sameAs && sameAs.length > 0 && { sameAs }),
+    ...(worksFor && {
+      worksFor: {
+        '@type': 'Organization',
+        name: worksFor,
+        url: SITE_URL
+      }
+    })
+  }
+
+  return JSON.stringify(schema)
+}
+
+// Event Schema for webinars, launches, etc.
+export function generateEventSchema({
+  name,
+  description,
+  startDate,
+  endDate,
+  location,
+  url,
+  organizer,
+  offers
+}: {
+  name: string
+  description: string
+  startDate: string
+  endDate?: string
+  location?: string
+  url: string
+  organizer: string
+  offers?: {
+    price: string
+    priceCurrency: string
+    availability: string
+  }
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name,
+    description,
+    startDate,
+    ...(endDate && { endDate }),
+    ...(location && {
+      location: {
+        '@type': 'VirtualLocation',
+        url: location
+      }
+    }),
+    url,
+    organizer: {
+      '@type': 'Organization',
+      name: organizer,
+      url: SITE_URL
+    },
+    ...(offers && {
+      offers: {
+        '@type': 'Offer',
+        price: offers.price,
+        priceCurrency: offers.priceCurrency,
+        availability: offers.availability,
+        url
+      }
+    })
+  }
+
+  return JSON.stringify(schema)
+}
+
+// Product Schema with detailed review information
+export function generateProductSchema({
+  name,
+  description,
+  image,
+  url,
+  brand,
+  price,
+  priceCurrency,
+  rating,
+  reviewCount,
+  reviews,
+  category
+}: {
+  name: string
+  description: string
+  image: string
+  url: string
+  brand: string
+  price: string
+  priceCurrency: string
+  rating?: number
+  reviewCount?: number
+  reviews?: Array<{ author: string; rating: number; text: string }>
+  category?: string
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name,
+    description,
+    image,
+    url,
+    brand: {
+      '@type': 'Brand',
+      name: brand
+    },
+    offers: {
+      '@type': 'Offer',
+      price,
+      priceCurrency,
+      availability: 'https://schema.org/InStock',
+      url
+    },
+    ...(rating && reviewCount && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: rating,
+        reviewCount,
+        bestRating: '5',
+        worstRating: '1'
+      }
+    }),
+    ...(reviews && reviews.length > 0 && {
+      review: reviews.map(review => ({
+        '@type': 'Review',
+        author: {
+          '@type': 'Person',
+          name: review.author
+        },
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: review.rating,
+          bestRating: '5',
+          worstRating: '1'
+        },
+        reviewBody: review.text
+      }))
+    }),
+    ...(category && {
+    category
+    })
+  }
+
+  return JSON.stringify(schema)
+}
+
+// LocalBusiness Schema (if applicable)
+export function generateLocalBusinessSchema({
+  name,
+  description,
+  url,
+  address,
+  telephone,
+  email,
+  priceRange
+}: {
+  name: string
+  description: string
+  url: string
+  address?: string
+  telephone?: string
+  email?: string
+  priceRange?: string
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name,
+    description,
+    url,
+    ...(address && {
+      address: {
+        '@type': 'PostalAddress',
+        addressCountry: 'US',
+        addressLocality: address
+      }
+    }),
+    ...(telephone && { telephone }),
+    ...(email && { email }),
+    ...(priceRange && { priceRange })
+  }
+
+  return JSON.stringify(schema)
+}
+
 // ItemList Schema for listicle content - helps with rich snippets
 export function generateItemListSchema(
   title: string,
@@ -443,39 +696,6 @@ export function generateItemListSchema(
       ...(item.url && { url: item.url }),
       ...(item.description && { description: item.description }),
     })),
-  }
-
-  return JSON.stringify(schema)
-}
-
-// VideoObject Schema for embedded videos - AEO for video content
-export function generateVideoSchema(
-  title: string,
-  description: string,
-  thumbnailUrl: string,
-  uploadDate: string,
-  duration?: string, // ISO 8601 duration
-  embedUrl?: string,
-  contentUrl?: string
-) {
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'VideoObject',
-    name: title,
-    description: description,
-    thumbnailUrl: thumbnailUrl,
-    uploadDate: uploadDate,
-    ...(duration && { duration }),
-    ...(embedUrl && { embedUrl }),
-    ...(contentUrl && { contentUrl }),
-    publisher: {
-      '@type': 'Organization',
-      name: 'AI Fuel Hub',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/logo.svg`,
-      },
-    },
   }
 
   return JSON.stringify(schema)
