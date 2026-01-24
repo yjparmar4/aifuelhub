@@ -1,8 +1,11 @@
 import { Metadata } from 'next'
 import { generateMetadata as generateSeoMetadata } from '@/lib/seo'
 import { JsonLd } from '@/components/json-ld'
+import { AISearchOptimizedContent } from '@/components/ai-search-optimized-content'
+import { GoogleSEOOptimizedContent, SEOScoreDisplay, GoogleFAQSection } from '@/components/google-seo-optimized-content'
 import { db } from '@/lib/db'
 import { generateToolSchema, generateFAQSchema, generateBreadcrumbSchema } from '@/lib/schema'
+import { analyzeSEOContent, generateGoogleFAQSchema } from '@/lib/google-seo-optimization'
 import { notFound } from 'next/navigation'
 import ToolReviewPage from '@/components/tool-review-page'
 import { Tool } from '@/types'
@@ -135,36 +138,55 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   }
 
   return (
-    <>
-      <JsonLd data={toolSchema} />
-      {faqSchema && <JsonLd data={faqSchema} />}
-      <JsonLd
-        data={generateBreadcrumbSchema([
-          { name: 'Home', url: SITE_URL },
-          { name: 'Categories', url: `${SITE_URL}/categories` },
-          ...(toolData.category
-            ? [{ name: toolData.category.name, url: `${SITE_URL}/categories/${toolData.category.slug}` }]
-            : []),
-          { name: toolData.name, url: `${SITE_URL}/tool/${toolData.slug}` },
-        ])}
-      />
-      <div className="container mx-auto max-w-7xl px-4 pt-6">
-        <div className="glass rounded-2xl p-4 text-sm text-muted-foreground flex flex-wrap gap-2 items-center">
-          <span>More:</span>
-          <a href={`/alternatives/${tool.slug}`} className="text-primary hover:underline">
-            {tool.name} alternatives
-          </a>
-          {defaultVsTarget ? (
-            <>
-              <span className="text-muted-foreground">|</span>
-              <a href={`/vs/${tool.slug}-vs-${defaultVsTarget}`} className="text-primary hover:underline">
-                Compare vs {relatedTools[0].name}
-              </a>
-            </>
-          ) : null}
+    <GoogleSEOOptimizedContent type="tool" data={toolData}>
+      <AISearchOptimizedContent type="tool" data={toolData}>
+        <JsonLd data={toolSchema} />
+        {faqSchema && <JsonLd data={faqSchema} />}
+        <JsonLd
+          data={generateBreadcrumbSchema([
+            { name: 'Home', url: SITE_URL },
+            { name: 'Categories', url: `${SITE_URL}/categories` },
+            ...(toolData.category
+              ? [{ name: toolData.category.name, url: `${SITE_URL}/categories/${toolData.category.slug}` }]
+              : []),
+            { name: toolData.name, url: `${SITE_URL}/tool/${toolData.slug}` },
+          ])}
+        />
+        
+        {/* SEO Score Display */}
+        <div className="container mx-auto max-w-7xl px-4 pt-6">
+          <div className="mb-4">
+            <SEOScoreDisplay score={analyzeSEOContent(toolData.description || '').seoScore} />
+          </div>
+          
+          <div className="glass rounded-2xl p-4 text-sm text-muted-foreground flex flex-wrap gap-2 items-center">
+            <span>More:</span>
+            <a href={`/alternatives/${tool.slug}`} className="text-primary hover:underline">
+              {tool.name} alternatives
+            </a>
+            {defaultVsTarget ? (
+              <>
+                <span className="text-muted-foreground">|</span>
+                <a href={`/vs/${tool.slug}-vs-${defaultVsTarget}`} className="text-primary hover:underline">
+                  Compare vs {relatedTools[0].name}
+                </a>
+              </>
+            ) : null}
+          </div>
         </div>
-      </div>
-      <ToolReviewPage tool={toolData} relatedTools={relatedToolsData} />
-    </>
+        
+        <ToolReviewPage tool={toolData} relatedTools={relatedToolsData} />
+        
+        {/* Google FAQ Section */}
+        {toolData.faqs && (
+          <div className="container mx-auto max-w-7xl px-4 pt-8">
+            <GoogleFAQSection 
+              faqs={JSON.parse(toolData.faqs)} 
+              title={`Frequently Asked Questions about ${toolData.name}`}
+            />
+          </div>
+        )}
+      </AISearchOptimizedContent>
+    </GoogleSEOOptimizedContent>
   )
 }

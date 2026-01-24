@@ -87,6 +87,21 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
     take: 4,
   })
 
+  // Fetch all tools for auto-linking and schema
+  const allTools = await db.tool.findMany({
+    where: { published: true },
+    select: { name: true, slug: true }
+  })
+
+  // Calculate mentions for schema
+  const mentions = allTools
+    .filter(tool => post.content.includes(tool.name))
+    .map(tool => ({
+      name: tool.name,
+      url: `${SITE_URL}/tool/${tool.slug}`,
+      type: 'SoftwareApplication'
+    }))
+
   // Extract FAQs from content for rich snippets
   const extractedFAQs = extractFAQsFromContent(post.content)
 
@@ -96,7 +111,7 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
   // Extract Fact Checks / Claims
   const extractedClaims = extractClaimsFromContent(post.content)
 
-  const postSchema = generateBlogPostSchema(post as unknown as BlogPost)
+  const postSchema = generateBlogPostSchema(post as unknown as BlogPost, mentions)
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: SITE_URL },
     { name: 'Blog', url: `${SITE_URL}/blog` },
@@ -130,7 +145,7 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
       {claimSchemas.map((schema, i) => (
         <JsonLd key={`claim-${i}`} data={schema} />
       ))}
-      <BlogPostPage post={post as unknown as BlogPost} relatedPosts={relatedPosts as unknown as BlogPost[]} />
+      <BlogPostPage post={post as unknown as BlogPost} relatedPosts={relatedPosts as unknown as BlogPost[]} tools={allTools} />
     </>
   )
 }

@@ -101,7 +101,7 @@ export function generateToolSchema(tool: Tool) {
 }
 
 // Article Schema for blog posts
-export function generateBlogPostSchema(blogPost: BlogPost) {
+export function generateBlogPostSchema(blogPost: BlogPost, mentions?: { name: string; url: string; type: string }[]) {
   // Calculate word count for E-E-A-T signal
   const wordCount = blogPost.content ? blogPost.content.split(/\s+/).length : 0
 
@@ -119,8 +119,10 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
       '@type': 'Organization',
       name: 'AI Fuel Hub',
       url: SITE_URL,
-      logo: `${SITE_URL}/logo.svg`,
-      // Could be enhanced with Person schema in future
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/logo.svg`,
+      },
     },
     publisher: {
       '@type': 'Organization',
@@ -154,6 +156,14 @@ export function generateBlogPostSchema(blogPost: BlogPost) {
     ...(blogPost.tags && blogPost.tags.length > 0 && {
       keywords: blogPost.tags.map(tag => tag.name).join(', '),
     }),
+    // GEO: Explicit Entity Mentions
+    ...(mentions && mentions.length > 0 && {
+      mentions: mentions.map(mention => ({
+        '@type': mention.type, // usually SoftwareApplication or Organization
+        name: mention.name,
+        url: mention.url
+      }))
+    })
   }
 
   return JSON.stringify(schema)

@@ -4,6 +4,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/json-ld";
 import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/schema";
+import { initializeAISearchMonitoring } from "@/lib/ai-search-monitoring";
+import { PerformanceOptimizations } from "@/components/technical-seo-monitor";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { SITE_URL } from "@/lib/seo";
@@ -129,8 +131,49 @@ gtag('config', '${gaId}');`,
           strategy="lazyOnload"
         />
 
+        {/* AI Search Monitoring */}
+        <Script
+          id="ai-search-monitoring"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Initialize AI search monitoring
+              if (typeof window !== 'undefined') {
+                // Track AI search engine referrals
+                function trackAISearchReferral() {
+                  const referrer = document.referrer;
+                  const engines = {
+                    'chatgpt.com': 'ChatGPT',
+                    'openai.com': 'ChatGPT',
+                    'perplexity.ai': 'Perplexity',
+                    'claude.ai': 'Claude',
+                    'anthropic.com': 'Claude'
+                  };
+                  
+                  for (const [domain, engine] of Object.entries(engines)) {
+                    if (referrer.includes(domain)) {
+                      if (window.gtag) {
+                        window.gtag('event', 'ai_search_referral', {
+                          engine: engine,
+                          page_location: window.location.href
+                        });
+                      }
+                      break;
+                    }
+                  }
+                }
+                
+                // Track immediately and on page load
+                trackAISearchReferral();
+                document.addEventListener('DOMContentLoaded', trackAISearchReferral);
+              }
+            `,
+          }}
+        />
+
         <JsonLd data={generateOrganizationSchema()} />
         <JsonLd data={generateWebSiteSchema()} />
+        <PerformanceOptimizations />
         <Navbar />
         <div className="pt-24 min-h-screen">
           {children}

@@ -4,7 +4,7 @@ import { BlogPost } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { GoogleAd } from '@/components/google-ad'
-import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Info, Target, ExternalLink, Image as ImageIcon, Heart, Clock, RefreshCw } from 'lucide-react'
+import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Info, Target, ExternalLink, Image as ImageIcon, Heart, Clock, RefreshCw, Zap } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useScroll } from 'framer-motion'
@@ -13,13 +13,20 @@ import { RelatedPosts } from '@/components/related-posts'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
+import React, { useMemo } from 'react'
+
+interface SimpleTool {
+  name: string
+  slug: string
+}
 
 interface BlogPostPageProps {
   post: BlogPost
   relatedPosts?: BlogPost[]
+  tools?: SimpleTool[]
 }
 
-export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPageProps) {
+export default function BlogPostPage({ post, relatedPosts = [], tools = [] }: BlogPostPageProps) {
   const content = post.content
 
   const handleShare = () => {
@@ -29,6 +36,78 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
         url: window.location.href,
       })
     }
+  }
+
+  // AEO: Extract Quick Answer / Key Takeaways
+  const quickAnswer = useMemo(() => {
+    const quickAnswerMatch = content.match(/##\s*(Quick Answer|Key Takeaways|Summary)[^\n]*\n([\s\S]*?)(?=##[^#]|$)/i)
+    if (quickAnswerMatch) {
+      return {
+        title: quickAnswerMatch[1],
+        text: quickAnswerMatch[2].trim()
+      }
+    }
+    return null
+  }, [content])
+
+  // GEO: Entity Auto-Linking helper
+  // This function takes a string and returns an array of nodes with known tools linked
+  const processTextWithAutoLinks = (text: string) => {
+    if (!tools || tools.length === 0 || !text) return text
+
+    // Sort tools by length (descending) to match longest names first (e.g. "GitHub Copilot" before "GitHub")
+    const sortedTools = [...tools].sort((a, b) => b.name.length - a.name.length)
+
+    // Build a regex pattern from tool names (escape regex special chars)
+    const pattern = new RegExp(`\\b(${sortedTools.map(t => t.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g')
+
+    const parts = []
+    let lastIndex = 0
+    let match
+
+    // We scan the text for matches
+    while ((match = pattern.exec(text)) !== null) {
+      // Add text before the match
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index))
+      }
+
+      const toolName = match[0]
+      const tool = sortedTools.find(t => t.name === toolName)
+
+      if (tool) {
+        parts.push(
+          <Link
+            key={`${tool.slug}-${match.index}`}
+            href={`/tool/${tool.slug}`}
+            className="text-primary font-medium hover:underline inline-flex items-center gap-0.5"
+          >
+            {toolName}
+          </Link>
+        )
+      } else {
+        parts.push(toolName)
+      }
+
+      lastIndex = pattern.lastIndex
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex))
+    }
+
+    return parts.length > 0 ? parts : text
+  }
+
+  // Recursive function to process React nodes and apply auto-linking to strings
+  const processChildren = (children: React.ReactNode): React.ReactNode => {
+    return React.Children.map(children, child => {
+      if (typeof child === 'string') {
+        return processTextWithAutoLinks(child)
+      }
+      return child
+    })
   }
 
   return (
@@ -149,6 +228,25 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
           </div>
         )}
 
+        {/* AEO: Quick Answer Box - Zero Click Optimization */}
+        {quickAnswer && (
+          <div className="mb-10 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900 shadow-sm relative overflow-hidden">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm text-indigo-600 dark:text-indigo-400 shrink-0">
+                <Zap className="w-6 h-6 fill-current" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                  {quickAnswer.title}
+                </h3>
+                <div className="text-gray-700 dark:text-gray-300 leading-relaxed font-serif">
+                  <ReactMarkdown>{quickAnswer.text}</ReactMarkdown>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Enhanced Table of Contents Box with Gradient */}
         <div className="mb-12 p-6 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 rounded-2xl border border-purple-200 dark:border-purple-800 shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-300/20 to-blue-300/20 dark:from-purple-500/10 dark:to-blue-500/10 rounded-full blur-3xl" />
@@ -186,6 +284,38 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
             rehypePlugins={[rehypeRaw]}
             remarkPlugins={[remarkGfm]}
             components={{
+              /* Explicitly define p component to handle auto-linking */
+              p: ({ children, ...props }) => (
+                <p {...props}>{processChildren(children)}</p>
+              ),
+              /* Apply auto-linking to list items as well */
+              li: ({ children, ...props }) => {
+                const childStr = String(children).toLowerCase()
+                let icon = <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                if (childStr.includes('warning') || childStr.includes('avoid') || childStr.includes("don't")) {
+                  icon = <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('tip') || childStr.includes('pro')) {
+                  icon = <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('important') || childStr.includes('note')) {
+                  icon = <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('benefit') || childStr.includes('advantage')) {
+                  icon = <Heart className="w-5 h-5 text-pink-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('step') || childStr.includes('first') || childStr.includes('next')) {
+                  icon = <Target className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
+                } else if (childStr.includes('feature') || childStr.includes('include')) {
+                  icon = <Sparkles className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+                }
+
+                // Process children for auto-linking even inside the enhanced list item
+                const processedChildren = processChildren(children)
+
+                return (
+                  <li {...props} className="flex items-start gap-3 text-[1.1rem] leading-[1.8] text-gray-700 dark:text-gray-300 font-serif">
+                    {icon}
+                    <span className="flex-1">{processedChildren}</span>
+                  </li>
+                )
+              },
               /* Decorative H2 with gradient border and contextual icon */
               h2: ({ children, ...props }) => {
                 const headings = content
@@ -237,12 +367,14 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
                 const isImportant = childStr.includes('important') || childStr.includes('note')
                 const isExample = childStr.includes('example')
 
+                const processedChildren = processChildren(children)
+
                 if (isWarning) {
                   return (
                     <blockquote {...props} className="relative border-l-4 border-red-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-red-50 to-red-50/30 dark:from-red-950/30 dark:to-transparent rounded-r-xl">
                       <span className="absolute -left-3 top-4 text-2xl">⚠️</span>
                       <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
-                        {children}
+                        {processedChildren}
                       </div>
                     </blockquote>
                   )
@@ -252,7 +384,7 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
                     <blockquote {...props} className="relative border-l-4 border-emerald-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-emerald-50 to-emerald-50/30 dark:from-emerald-950/30 dark:to-transparent rounded-r-xl">
                       <span className="absolute -left-3 top-4 text-2xl">💡</span>
                       <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
-                        {children}
+                        {processedChildren}
                       </div>
                     </blockquote>
                   )
@@ -262,7 +394,7 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
                     <blockquote {...props} className="relative border-l-4 border-blue-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-blue-50 to-blue-50/30 dark:from-blue-950/30 dark:to-transparent rounded-r-xl">
                       <span className="absolute -left-3 top-4 text-2xl">📝</span>
                       <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
-                        {children}
+                        {processedChildren}
                       </div>
                     </blockquote>
                   )
@@ -272,7 +404,7 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
                     <blockquote {...props} className="relative border-l-4 border-purple-500 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-purple-50 to-purple-50/30 dark:from-purple-950/30 dark:to-transparent rounded-r-xl">
                       <span className="absolute -left-3 top-4 text-2xl">💎</span>
                       <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
-                        {children}
+                        {processedChildren}
                       </div>
                     </blockquote>
                   )
@@ -281,36 +413,9 @@ export default function BlogPostPage({ post, relatedPosts = [] }: BlogPostPagePr
                   <blockquote {...props} className="relative border-l-4 border-amber-400 pl-6 py-4 pr-4 my-8 bg-gradient-to-r from-amber-50 to-amber-50/30 dark:from-amber-900/20 dark:to-transparent rounded-r-xl">
                     <span className="absolute -left-3 top-4 text-2xl">💡</span>
                     <div className="text-gray-700 dark:text-gray-300 font-serif text-lg leading-relaxed">
-                      {children}
+                      {processedChildren}
                     </div>
                   </blockquote>
-                )
-              },
-              /* Styled unordered lists with colored icons */
-              ul: ({ ...props }) => (
-                <ul {...props} className="my-6 space-y-3 list-none pl-0" />
-              ),
-              li: ({ children, ...props }) => {
-                const childStr = String(children).toLowerCase()
-                let icon = <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                if (childStr.includes('warning') || childStr.includes('avoid') || childStr.includes("don't")) {
-                  icon = <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                } else if (childStr.includes('tip') || childStr.includes('pro')) {
-                  icon = <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                } else if (childStr.includes('important') || childStr.includes('note')) {
-                  icon = <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                } else if (childStr.includes('benefit') || childStr.includes('advantage')) {
-                  icon = <Heart className="w-5 h-5 text-pink-500 shrink-0 mt-0.5" />
-                } else if (childStr.includes('step') || childStr.includes('first') || childStr.includes('next')) {
-                  icon = <Target className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
-                } else if (childStr.includes('feature') || childStr.includes('include')) {
-                  icon = <Sparkles className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
-                }
-                return (
-                  <li {...props} className="flex items-start gap-3 text-[1.1rem] leading-[1.8] text-gray-700 dark:text-gray-300 font-serif">
-                    {icon}
-                    <span className="flex-1">{children}</span>
-                  </li>
                 )
               },
               /* Links with external icon and hover effects */
