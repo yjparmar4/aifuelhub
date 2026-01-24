@@ -2,7 +2,16 @@ import { Metadata } from 'next'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 import { JsonLd } from '@/components/json-ld'
 import { db } from '@/lib/db'
-import { generateBlogPostSchema, generateBreadcrumbSchema, generateFAQSchema, extractFAQsFromContent } from '@/lib/schema'
+import {
+  generateBlogPostSchema,
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  extractFAQsFromContent,
+  generateHowToSchema,
+  extractHowToSteps,
+  generateClaimReviewSchema,
+  extractClaimsFromContent
+} from '@/lib/schema'
 import { notFound } from 'next/navigation'
 import BlogPostPage from '@/components/blog-post-page'
 import { SITE_URL } from '@/lib/seo'
@@ -20,9 +29,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
 
+  // Improved description fallback
+  const description = post.metaDescription || post.excerpt || post.content.substring(0, 160).replace(/[#*]/g, '').trim() + '...'
+
   return generateSEOMetadata({
     title: post.metaTitle || post.title,
-    description: post.metaDescription || post.excerpt || post.content.substring(0, 160),
+    description: description,
     type: 'article',
     publishedTime: post.publishedAt?.toISOString(),
     modifiedTime: post.updatedAt.toISOString(),
@@ -78,6 +90,12 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
   // Extract FAQs from content for rich snippets
   const extractedFAQs = extractFAQsFromContent(post.content)
 
+  // Extract HowTo steps
+  const extractedHowTo = extractHowToSteps(post.content)
+
+  // Extract Fact Checks / Claims
+  const extractedClaims = extractClaimsFromContent(post.content)
+
   const postSchema = generateBlogPostSchema(post as unknown as BlogPost)
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: SITE_URL },
@@ -88,11 +106,30 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
   // Generate FAQ schema if FAQs found
   const faqSchema = extractedFAQs.length > 0 ? generateFAQSchema(extractedFAQs) : null
 
+  // Generate HowTo Schema if steps found
+  const howToSchema = extractedHowTo.length > 0 ? generateHowToSchema(
+    post.title,
+    post.excerpt || `How to guide for ${post.title}`,
+    extractedHowTo
+  ) : null
+
+  // Generate ClaimReview schemas
+  const claimSchemas = extractedClaims.map(claim => generateClaimReviewSchema(
+    claim.claim,
+    claim.verdict,
+    'AI Fuel Hub', // Reviewer
+    post.publishedAt?.toISOString() || new Date().toISOString()
+  ))
+
   return (
     <>
       <JsonLd data={postSchema} />
       <JsonLd data={breadcrumbSchema} />
       {faqSchema && <JsonLd data={faqSchema} />}
+      {howToSchema && <JsonLd data={howToSchema} />}
+      {claimSchemas.map((schema, i) => (
+        <JsonLd key={`claim-${i}`} data={schema} />
+      ))}
       <BlogPostPage post={post as unknown as BlogPost} relatedPosts={relatedPosts as unknown as BlogPost[]} />
     </>
   )

@@ -631,7 +631,7 @@ export function generateProductSchema({
       }))
     }),
     ...(category && {
-    category
+      category
     })
   }
 
@@ -787,4 +787,29 @@ export function generateEntityMention(
     name: name,
     ...(url && { url: url }),
   }
+}
+
+// Extract Claims from content for Fact Check schema
+export function extractClaimsFromContent(content: string): { claim: string; verdict: 'True' | 'False' | 'Misleading'; source?: string }[] {
+  const claims: { claim: string; verdict: 'True' | 'False' | 'Misleading'; source?: string }[] = []
+
+  // Pattern: "Claim: [Claim text] ... Verdict: [Verdict]"
+  // This expects the content creator to explicitly format fact checks in a specific way
+  const claimPattern = /(?:###|\*\*)\s*Claim:?\s*([^\n]+)(?:###|\*\*|:)\s*\n+[\s\S]*?(?:###|\*\*)\s*Verdict:?\s*(True|False|Misleading)(?:###|\*\*|:)?/gi
+
+  let match
+  while ((match = claimPattern.exec(content)) !== null) {
+    const claim = match[1].trim().replace(/^\*+|\*+$/g, '')
+    const verdictStr = match[2].trim()
+    let verdict: 'True' | 'False' | 'Misleading' = 'True'
+
+    if (/false/i.test(verdictStr)) verdict = 'False'
+    else if (/misleading/i.test(verdictStr)) verdict = 'Misleading'
+
+    if (claim && claim.length > 10) {
+      claims.push({ claim, verdict })
+    }
+  }
+
+  return claims.slice(0, 5) // Limit to 5 claims
 }
