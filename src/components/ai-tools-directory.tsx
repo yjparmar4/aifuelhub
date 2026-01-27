@@ -87,9 +87,12 @@ function AIToolsContent({ searchParams }: { searchParams: { [key: string]: strin
   useEffect(() => {
     async function fetchMeta() {
       try {
-        const categoriesRes = await fetch('/api/categories')
+        const categoriesRes = await fetch('/api/categories?includeToolCount=true')
         const categoriesData = await categoriesRes.json()
-        setCategories(categoriesData.categories || [])
+        const allCategories = categoriesData.categories || []
+        // Filter out categories with no tools
+        const filteredCategories = allCategories.filter((c: Category) => (c._count?.tools || 0) > 0)
+        setCategories(filteredCategories)
       } catch (error) {
         console.error('Error fetching categories:', error)
       }
