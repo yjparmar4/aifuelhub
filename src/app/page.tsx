@@ -14,7 +14,7 @@ import { generateEntitySchema } from '@/lib/geo-schema';
 
 export const metadata: Metadata = {
   title: 'AI Fuel Hub - Discover & Compare 118+ AI Tools | Expert Reviews 2026',
-  description: 'The ultimate AI tools directory with 118+ verified tools. Compare features, pricing, and reviews of ChatGPT, Midjourney, Claude, and more. Expert-tested, unbiased recommendations.',
+  description: 'Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives. Find the best tool for your needs.',
   keywords: 'AI tools, artificial intelligence, AI directory, ChatGPT alternatives, Midjourney alternatives, AI writing tools, AI image generators, AI coding tools, best AI software 2026',
   authors: [{ name: 'AI Fuel Hub Team' }],
   openGraph: {
