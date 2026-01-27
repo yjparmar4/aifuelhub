@@ -10,6 +10,9 @@ import Image from 'next/image'
 import { motion, useScroll } from 'framer-motion'
 import { NewsletterSignup } from '@/components/newsletter-signup'
 import { RelatedPosts } from '@/components/related-posts'
+import { AuthorBio } from '@/components/author-bio'
+import { ContextualTools } from '@/components/contextual-tools'
+import { getAuthorForTopic } from '@/lib/authors'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
@@ -20,13 +23,22 @@ interface SimpleTool {
   slug: string
 }
 
+interface MentionedTool {
+  name: string
+  slug: string
+  tagline?: string | null
+  pricingType?: string | null
+  rating?: number | null
+}
+
 interface BlogPostPageProps {
   post: BlogPost
   relatedPosts?: BlogPost[]
   tools?: SimpleTool[]
+  mentionedTools?: MentionedTool[]
 }
 
-export default function BlogPostPage({ post, relatedPosts = [], tools = [] }: BlogPostPageProps) {
+export default function BlogPostPage({ post, relatedPosts = [], tools = [], mentionedTools = [] }: BlogPostPageProps) {
   const content = post.content
 
   const handleShare = () => {
@@ -40,7 +52,8 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [] }: Bl
 
   // AEO: Extract Quick Answer / Key Takeaways
   const quickAnswer = useMemo(() => {
-    const quickAnswerMatch = content.match(/##\s*(Quick Answer|Key Takeaways|Summary)[^\n]*\n([\s\S]*?)(?=##[^#]|$)/i)
+    // First try to find explicit Quick Answer or Key Takeaways section
+    const quickAnswerMatch = content.match(/##\s*(Quick Answer|Key Takeaways|Summary|TL;DR)[^\n]*\n([\s\S]*?)(?=##[^#]|$)/i)
     if (quickAnswerMatch) {
       return {
         title: quickAnswerMatch[1],
@@ -48,6 +61,72 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [] }: Bl
       }
     }
     return null
+  }, [content])
+
+  // Auto-generate key takeaways from content if no explicit section exists
+  const autoTakeaways = useMemo(() => {
+    if (quickAnswer) return null // Don't generate if explicit takeaways exist
+
+    const takeaways: string[] = []
+
+    // Extract first few important bullet points from the content
+    const bulletPoints = content.match(/^[-*]\s+(.+)$/gm)
+    if (bulletPoints) {
+      // Filter for informative bullets (longer, more substantive)
+      const goodBullets = bulletPoints
+        .map(b => b.replace(/^[-*]\s+/, '').trim())
+        .filter(b => b.length > 30 && b.length < 200)
+        .filter(b => !b.toLowerCase().startsWith('note:') && !b.toLowerCase().startsWith('warning:'))
+        .slice(0, 5)
+
+      takeaways.push(...goodBullets)
+    }
+
+    // If not enough bullets, try to extract from headings + first sentences
+    if (takeaways.length < 3) {
+      const headingParagraphs = content.match(/##\s+[^\n]+\n\n([^#\n][^\n]{50,150})/g)
+      if (headingParagraphs) {
+        const extracted = headingParagraphs
+          .map(hp => {
+            const lines = hp.split('\n\n')
+            return lines[1]?.trim() || ''
+          })
+          .filter(p => p.length > 50 && p.length < 200)
+          .slice(0, 5 - takeaways.length)
+
+        takeaways.push(...extracted)
+      }
+    }
+
+    return takeaways.length >= 3 ? takeaways.slice(0, 5) : null
+  }, [content, quickAnswer])
+
+  // Featured Snippet: Extract "What is X?" definitions
+  const definitions = useMemo(() => {
+    const defs: { term: string; definition: string }[] = []
+
+    // Pattern 1: "What is X?" followed by answer
+    const whatIsPattern = /###?\s*What\s+is\s+([^?\n]+)\??[\s\n]+([^#\n][^\n]{50,250})/gi
+    let match
+    while ((match = whatIsPattern.exec(content)) !== null) {
+      defs.push({
+        term: match[1].trim().replace(/\?$/, ''),
+        definition: match[2].trim()
+      })
+    }
+
+    // Pattern 2: Term followed by "is" definition in first paragraph
+    if (defs.length === 0) {
+      const firstParaMatch = content.match(/^[^#\n][^\n]*?\*\*([^*]+)\*\*\s+is\s+([^.!?\n]{30,200}[.!?])/m)
+      if (firstParaMatch) {
+        defs.push({
+          term: firstParaMatch[1].trim(),
+          definition: `${firstParaMatch[1].trim()} is ${firstParaMatch[2].trim()}`
+        })
+      }
+    }
+
+    return defs.length > 0 ? defs.slice(0, 3) : null
   }, [content])
 
   // GEO: Entity Auto-Linking helper
@@ -198,14 +277,35 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [] }: Bl
               </p>
             )}
 
-            {/* Author Minimal */}
-            <div className="flex items-center gap-3 justify-center mb-8">
-              <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                <User className="w-5 h-5 text-gray-500" />
-              </div>
-              <div className="text-left">
-                <span className="block font-semibold text-sm text-gray-900 dark:text-gray-100 leading-none mb-1">AI Fuel Hub Team</span>
-                <span className="block text-xs text-muted-foreground">Editorial Staff</span>
+            {/* Author + Reading Time */}
+            <div className="flex flex-wrap items-center gap-4 justify-center mb-8">
+              {/* Author Byline */}
+              {(() => {
+                const author = getAuthorForTopic(post.title)
+                return (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                      {author?.name.split(' ').map(n => n[0]).join('') || 'AI'}
+                    </div>
+                    <div className="text-left">
+                      <span className="block font-semibold text-sm text-gray-900 dark:text-gray-100 leading-none mb-1">
+                        {author?.name || 'AI Fuel Hub Team'}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {author?.expertise?.[0] || 'Editorial Staff'}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {/* Separator */}
+              <span className="text-gray-300 dark:text-gray-700 hidden sm:inline">•</span>
+
+              {/* Reading Time */}
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Clock className="w-4 h-4 text-indigo-500" />
+                <span>{Math.ceil(content.split(/\s+/).length / 200)} min read</span>
               </div>
             </div>
           </motion.div>
@@ -246,6 +346,46 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [] }: Bl
             </div>
           </div>
         )}
+
+        {/* Auto-Generated Key Takeaways - When no explicit section exists */}
+        {autoTakeaways && (
+          <div className="mb-10 p-6 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/20 dark:via-orange-950/20 dark:to-yellow-950/20 rounded-2xl border border-amber-200/60 dark:border-amber-800 shadow-sm">
+            <h3 className="text-lg font-bold text-amber-900 dark:text-amber-100 mb-4 flex items-center gap-2">
+              <div className="p-1.5 bg-amber-500 rounded-lg">
+                <Lightbulb className="w-4 h-4 text-white" />
+              </div>
+              Key Takeaways
+            </h3>
+            <ul className="space-y-3">
+              {autoTakeaways.map((takeaway, idx) => (
+                <li key={idx} className="flex items-start gap-3 text-amber-800/90 dark:text-amber-200/90">
+                  <span className="mt-0.5 shrink-0">
+                    <CheckCircle2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  </span>
+                  <span className="text-sm leading-relaxed">{takeaway}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Featured Snippet: Definition Boxes */}
+        {definitions && definitions.length > 0 && definitions.map((def, idx) => (
+          <div
+            key={idx}
+            className="mb-8 p-5 bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-900/50 dark:to-gray-900/50 rounded-xl border border-slate-200 dark:border-slate-700"
+            itemScope
+            itemType="https://schema.org/DefinedTerm"
+          >
+            <dt className="font-bold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-2" itemProp="name">
+              <Info className="w-5 h-5 text-blue-500" />
+              What is {def.term}?
+            </dt>
+            <dd className="text-slate-700 dark:text-slate-300 leading-relaxed" itemProp="description">
+              {def.definition}
+            </dd>
+          </div>
+        ))}
 
         {/* Enhanced Table of Contents Box with Gradient */}
         <div className="mb-12 p-6 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 rounded-2xl border border-purple-200 dark:border-purple-800 shadow-lg relative overflow-hidden">
@@ -467,8 +607,19 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [] }: Bl
           </ReactMarkdown>
         </article>
 
+        {/* Contextual Tools - Internal Linking */}
+        {mentionedTools && mentionedTools.length > 0 && (
+          <ContextualTools tools={mentionedTools} />
+        )}
+
+        {/* Full Author Bio - E-E-A-T Optimization */}
+        {(() => {
+          const author = getAuthorForTopic(post.title)
+          return author ? <AuthorBio author={author} /> : null
+        })()}
+
         {/* Footer: Tags */}
-        <div className="mt-20 pt-10 border-t border-gray-100 dark:border-gray-800">
+        <div className="mt-12 pt-10 border-t border-gray-100 dark:border-gray-800">
 
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (

@@ -4,7 +4,8 @@ import { JsonLd } from '@/components/json-ld'
 import { AISearchOptimizedContent } from '@/components/ai-search-optimized-content'
 import { GoogleSEOOptimizedContent, SEOScoreDisplay, GoogleFAQSection } from '@/components/google-seo-optimized-content'
 import { db } from '@/lib/db'
-import { generateToolSchema, generateFAQSchema, generateBreadcrumbSchema } from '@/lib/schema'
+import { generateFAQSchema, generateBreadcrumbSchema } from '@/lib/schema'
+import { generateEntityGraph } from '@/lib/entity-graph'
 import { analyzeSEOContent, generateGoogleFAQSchema } from '@/lib/google-seo-optimization'
 import { notFound } from 'next/navigation'
 import ToolReviewPage from '@/components/tool-review-page'
@@ -123,7 +124,16 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     category: t.category ? { ...t.category, icon: t.category.icon || undefined } : undefined
   })) as unknown as Tool[]
 
-  const toolSchema = generateToolSchema(toolData)
+
+
+  // Generate interconnected Entity Graph Schema (AEO)
+  const toolSchema = generateEntityGraph({
+    pageType: 'tool',
+    pageUrl: `${SITE_URL}/tool/${toolData.slug}`,
+    tool: toolData,
+    relatedTools: relatedToolsData,
+    category: toolData.category ? { name: toolData.category.name, slug: toolData.category.slug } : undefined
+  })
 
   let faqSchema: string | null = null
   if (toolData.faqs) {
@@ -152,13 +162,13 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             { name: toolData.name, url: `${SITE_URL}/tool/${toolData.slug}` },
           ])}
         />
-        
+
         {/* SEO Score Display */}
         <div className="container mx-auto max-w-7xl px-4 pt-6">
           <div className="mb-4">
             <SEOScoreDisplay score={analyzeSEOContent(toolData.description || '').seoScore} />
           </div>
-          
+
           <div className="glass rounded-2xl p-4 text-sm text-muted-foreground flex flex-wrap gap-2 items-center">
             <span>More:</span>
             <a href={`/alternatives/${tool.slug}`} className="text-primary hover:underline">
@@ -174,14 +184,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             ) : null}
           </div>
         </div>
-        
+
         <ToolReviewPage tool={toolData} relatedTools={relatedToolsData} />
-        
+
         {/* Google FAQ Section */}
         {toolData.faqs && (
           <div className="container mx-auto max-w-7xl px-4 pt-8">
-            <GoogleFAQSection 
-              faqs={JSON.parse(toolData.faqs)} 
+            <GoogleFAQSection
+              faqs={JSON.parse(toolData.faqs)}
               title={`Frequently Asked Questions about ${toolData.name}`}
             />
           </div>

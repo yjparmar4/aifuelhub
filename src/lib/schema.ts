@@ -799,6 +799,70 @@ export function generateEntityMention(
   }
 }
 
+// SiteNavigationElement Schema - helps Google understand site structure for sitelinks
+export function generateSiteNavigationSchema() {
+  const navItems = [
+    { name: 'AI Tools', url: `${SITE_URL}/ai-tools` },
+    { name: 'Blog', url: `${SITE_URL}/blog` },
+    { name: 'Alternatives', url: `${SITE_URL}/alternatives` },
+    { name: 'Compare Tools', url: `${SITE_URL}/compare` },
+    { name: 'Submit Tool', url: `${SITE_URL}/submit-tool` },
+    { name: 'About', url: `${SITE_URL}/about` },
+    { name: 'Contact', url: `${SITE_URL}/contact` },
+  ]
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'SiteNavigationElement',
+    name: 'Main Navigation',
+    hasPart: navItems.map((item, index) => ({
+      '@type': 'SiteNavigationElement',
+      position: index + 1,
+      name: item.name,
+      url: item.url,
+    })),
+  }
+
+  return JSON.stringify(schema)
+}
+
+// ImageObject Schema - for image SEO
+export function generateImageSchema({
+  url,
+  caption,
+  alt,
+  width,
+  height,
+  author
+}: {
+  url: string
+  caption?: string
+  alt?: string
+  width?: number
+  height?: number
+  author?: string
+}) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ImageObject',
+    contentUrl: url.startsWith('http') ? url : `${SITE_URL}${url}`,
+    ...(caption && { caption }),
+    ...(alt && { name: alt }),
+    ...(width && { width }),
+    ...(height && { height }),
+    ...(author && {
+      author: {
+        '@type': 'Organization',
+        name: author
+      }
+    }),
+    license: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    acquireLicensePage: `${SITE_URL}/terms-of-service`
+  }
+
+  return JSON.stringify(schema)
+}
+
 // Extract Claims from content for Fact Check schema
 export function extractClaimsFromContent(content: string): { claim: string; verdict: 'True' | 'False' | 'Misleading'; source?: string }[] {
   const claims: { claim: string; verdict: 'True' | 'False' | 'Misleading'; source?: string }[] = []

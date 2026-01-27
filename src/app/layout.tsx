@@ -3,7 +3,7 @@ import { Plus_Jakarta_Sans, Inter, Merriweather } from "next/font/google"; // Pr
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/json-ld";
-import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/schema";
+import { generateOrganizationSchema, generateWebSiteSchema, generateSiteNavigationSchema } from "@/lib/schema";
 import { initializeAISearchMonitoring } from "@/lib/ai-search-monitoring";
 import { PerformanceOptimizations } from "@/components/technical-seo-monitor";
 import { Navbar } from "@/components/navbar";
@@ -173,6 +173,7 @@ gtag('config', '${gaId}');`,
 
         <JsonLd data={generateOrganizationSchema()} />
         <JsonLd data={generateWebSiteSchema()} />
+        <JsonLd data={generateSiteNavigationSchema()} />
         <PerformanceOptimizations />
         <Navbar />
         <div className="pt-24 min-h-screen">
