@@ -66,13 +66,13 @@ async function addPhase5BlogPosts() {
         })
 
         // Determine cover image based on slug
-        let coverImage = '/placeholder-blog.jpg'
+        let coverImage = '/placeholder-blog.png'
         if (data.slug.includes('chatgpt-vs-claude')) {
-            coverImage = '/blog/images/ai-writing-tools-comparison-hero.png'
+            coverImage = '/blog/images/chatgpt-vs-claude-vs-gemini-hero.png'
         } else if (data.slug.includes('freelancers')) {
-            coverImage = '/blog/images/solopreneur-stack.png'
+            coverImage = '/blog/images/freelancer-ai-productivity-hero.png'
         } else if (data.slug.includes('how-to-use-ai')) {
-            coverImage = '/blog/images/semantic-seo-masterclass-hero.png'
+            coverImage = '/blog/images/ai-blog-writing-blueprint-hero.png'
         }
 
         if (existingPost) {
