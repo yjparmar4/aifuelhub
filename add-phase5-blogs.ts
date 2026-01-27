@@ -65,6 +65,16 @@ async function addPhase5BlogPosts() {
             where: { slug: data.slug }
         })
 
+        // Determine cover image based on slug
+        let coverImage = '/placeholder-blog.jpg'
+        if (data.slug.includes('chatgpt-vs-claude')) {
+            coverImage = '/blog/images/ai-writing-tools-comparison-hero.png'
+        } else if (data.slug.includes('freelancers')) {
+            coverImage = '/blog/images/solopreneur-stack.png'
+        } else if (data.slug.includes('how-to-use-ai')) {
+            coverImage = '/blog/images/semantic-seo-masterclass-hero.png'
+        }
+
         if (existingPost) {
             console.log(`Post "${data.slug}" already exists, updating...`)
             await prisma.blogPost.update({
@@ -76,6 +86,7 @@ async function addPhase5BlogPosts() {
                     metaTitle: data.metaTitle,
                     metaDescription: data.metaDescription,
                     focusKeyword: data.focusKeyword,
+                    coverImage: coverImage,
                     categoryId: category?.id,
                     updatedAt: new Date(),
                     tags: {
@@ -94,6 +105,7 @@ async function addPhase5BlogPosts() {
                     metaTitle: data.metaTitle,
                     metaDescription: data.metaDescription,
                     focusKeyword: data.focusKeyword,
+                    coverImage: coverImage,
                     categoryId: category?.id,
                     published: true,
                     publishedAt: new Date(),

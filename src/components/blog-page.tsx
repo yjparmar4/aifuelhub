@@ -130,7 +130,7 @@ export default function BlogPage({ initialPosts }: BlogPageProps) {
                       <div className="relative overflow-hidden h-48 shrink-0">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
                         <Image
-                          src={post.coverImage || '/placeholder-blog.jpg'}
+                          src={post.coverImage || '/placeholder-blog.png'}
                           alt={post.title}
                           width={600}
                           height={400}

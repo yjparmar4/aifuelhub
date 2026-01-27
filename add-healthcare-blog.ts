@@ -65,6 +65,7 @@ async function addHealthcareBlog() {
                 metaTitle: data.metaTitle,
                 metaDescription: data.metaDescription,
                 focusKeyword: data.focusKeyword,
+                coverImage: '/blog/images/ai-healthcare-diagnosis.png',
                 categoryId: category?.id,
                 updatedAt: new Date(),
                 tags: {
@@ -83,6 +84,7 @@ async function addHealthcareBlog() {
                 metaTitle: data.metaTitle,
                 metaDescription: data.metaDescription,
                 focusKeyword: data.focusKeyword,
+                coverImage: '/blog/images/ai-healthcare-diagnosis.png',
                 categoryId: category?.id,
                 published: true,
                 publishedAt: new Date(),
