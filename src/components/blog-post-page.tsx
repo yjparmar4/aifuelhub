@@ -344,46 +344,7 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [], ment
           </div>
         )}
 
-        {/* AEO: Quick Answer Box - Zero Click Optimization */}
-        {quickAnswer && (
-          <div className="mb-10 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900 shadow-sm relative overflow-hidden">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm text-indigo-600 dark:text-indigo-400 shrink-0">
-                <Zap className="w-6 h-6 fill-current" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                  {quickAnswer.title}
-                </h3>
-                <div className="text-gray-700 dark:text-gray-300 leading-relaxed font-serif">
-                  <ReactMarkdown>{quickAnswer.text}</ReactMarkdown>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Auto-Generated Key Takeaways - When no explicit section exists */}
-        {autoTakeaways && (
-          <div className="mb-10 p-6 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/20 dark:via-orange-950/20 dark:to-yellow-950/20 rounded-2xl border border-amber-200/60 dark:border-amber-800 shadow-sm">
-            <h3 className="text-lg font-bold text-amber-900 dark:text-amber-100 mb-4 flex items-center gap-2">
-              <div className="p-1.5 bg-amber-500 rounded-lg">
-                <Lightbulb className="w-4 h-4 text-white" />
-              </div>
-              Key Takeaways
-            </h3>
-            <ul className="space-y-3">
-              {autoTakeaways.map((takeaway, idx) => (
-                <li key={idx} className="flex items-start gap-3 text-amber-800/90 dark:text-amber-200/90">
-                  <span className="mt-0.5 shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                  </span>
-                  <span className="text-sm leading-relaxed">{takeaway}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/* Quick Answer and Key Takeaways removed per user request */}
 
         {/* Featured Snippet: Definition Boxes */}
         {definitions && definitions.length > 0 && definitions.map((def, idx) => (
