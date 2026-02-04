@@ -162,13 +162,12 @@ async function main() {
                 metaTitle: blogPost.metaTitle,
                 metaDescription: blogPost.metaDescription,
                 content: blogPost.content,
-                imageUrl: blogPost.imageUrl,
+                coverImage: blogPost.imageUrl,
+                focusKeyword: blogPost.focusKeyword,
                 published: true,
                 publishedAt: new Date(),
-                categoryId: category.id,
-                authorName: 'Admin',
-                readTime: '8 min read',
-                featured: true
+                featured: true,
+                category: { connect: { id: category.id } }
             }
         })
 
