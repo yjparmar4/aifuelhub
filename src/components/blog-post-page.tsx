@@ -3,7 +3,7 @@
 import { BlogPost } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { GoogleAd } from '@/components/google-ad'
+// GoogleAd import removed - ads will be added later
 import { Calendar, Eye, Share2, BookOpen, Lightbulb, User, ArrowRight, Sparkles, CheckCircle2, AlertCircle, Info, Target, ExternalLink, Image as ImageIcon, Heart, Clock, RefreshCw, Zap } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -179,21 +179,7 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [], ment
     return parts.length > 0 ? parts : text
   }
 
-  // Strategic Ad Injection: Injects ad placeholders every 4 paragraphs
-  const contentWithAds = useMemo(() => {
-    const paragraphs = content.split(/\n\n+/)
-    if (paragraphs.length <= 4) return content
-
-    const withAds: string[] = []
-    for (let i = 0; i < paragraphs.length; i++) {
-      withAds.push(paragraphs[i])
-      // Inject after every 4 paragraphs, but not after the last one
-      if ((i + 1) % 4 === 0 && i !== paragraphs.length - 1) {
-        withAds.push('<div data-ad-unit="in-article"></div>')
-      }
-    }
-    return withAds.join('\n\n')
-  }, [content])
+  // Ad injection removed - ads will be added later
 
   // Recursive function to process React nodes and apply auto-linking to strings
   const processChildren = (children: React.ReactNode): React.ReactNode => {
@@ -578,21 +564,13 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [], ment
                   )}
                 </figure>
               ),
-              /* Custom ad unit renderer */
+              /* Ad renderer removed - ads will be added later */
               div: ({ node, ...props }) => {
-                if (props['data-ad-unit'] === 'in-article') {
-                  return (
-                    <div className="my-10 border-y border-gray-100 dark:border-gray-800 py-6 flex flex-col items-center">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-widest mb-3">Advertisement</span>
-                      <GoogleAd slot="in-article-blog" format="fluid" className="w-full" />
-                    </div>
-                  )
-                }
                 return <div {...props} />
               },
             }}
           >
-            {contentWithAds}
+            {content}
           </ReactMarkdown>
         </article>
 

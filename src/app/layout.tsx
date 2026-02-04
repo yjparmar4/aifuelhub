@@ -100,7 +100,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+
       </head>
       <body
         className={`${plusJakartaSans.variable} ${inter.variable} ${merriweather.variable} font-sans antialiased`}
@@ -121,13 +121,7 @@ gtag('config', '${gaId}');`,
           }}
         />
 
-        {/* AdSense Script */}
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3541576002060495"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
+        {/* AdSense Script removed - ads will be added later */}
 
         {/* AI Search Monitoring */}
         <Script
