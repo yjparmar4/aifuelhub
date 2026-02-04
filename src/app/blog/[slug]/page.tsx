@@ -19,7 +19,7 @@ import { SITE_URL } from '@/lib/seo'
 import { BlogPost, Tool } from '@/types'
 import { GoogleSEOOptimizedContent } from '@/components/google-seo-optimized-content'
 import { AISearchOptimizedContent } from '@/components/ai-search-optimized-content'
-import { QuickAnswer, KeyTakeaways } from '@/components/quick-answer'
+// QuickAnswer and KeyTakeaways imports removed
 import { getRelatedContent, generateInternalLinks as injectInternalLinks } from '@/lib/internal-linking'
 import { analyzeSEOContent } from '@/lib/google-seo-optimization'
 
@@ -262,16 +262,7 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
         availableContent={allTools.map(t => ({ type: 'tool', slug: t.slug, title: t.name }))}
       >
         <AISearchOptimizedContent type="blog" data={post as unknown as BlogPost}>
-          <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
-              <QuickAnswer
-                question={quickQuestion}
-                answer={quickAns}
-                readTime={`${Math.ceil(post.content.split(/\s+/).length / 200)} min read`}
-              />
-              {takeaways.length > 0 && <KeyTakeaways takeaways={takeaways} />}
-            </div>
-          </div>
+          {/* QuickAnswer and KeyTakeaways removed per user request */}
           <BlogPostPage
             post={{ ...post, content: optimizedContent } as unknown as BlogPost}
             relatedPosts={relatedPosts as unknown as BlogPost[]}
