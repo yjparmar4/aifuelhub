@@ -9,8 +9,9 @@ import { generateEntityGraph } from '@/lib/entity-graph'
 import { analyzeSEOContent, generateGoogleFAQSchema } from '@/lib/google-seo-optimization'
 import { notFound } from 'next/navigation'
 import ToolReviewPage from '@/components/tool-review-page'
-import { Tool } from '@/types'
+import { Tool, Category } from '@/types'
 import { SITE_URL } from '@/lib/seo'
+import { getRelatedContent, generateInternalLinks as injectInternalLinks } from '@/lib/internal-linking'
 
 import { unstable_cache } from 'next/cache'
 
@@ -91,8 +92,22 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     notFound()
   }
 
-  // Fetch related tools (Alternatives)
-  const relatedTools = await getRelatedTools(tool.categoryId, tool.id)
+  // Fetch related content using the advanced library
+  const relatedContent = await getRelatedContent(
+    'tool',
+    tool.slug,
+    tool.tags?.map(t => t.name) || [],
+    tool.categoryId || undefined
+  )
+
+  const relatedTools = relatedContent
+    .filter(item => item.type === 'tool')
+    .slice(0, 4)
+    .map(item => ({
+      ...item,
+      name: item.title,
+      categoryId: tool.categoryId, // Fallback for type compatibility
+    })) as unknown as Tool[]
 
   const defaultVsTarget = relatedTools[0]?.slug
 
@@ -115,6 +130,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     targetAudience: tool.targetAudience || undefined,
     category: tool.category ? { ...tool.category, icon: tool.category.icon || undefined } : undefined,
   } as unknown as Tool
+
+  // Inject internal links into the description
+  const optimizedDescription = injectInternalLinks(toolData.description || '', relatedContent, 3)
+  const toolWithLinks = { ...toolData, description: optimizedDescription }
 
   const relatedToolsData = relatedTools.map(t => ({
     ...t,
@@ -148,8 +167,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   }
 
   return (
-    <GoogleSEOOptimizedContent type="tool" data={toolData}>
-      <AISearchOptimizedContent type="tool" data={toolData}>
+    <GoogleSEOOptimizedContent type="tool" data={toolWithLinks}>
+      <AISearchOptimizedContent type="tool" data={toolWithLinks}>
         <JsonLd data={toolSchema} />
         {faqSchema && <JsonLd data={faqSchema} />}
         <JsonLd
@@ -185,7 +204,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </div>
         </div>
 
-        <ToolReviewPage tool={toolData} relatedTools={relatedToolsData} />
+        <ToolReviewPage tool={toolWithLinks} relatedTools={relatedTools} />
 
         {/* Google FAQ Section */}
         {toolData.faqs && (

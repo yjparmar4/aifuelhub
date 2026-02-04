@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `Best ${category.name} AI Tools 2025 - Top Rated & Reviewed`,
     description: `Discover the best AI tools for ${category.name.toLowerCase()}. Expert reviews, comparisons, and guides to help you find the perfect ${category.name.toLowerCase()} software.`,
     type: 'website',
-    canonical: `${SITE_URL}/ai-tools/${category.slug}`,
+    canonical: `${SITE_URL}/categories/${category.slug}`,
   })
 }
 

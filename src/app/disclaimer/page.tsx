@@ -1,5 +1,6 @@
 import { Container } from '@/components/ui/container'
 import { Metadata } from 'next'
+import { SITE_URL } from '@/lib/seo'
 
 export const metadata: Metadata = {
     title: 'Disclaimer | AI Fuel Hub',
@@ -7,6 +8,9 @@ export const metadata: Metadata = {
     robots: {
         index: false,
         follow: true,
+    },
+    alternates: {
+        canonical: `${SITE_URL}/disclaimer`,
     },
 }
 

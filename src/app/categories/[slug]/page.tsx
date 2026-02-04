@@ -29,13 +29,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             robots: {
                 index: false,
                 follow: true,
-            }
+            },
+            alternates: {
+                canonical: `${SITE_URL}/categories/${category.slug}`,
+            },
         }
     }
 
     return {
         title: `Best ${category.name} AI Tools (2025) | AI Fuel Hub`,
         description: category.description || `Discover and compare the best ${category.name} AI tools to boost your productivity.`,
+        alternates: {
+            canonical: `${SITE_URL}/categories/${category.slug}`,
+        },
     }
 }
 

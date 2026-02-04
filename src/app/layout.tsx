@@ -9,6 +9,7 @@ import { PerformanceOptimizations } from "@/components/technical-seo-monitor";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { SITE_URL } from "@/lib/seo";
+import { AnalyticsProvider } from "@/components/analytics-provider";
 import Script from "next/script";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -82,9 +83,6 @@ export const metadata: Metadata = {
     other: {
       "msvalidate.01": "YOUR_BING_VERIFICATION_CODE", // Optional
     },
-  },
-  alternates: {
-    canonical: SITE_URL,
   },
 };
 
@@ -180,6 +178,7 @@ gtag('config', '${gaId}');`,
           {children}
         </div>
         <Footer />
+        <AnalyticsProvider />
         <Toaster />
       </body>
     </html>

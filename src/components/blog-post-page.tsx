@@ -140,7 +140,7 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [], ment
     // Build a regex pattern from tool names (escape regex special chars)
     const pattern = new RegExp(`\\b(${sortedTools.map(t => t.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g')
 
-    const parts = []
+    const parts: (string | React.ReactNode)[] = []
     let lastIndex = 0
     let match
 
@@ -178,6 +178,22 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [], ment
 
     return parts.length > 0 ? parts : text
   }
+
+  // Strategic Ad Injection: Injects ad placeholders every 4 paragraphs
+  const contentWithAds = useMemo(() => {
+    const paragraphs = content.split(/\n\n+/)
+    if (paragraphs.length <= 4) return content
+
+    const withAds: string[] = []
+    for (let i = 0; i < paragraphs.length; i++) {
+      withAds.push(paragraphs[i])
+      // Inject after every 4 paragraphs, but not after the last one
+      if ((i + 1) % 4 === 0 && i !== paragraphs.length - 1) {
+        withAds.push('<div data-ad-unit="in-article"></div>')
+      }
+    }
+    return withAds.join('\n\n')
+  }, [content])
 
   // Recursive function to process React nodes and apply auto-linking to strings
   const processChildren = (children: React.ReactNode): React.ReactNode => {
@@ -601,15 +617,32 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [], ment
                   )}
                 </figure>
               ),
+              /* Custom ad unit renderer */
+              div: ({ node, ...props }) => {
+                if (props['data-ad-unit'] === 'in-article') {
+                  return (
+                    <div className="my-10 border-y border-gray-100 dark:border-gray-800 py-6 flex flex-col items-center">
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-widest mb-3">Advertisement</span>
+                      <GoogleAd slot="in-article-blog" format="fluid" className="w-full" />
+                    </div>
+                  )
+                }
+                return <div {...props} />
+              },
             }}
           >
-            {content}
+            {contentWithAds}
           </ReactMarkdown>
         </article>
 
         {/* Contextual Tools - Internal Linking */}
         {mentionedTools && mentionedTools.length > 0 && (
-          <ContextualTools tools={mentionedTools} />
+          <ContextualTools tools={mentionedTools.map(t => ({
+            ...t,
+            tagline: t.tagline || undefined,
+            pricingType: t.pricingType || undefined,
+            rating: t.rating || undefined
+          }))} />
         )}
 
         {/* Full Author Bio - E-E-A-T Optimization */}

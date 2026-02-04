@@ -1,13 +1,22 @@
-
 import { PageHeader } from '@/components/page-header'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Mail, MessageSquare } from 'lucide-react'
+import { Metadata } from 'next'
+import { SITE_URL } from '@/lib/seo'
 
 import { JsonLd } from '@/components/json-ld'
 import { generateContactPageSchema } from '@/lib/schema'
+
+export const metadata: Metadata = {
+    title: 'Contact Us | AI Fuel Hub',
+    description: 'Get in touch with AI Fuel Hub. We welcome your feedback, suggestions, and inquiries about AI tools and partnerships.',
+    alternates: {
+        canonical: `${SITE_URL}/contact`,
+    },
+}
 
 export default function ContactPage() {
     return (

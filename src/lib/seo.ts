@@ -63,11 +63,10 @@ export function generateMetadata({
       description: description || defaultDescription,
       images: [image],
     },
-    ...(canonical && {
-      alternates: {
-        canonical,
-      },
-    }),
+    // Use provided canonical OR generate from URL
+    alternates: {
+      canonical: canonical || (url ? `${SITE_URL}${url.startsWith('/') ? '' : '/'}${url}` : undefined),
+    },
     ...(noIndex && {
       robots: {
         index: false,

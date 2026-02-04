@@ -1,6 +1,15 @@
-
 import { PageHeader } from '@/components/page-header'
 import { Container } from '@/components/ui/container'
+import { Metadata } from 'next'
+import { SITE_URL } from '@/lib/seo'
+
+export const metadata: Metadata = {
+    title: 'Privacy Policy | AI Fuel Hub',
+    description: 'Learn about how we collect, use, and protect your information at AI Fuel Hub.',
+    alternates: {
+        canonical: `${SITE_URL}/privacy-policy`,
+    },
+}
 
 export default function PrivacyPage() {
     return (

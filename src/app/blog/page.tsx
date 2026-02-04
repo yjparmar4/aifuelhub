@@ -9,6 +9,7 @@ export const metadata: Metadata = generateMetadata({
   title: 'AI Tools Blog - Expert Reviews, Guides & Insights',
   description: 'Read expert reviews, in-depth guides, and latest insights about AI tools. Stay updated with the latest trends in artificial intelligence and productivity.',
   type: 'website',
+  url: '/blog',
 })
 
 export const revalidate = 60

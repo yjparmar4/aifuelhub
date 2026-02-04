@@ -1,6 +1,15 @@
-
 import { PageHeader } from '@/components/page-header'
 import { Container } from '@/components/ui/container'
+import { Metadata } from 'next'
+import { SITE_URL } from '@/lib/seo'
+
+export const metadata: Metadata = {
+    title: 'Terms of Service | AI Fuel Hub',
+    description: 'Our terms and conditions for using the AI Fuel Hub directory and services.',
+    alternates: {
+        canonical: `${SITE_URL}/terms-and-conditions`,
+    },
+}
 
 export default function TermsPage() {
     return (

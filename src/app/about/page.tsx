@@ -1,6 +1,15 @@
-
 import { PageHeader } from '@/components/page-header'
 import { Sparkles, Users, Target } from 'lucide-react'
+import { Metadata } from 'next'
+import { SITE_URL } from '@/lib/seo'
+
+export const metadata: Metadata = {
+    title: 'About AI Fuel Hub - Our Mission & Vision',
+    description: 'Learn about AI Fuel Hub, our mission to empower creators with AI technology, and how we curate the best AI tools.',
+    alternates: {
+        canonical: `${SITE_URL}/about`,
+    },
+}
 
 export default function AboutPage() {
     return (

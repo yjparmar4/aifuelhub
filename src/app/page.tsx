@@ -50,6 +50,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  alternates: {
+    canonical: 'https://www.aifuelhub.com',
+  },
 };
 
 import { unstable_cache } from 'next/cache';

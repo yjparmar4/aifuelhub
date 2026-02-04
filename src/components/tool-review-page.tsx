@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { ExternalLink, Star, Check, X, ArrowRight, BookOpen, Users, Tag, Share2, TrendingUp, Award, Zap } from 'lucide-react'
+import { ExternalLink, Star, Check, X, ArrowRight, BookOpen, Users, Tag, Share2, TrendingUp, Award, Zap, Clock } from 'lucide-react'
 import { AggressiveCTA, VerifiedCTA, SoftCTA } from '@/components/affiliate-button'
 import { InlineAd, BannerAd } from '@/components/ad-placeholder'
 import { motion } from 'framer-motion'
@@ -16,6 +16,7 @@ import { Tooltip } from '@/components/ui/tooltip'
 import { AffiliateDisclosure } from '@/components/affiliate-disclosure'
 import { PageHeader } from '@/components/page-header'
 import { NewsletterSignup } from '@/components/newsletter-signup'
+import { expertiseBadges, getLastUpdatedDate } from '@/lib/eeat-enhancements'
 
 export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, relatedTools?: Tool[] }) {
   const features = JSON.parse(tool.features || '[]')
@@ -87,6 +88,21 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
                   Sponsored
                 </Badge>
               ) : null}
+              {/* E-E-A-T Expert Badges */}
+              <Badge variant="outline" className={`${expertiseBadges['expert-tested'].color} text-white border-none`}>
+                <Check className="w-3 h-3 mr-1" />
+                {expertiseBadges['expert-tested'].label}
+              </Badge>
+              <Badge variant="outline" className={`${expertiseBadges['verified-review'].color} text-white border-none`}>
+                <Check className="w-3 h-3 mr-1" />
+                {expertiseBadges['verified-review'].label}
+              </Badge>
+            </div>
+
+            {/* Freshness Signal */}
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/30 px-2 py-1 rounded-md w-fit">
+              <Clock className="w-3 h-3" />
+              Last {getLastUpdatedDate(new Date(tool.createdAt || Date.now()), new Date(tool.updatedAt || Date.now()), 'long')}
             </div>
 
             {tool.rating ? (
@@ -108,7 +124,7 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
               <VerifiedCTA
                 href={tool.affiliateLink || tool.websiteUrl}
                 text={tool.affiliateCTA || 'Try Now'}
-                rating={tool.rating}
+                rating={tool.rating || undefined}
               />
               <div className="mt-3">
                 <AffiliateDisclosure />
@@ -334,7 +350,7 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
                 <p className="text-lg text-muted-foreground mb-6">
                   Join thousands of users who are already using {tool.name} to boost their productivity.
                 </p>
-                <AggressiveCTA href={tool.affiliateLink || tool.websiteUrl} text="Get Started with {tool.name} Now" />
+                <AggressiveCTA href={tool.affiliateLink || tool.websiteUrl} text={`Get Started with ${tool.name} Now`} />
               </CardContent>
             </Card>
 
@@ -346,11 +362,6 @@ export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, rel
                   Top Alternatives to {tool.name}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* We can import ToolCard dynamically or use a simpler card here to avoid circular dependencies if ToolCard imports something heavy, 
-                      but ToolCard is a client component so it should be fine. 
-                      However, I can't import ToolCard here easily if I am replacing content locally without checking imports.
-                      Wait, ToolCard is NOT imported. I need to import it.
-                   */}
                   {relatedTools.map(alt => (
                     <Link key={alt.id} href={`/tool/${alt.slug}`} className="block h-full">
                       <Card className="h-full hover:border-primary/50 transition-colors">

@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${toolNames} Comparison 2025: Which is Best?`,
     description: comparison.description || `Compare ${toolNames} side-by-side. Features, pricing, and our expert verdict to help you choose.`,
     type: 'article',
-    canonical: `${SITE_URL}/compare/${comparison.slug}`,
+    canonical: `${SITE_URL}/vs/${comparison.slug}`,
   })
 }
 
@@ -96,7 +96,7 @@ export default async function ComparisonDetailPage({ params }: { params: Promise
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: SITE_URL },
     { name: 'Compare', url: `${SITE_URL}/compare` },
-    { name: comparisonData.title, url: `${SITE_URL}/compare/${comparisonData.slug}` },
+    { name: comparisonData.title, url: `${SITE_URL}/vs/${comparisonData.slug}` },
   ])
 
   return (
@@ -109,7 +109,7 @@ export default async function ComparisonDetailPage({ params }: { params: Promise
         breadcrumbs={[
           { name: 'Home', href: '/' },
           { name: 'Compare', href: '/compare' },
-          { name: comparisonData.title, href: `/compare/${comparisonData.slug}` },
+          { name: comparisonData.title, href: `/vs/${comparisonData.slug}` },
         ]}
         right={
           <div className="flex flex-col gap-2 text-sm">

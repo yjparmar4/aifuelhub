@@ -7,6 +7,7 @@ export const metadata: Metadata = generateMetadata({
   title: 'Submit AI Tool - List Your Tool on Our Directory',
   description: 'Submit your AI tool to be featured in our directory. Reach thousands of users looking for AI-powered software solutions.',
   type: 'website',
+  url: '/submit-tool',
 })
 
 export default async function SubmitToolPage() {

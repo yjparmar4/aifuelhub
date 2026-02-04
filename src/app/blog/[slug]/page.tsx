@@ -16,7 +16,12 @@ import { getAuthorForTopic } from '@/lib/authors'
 import { notFound } from 'next/navigation'
 import BlogPostPage from '@/components/blog-post-page'
 import { SITE_URL } from '@/lib/seo'
-import { BlogPost } from '@/types'
+import { BlogPost, Tool } from '@/types'
+import { GoogleSEOOptimizedContent } from '@/components/google-seo-optimized-content'
+import { AISearchOptimizedContent } from '@/components/ai-search-optimized-content'
+import { QuickAnswer, KeyTakeaways } from '@/components/quick-answer'
+import { getRelatedContent, generateInternalLinks as injectInternalLinks } from '@/lib/internal-linking'
+import { analyzeSEOContent } from '@/lib/google-seo-optimization'
 
 /**
  * Enhance title for higher CTR
@@ -142,42 +147,23 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
     notFound()
   }
 
-  // Fetch related posts based on category, tags, and focus keyword
-  const tagIds = post.tags?.map(t => t.id) || []
-  const focusKeywords = post.focusKeyword?.split(',').map(k => k.trim()).filter(Boolean) || []
+  // Get related content using the advanced library
+  const relatedContent = await getRelatedContent(
+    'blog',
+    post.slug,
+    post.tags?.map(t => t.name) || [],
+    post.categoryId || undefined
+  )
 
-  // Build OR conditions for related posts
-  const relatedConditions: any[] = [
-    { categoryId: post.categoryId },
-    { tags: { some: { id: { in: tagIds } } } },
-  ]
-
-  // Add focus keyword matching for semantic relevance
-  if (focusKeywords.length > 0) {
-    focusKeywords.forEach(keyword => {
-      if (keyword.length > 3) {
-        relatedConditions.push({ title: { contains: keyword, mode: 'insensitive' } })
-        relatedConditions.push({ focusKeyword: { contains: keyword, mode: 'insensitive' } })
-      }
-    })
-  }
-
-  const relatedPosts = await db.blogPost.findMany({
-    where: {
-      published: true,
-      id: { not: post.id },
-      OR: relatedConditions,
-    },
-    include: {
-      category: true,
-      tags: true,
-    },
-    orderBy: [
-      { views: 'desc' }, // Prioritize popular posts
-      { publishedAt: 'desc' }
-    ],
-    take: 6, // Fetch more, will filter for best matches
-  })
+  // Sort related posts by score
+  const relatedPosts = relatedContent
+    .filter(item => item.type === 'blog')
+    .slice(0, 6)
+    .map(item => ({
+      slug: item.slug,
+      title: item.title,
+      excerpt: item.description,
+    }))
 
   // Fetch all tools for auto-linking and schema
   const allTools = await db.tool.findMany({
@@ -206,6 +192,21 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
 
   // Get author for E-E-A-T
   const author = getAuthorForTopic(post.title)
+
+  // Analyze SEO content
+  const seoAnalysis = analyzeSEOContent(post.content)
+
+  // Generate internal links within content
+  const optimizedContent = injectInternalLinks(post.content, relatedContent, 5)
+
+  // Prepare Quick Answer and Key Takeaways
+  const quickQuestion = `What are the best aspects of ${post.title}?`
+  const quickAns = post.excerpt || post.content.substring(0, 160).replace(/[#*]/g, '').trim()
+  const takeaways = post.content
+    .split('\n')
+    .filter(line => line.startsWith('- ') || line.startsWith('* '))
+    .slice(0, 5)
+    .map(t => t.replace(/^[-*]\s+/, ''))
 
   // Generate interconnected Entity Graph Schema (AEO)
   const postSchema = generateArticleWithGraph({
@@ -255,12 +256,30 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
       {claimSchemas.map((schema, i) => (
         <JsonLd key={`claim-${i}`} data={schema} />
       ))}
-      <BlogPostPage
-        post={post as unknown as BlogPost}
-        relatedPosts={relatedPosts as unknown as BlogPost[]}
-        tools={allTools}
-        mentionedTools={mentionedTools}
-      />
+      <GoogleSEOOptimizedContent
+        type="blog"
+        data={post as unknown as BlogPost}
+        availableContent={allTools.map(t => ({ type: 'tool', slug: t.slug, title: t.name }))}
+      >
+        <AISearchOptimizedContent type="blog" data={post as unknown as BlogPost}>
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto">
+              <QuickAnswer
+                question={quickQuestion}
+                answer={quickAns}
+                readTime={`${Math.ceil(post.content.split(/\s+/).length / 200)} min read`}
+              />
+              {takeaways.length > 0 && <KeyTakeaways takeaways={takeaways} />}
+            </div>
+          </div>
+          <BlogPostPage
+            post={{ ...post, content: optimizedContent } as unknown as BlogPost}
+            relatedPosts={relatedPosts as unknown as BlogPost[]}
+            tools={allTools}
+            mentionedTools={mentionedTools}
+          />
+        </AISearchOptimizedContent>
+      </GoogleSEOOptimizedContent>
     </>
   )
 }
