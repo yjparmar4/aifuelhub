@@ -5,9 +5,9 @@
 
 import React from 'react'
 import { JsonLd } from './json-ld'
-import { 
-  generateGoogleRichSnippets, 
-  generateGoogleFAQSchema, 
+import {
+  generateGoogleRichSnippets,
+  generateGoogleFAQSchema,
   generateGoogleHowToSchema,
   generateSEOTitle,
   generateSEODescription,
@@ -25,24 +25,24 @@ interface GoogleSEOOptimizedContentProps {
   className?: string
 }
 
-export function GoogleSEOOptimizedContent({ 
-  type, 
-  data, 
-  children, 
+export function GoogleSEOOptimizedContent({
+  type,
+  data,
+  children,
   availableContent = [],
-  className = '' 
+  className = ''
 }: GoogleSEOOptimizedContentProps) {
   // Generate SEO-optimized metadata
   const title = generateSEOTitle(
     'title' in data ? data.title : 'name' in data ? data.name : '',
     type
   )
-  
+
   const description = generateSEODescription(
     'description' in data ? data.description : 'content' in data ? data.content : '',
     type
   )
-  
+
   const keywords = generateKeywords(
     'description' in data ? data.description : 'content' in data ? data.content : '',
     type,
@@ -51,7 +51,7 @@ export function GoogleSEOOptimizedContent({
 
   // Generate rich snippets schema
   const richSnippetsSchema = generateGoogleRichSnippets(type, data)
-  
+
   // Generate internal linking suggestions
   const internalLinks = generateInternalLinks(
     type,
@@ -67,36 +67,36 @@ export function GoogleSEOOptimizedContent({
     <>
       {/* Google Rich Snippets Schema */}
       <JsonLd data={richSnippetsSchema} />
-      
+
       {/* SEO Meta Tags (if not already in layout) */}
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <meta name="author" content="AI Fuel Hub" />
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-      
+
       {/* Open Graph for Google */}
       <meta property="og:type" content={type === 'blog' ? 'article' : 'website'} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:site_name" content="AI Fuel Hub" />
-      
+
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:site" content="@aifuelhub" />
-      
+
       {/* Additional SEO Meta Tags */}
       <meta name="theme-color" content="#4F46E5" />
       <meta name="msapplication-TileColor" content="#4F46E5" />
       <meta name="application-name" content="AI Fuel Hub" />
-      
+
       {/* Canonical URL */}
-      <link 
-        rel="canonical" 
-        href={`https://www.aifuelhub.com/${type}/${'slug' in data ? data.slug : ''}`} 
+      <link
+        rel="canonical"
+        href={`https://www.aifuelhub.com/${type}/${'slug' in data ? data.slug : ''}`}
       />
-      
+
       {/* SEO Optimized Content Wrapper */}
       <div className={`google-seo-optimized ${className}`}>
         {/* Hidden SEO Content */}
@@ -108,7 +108,7 @@ export function GoogleSEOOptimizedContent({
             <p>SEO Score: {seoAnalysis.seoScore.toFixed(1)}</p>
             <p>Keyword Density: {seoAnalysis.keywordDensity.toFixed(2)}%</p>
           </div>
-          
+
           {/* Structured data for Google */}
           <div data-google-structured-data>
             <h2>Google Structured Data</h2>
@@ -121,21 +121,9 @@ export function GoogleSEOOptimizedContent({
 
         {/* Main content */}
         {children}
-        
-        {/* SEO Recommendations */}
-        {seoAnalysis.recommendations.length > 0 && (
-          <section className="mt-8 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-            <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
-              SEO Recommendations
-            </h3>
-            <ul className="list-disc list-inside text-sm text-yellow-700 dark:text-yellow-300">
-              {seoAnalysis.recommendations.map((rec, index) => (
-                <li key={index}>{rec}</li>
-              ))}
-            </ul>
-          </section>
-        )}
-        
+
+        {/* SEO Recommendations removed per user request */}
+
         {/* Internal Linking Suggestions */}
         {internalLinks.length > 0 && (
           <section className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -189,12 +177,12 @@ export function SEOScoreDisplay({ score }: { score: number }) {
 }
 
 // FAQ Component for Google FAQ Rich Snippets
-export function GoogleFAQSection({ 
-  faqs, 
-  title = "Frequently Asked Questions" 
-}: { 
+export function GoogleFAQSection({
+  faqs,
+  title = "Frequently Asked Questions"
+}: {
   faqs: Array<{ question: string; answer: string }>
-  title?: string 
+  title?: string
 }) {
   const faqSchema = generateGoogleFAQSchema(faqs)
 
@@ -207,8 +195,8 @@ export function GoogleFAQSection({
         </h2>
         <div className="space-y-6 max-w-4xl mx-auto">
           {faqs.map((faq, index) => (
-            <article 
-              key={index} 
+            <article
+              key={index}
               className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
             >
               <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-gray-100">
@@ -226,11 +214,11 @@ export function GoogleFAQSection({
 }
 
 // HowTo Component for Google How-to Rich Snippets
-export function GoogleHowToSection({ 
-  title, 
-  description, 
-  steps 
-}: { 
+export function GoogleHowToSection({
+  title,
+  description,
+  steps
+}: {
   title: string
   description: string
   steps: Array<{ name: string; text: string; image?: string }>
@@ -257,8 +245,8 @@ export function GoogleHowToSection({
                 <h3 className="text-lg font-semibold mb-2">{step.name}</h3>
                 <p className="text-gray-700 dark:text-gray-300">{step.text}</p>
                 {step.image && (
-                  <img 
-                    src={step.image} 
+                  <img
+                    src={step.image}
                     alt={step.name}
                     className="mt-4 rounded-lg shadow-sm"
                   />
@@ -273,10 +261,10 @@ export function GoogleHowToSection({
 }
 
 // Breadcrumb Component for Google Breadcrumb Rich Snippets
-export function GoogleBreadcrumbs({ 
-  items 
-}: { 
-  items: Array<{ name: string; url: string }> 
+export function GoogleBreadcrumbs({
+  items
+}: {
+  items: Array<{ name: string; url: string }>
 }) {
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -302,8 +290,8 @@ export function GoogleBreadcrumbs({
                   {item.name}
                 </span>
               ) : (
-                <a 
-                  href={item.url} 
+                <a
+                  href={item.url}
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   {item.name}
