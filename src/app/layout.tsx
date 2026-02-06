@@ -8,9 +8,11 @@ import { initializeAISearchMonitoring } from "@/lib/ai-search-monitoring";
 import { PerformanceOptimizations } from "@/components/technical-seo-monitor";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { WebVitalsMonitor, PerformanceObserver, SEOPerformanceOptimizations } from "@/components/web-vitals-monitor";
 import { SITE_URL } from "@/lib/seo";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import Script from "next/script";
+import { generateHreflangTags, generateGeoTargetingSchema } from "@/lib/international-seo";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -41,9 +43,14 @@ export const metadata: Metadata = {
   },
   description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives. Find the best tool for your needs.",
   keywords: ["best AI tools 2026", "AI tool reviews", "ChatGPT alternatives free", "Midjourney alternatives", "AI writing tools comparison", "AI image generators free", "AI coding tools", "Ahrefs alternatives free", "Moz Pro alternatives"],
-  authors: [{ name: "AI Fuel Hub Team" }],
+  authors: [{ name: "AI Fuel Hub Team", url: "https://aifuelhub.com/about" }],
   creator: "AI Fuel Hub Team",
   publisher: "AI Fuel Hub",
+  category: "Technology",
+  classification: "AI Tools Directory",
+  applicationName: "AI Fuel Hub",
+  referrer: "origin-when-cross-origin",
+  generator: "Next.js",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -51,14 +58,24 @@ export const metadata: Metadata = {
     title: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (Jan 2026)",
     description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives.",
     siteName: "AI Fuel Hub",
+    emails: ["hello@aifuelhub.com"],
+    phoneNumbers: [],
+    faxNumbers: [],
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
+        alt: "AI Fuel Hub - AI Tools Directory and Reviews",
+      },
+      {
+        url: "/og-image-square.png",
+        width: 600,
+        height: 600,
         alt: "AI Fuel Hub - AI Tools Directory",
       },
     ],
+    countryName: "United States",
   },
   twitter: {
     card: "summary_large_image",
@@ -66,7 +83,56 @@ export const metadata: Metadata = {
     description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives.",
     images: ["/og-image.png"],
     creator: "@aifuelhub",
+    creatorId: "1234567890",
+    site: "@aifuelhub",
+    siteId: "1234567890",
   },
+  other: {
+    "linkedin:owner": "AI Fuel Hub",
+    "fb:app_id": "your-facebook-app-id",
+    "pinterest-rich-pin": "true",
+    "telegram:channel": "@aifuelhub",
+    "whatsapp:share": "true",
+  },
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/safari-pinned-tab.svg",
+        color: "#5bbad5",
+      },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "AI Fuel Hub",
+    startupImage: [
+      {
+        url: "/apple-splash-2048-2732.png",
+        media: "(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)",
+      },
+    ],
+  },
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
+  archives: ["https://aifuelhub.com/sitemap.xml"],
+  assets: ["https://aifuelhub.com/public"],
+  bookmarks: ["https://aifuelhub.com"],
   robots: {
     index: true,
     follow: true,
@@ -84,6 +150,9 @@ export const metadata: Metadata = {
       "msvalidate.01": "YOUR_BING_VERIFICATION_CODE", // Optional
     },
   },
+  alternates: {
+    canonical: SITE_URL,
+  },
 };
 
 export default function RootLayout({
@@ -96,11 +165,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Resource hints for Core Web Vitals */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-
+        <SEOPerformanceOptimizations />
       </head>
       <body
         className={`${plusJakartaSans.variable} ${inter.variable} ${merriweather.variable} font-sans antialiased`}
@@ -163,9 +228,17 @@ gtag('config', '${gaId}');`,
           }}
         />
 
+        {/* Web Vitals Monitoring */}
+        <WebVitalsMonitor />
+        <PerformanceObserver />
+
+
+
+        {/* Enhanced structured data for world-class SEO */}
         <JsonLd data={generateOrganizationSchema()} />
         <JsonLd data={generateWebSiteSchema()} />
         <JsonLd data={generateSiteNavigationSchema()} />
+        <JsonLd data={generateGeoTargetingSchema()} />
         <PerformanceOptimizations />
         <Navbar />
         <div className="pt-24 min-h-screen">

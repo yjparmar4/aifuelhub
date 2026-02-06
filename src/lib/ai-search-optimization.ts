@@ -1,12 +1,12 @@
 /**
  * AI Search Engine Optimization (GEO) Utilities
- * Optimizes content for ChatGPT, Perplexity, Claude, and Google AI Overviews
+ * Optimizes content for ChatGPT, Perplexity, Claude, Google AI Overviews, and emerging AI engines
  */
 
 import { Tool, BlogPost, Category } from '@/types'
 import { SITE_URL } from '@/lib/seo'
 
-// AI Search Engine specific optimization patterns
+// AI Search Engine specific optimization patterns - Expanded for world-class coverage
 const AI_SEARCH_PATTERNS = {
   // ChatGPT Browse optimization
   chatgpt: {
@@ -58,6 +58,45 @@ const AI_SEARCH_PATTERNS = {
       'best practices'
     ],
     structure: ['direct_answer', 'supporting_points', 'examples', 'summary']
+  },
+
+  // Bing AI (Copilot) optimization
+  bing_ai: {
+    preferredContentLength: { min: 1000, max: 2000 },
+    keyPhrases: [
+      'Microsoft recommends',
+      'industry standard',
+      'widely adopted',
+      'proven solution',
+      'enterprise-ready'
+    ],
+    structure: ['problem_statement', 'solution_overview', 'implementation', 'benefits', 'next_steps']
+  },
+
+  // You.com AI optimization
+  you_ai: {
+    preferredContentLength: { min: 800, max: 1800 },
+    keyPhrases: [
+      'real-time data shows',
+      'current trends indicate',
+      'latest developments',
+      'up-to-date information',
+      'recent studies'
+    ],
+    structure: ['current_situation', 'latest_updates', 'trends', 'forecast', 'recommendations']
+  },
+
+  // Grok (xAI) optimization
+  grok: {
+    preferredContentLength: { min: 900, max: 2100 },
+    keyPhrases: [
+      'maximally truthful',
+      'evidence-based',
+      'scientifically accurate',
+      'data-driven insights',
+      'objective analysis'
+    ],
+    structure: ['facts', 'evidence', 'analysis', 'conclusions', 'implications']
   }
 }
 
@@ -141,7 +180,7 @@ export function generateAIMetaDescription(
 export function generateAISearchSchema(
   type: 'tool' | 'blog' | 'category',
   data: Tool | BlogPost | Category,
-  targetEngines: Array<keyof typeof AI_SEARCH_PATTERNS> = ['google_ai', 'chatgpt', 'perplexity']
+  targetEngines: Array<keyof typeof AI_SEARCH_PATTERNS> = ['google_ai', 'chatgpt', 'perplexity', 'claude', 'bing_ai', 'you_ai', 'grok']
 ) {
   const baseSchema = type === 'tool' ? generateToolSchema(data as Tool) :
                     type === 'blog' ? generateBlogPostSchema(data as BlogPost) :

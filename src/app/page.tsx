@@ -11,49 +11,16 @@ import { ToolCard } from '@/components/tool-card';
 import { FadeIn, StaggerChildren, StaggerItem } from '@/components/ui/motion-wrapper';
 import { TrustBackground } from '@/components/home/trust-background';
 import { generateEntitySchema } from '@/lib/geo-schema';
+import { generateWorldClassMetadata } from '@/lib/world-class-seo';
 
-export const metadata: Metadata = {
-  title: 'AI Fuel Hub - Discover & Compare 118+ AI Tools | Expert Reviews 2026',
+export const metadata: Metadata = generateWorldClassMetadata({
+  title: 'AI Fuel Hub: 118+ AI Tools Compared & Reviewed (2026)',
   description: 'Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives. Find the best tool for your needs.',
-  keywords: 'AI tools, artificial intelligence, AI directory, ChatGPT alternatives, Midjourney alternatives, AI writing tools, AI image generators, AI coding tools, best AI software 2026',
-  authors: [{ name: 'AI Fuel Hub Team' }],
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://www.aifuelhub.com',
-    siteName: 'AI Fuel Hub',
-    title: 'AI Fuel Hub - Discover & Compare 118+ AI Tools | Expert Reviews 2026',
-    description: 'The ultimate AI tools directory with 118+ verified tools. Compare features, pricing, and reviews of ChatGPT, Midjourney, Claude, and more.',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'AI Fuel Hub - AI Tools Directory',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AI Fuel Hub - Discover & Compare 118+ AI Tools',
-    description: 'The ultimate AI tools directory with 118+ verified tools. Expert-tested, unbiased recommendations.',
-    images: ['/og-image.png'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  alternates: {
-    canonical: 'https://www.aifuelhub.com',
-  },
-};
+  path: '/',
+  contentType: 'website',
+  keywords: ['AI tools', 'artificial intelligence', 'AI directory', 'ChatGPT alternatives', 'Midjourney alternatives', 'AI writing tools', 'AI image generators', 'AI coding tools', 'best AI software 2026'],
+  imageUrl: '/og-image.png',
+});
 
 import { unstable_cache } from 'next/cache';
 

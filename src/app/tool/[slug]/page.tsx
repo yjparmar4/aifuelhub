@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { generateMetadata as generateSeoMetadata } from '@/lib/seo'
+import { generateWorldClassMetadata } from '@/lib/world-class-seo'
 import { JsonLd } from '@/components/json-ld'
 import { AISearchOptimizedContent } from '@/components/ai-search-optimized-content'
 import { GoogleSEOOptimizedContent, SEOScoreDisplay, GoogleFAQSection } from '@/components/google-seo-optimized-content'
@@ -65,11 +65,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
 
-  return generateSeoMetadata({
+  return generateWorldClassMetadata({
     title: tool.metaTitle || `${tool.name} Review 2026: Features, Pricing & Alternatives`,
     description: tool.metaDescription || tool.description,
-    type: 'review',
-    canonical: `${SITE_URL}/tool/${tool.slug}`,
+    path: `/tool/${tool.slug}`,
+    contentType: 'tool',
+    keywords: tool.tags?.map(t => t.name),
+    imageUrl: `${SITE_URL}/logo.svg`, // Fallback, real implementation might use tool screenshot
+    updatedAt: tool.updatedAt.toISOString(),
   })
 }
 

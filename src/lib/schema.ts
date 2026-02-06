@@ -1,5 +1,6 @@
 import { Tool, FAQ, BlogPost, Category } from '@/types'
 import { SITE_URL } from '@/lib/seo'
+import { generateRegionalOrganizationSchema } from '@/lib/international-seo'
 
 // Product/Review Schema for tools
 // Product/Review Schema for tools
@@ -24,6 +25,17 @@ export function generateToolSchema(tool: Tool) {
       '@type': 'Brand',
       name: tool.name,
     },
+    // Enhanced GEO: Multiple language support
+    inLanguage: ['en', 'es', 'fr', 'de', 'zh-CN', 'ja', 'ko'],
+    // AEO: Actionable usage patterns
+    potentialAction: {
+      '@type': 'UseAction',
+      target: `${SITE_URL}/tool/${tool.slug}`,
+      object: {
+        '@type': 'SoftwareApplication',
+        name: tool.name
+      }
+    },
     offers: {
       '@type': 'Offer',
       url: tool.affiliateLink || tool.websiteUrl,
@@ -31,6 +43,11 @@ export function generateToolSchema(tool: Tool) {
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
       priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      // GEO: Global availability
+      availableAtOrFrom: {
+        '@type': 'Place',
+        name: 'Worldwide'
+      },
       hasMerchantReturnPolicy: {
         '@type': 'MerchantReturnPolicy',
         returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
@@ -47,7 +64,7 @@ export function generateToolSchema(tool: Tool) {
         },
         shippingDestination: {
           '@type': 'DefinedRegion',
-          addressCountry: 'US'
+          addressCountry: ['US', 'GB', 'CA', 'AU', 'IN', 'DE', 'FR', 'ES', 'IT', 'JP', 'KR', 'CN']
         }
       }
     },
@@ -58,16 +75,27 @@ export function generateToolSchema(tool: Tool) {
         reviewCount: tool.reviewCount,
         bestRating: '5',
         worstRating: '1',
+        // AEO: Trust signals
+        author: {
+          '@type': 'Organization',
+          name: 'AI Fuel Hub'
+        }
       }
       : undefined,
     featureList: features,
-
+    // GEO: Audience targeting
+    audience: {
+      '@type': 'Audience',
+      audienceType: 'Business users, developers, content creators, students',
+      geographicArea: 'Worldwide'
+    },
     // Editorial Review with Pros/Cons
     review: {
       '@type': 'Review',
       author: {
         '@type': 'Organization',
         name: 'AI Fuel Hub',
+        url: SITE_URL
       },
       reviewRating: {
         '@type': 'Rating',
@@ -94,6 +122,16 @@ export function generateToolSchema(tool: Tool) {
           })),
         },
       }),
+    },
+    // AEO: Educational content
+    teaches: [`Using ${tool.name} for productivity`, `Integrating ${tool.name} in workflows`, `Best practices for ${tool.name}`],
+    // GEO: Regional availability
+    offers: {
+      '@type': 'Offer',
+      areaServed: {
+        '@type': 'Place',
+        name: 'Worldwide'
+      }
     }
   }
 
@@ -284,14 +322,57 @@ export function generateWebSiteSchema() {
     name: 'AI Fuel Hub',
     url: SITE_URL,
     description: 'Discover, compare, and review the best AI tools',
+    // AEO: Enhanced search action
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
         urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+        inLanguage: ['en', 'es', 'fr', 'de', 'zh-CN', 'ja', 'ko']
       },
       'query-input': 'required name=search_term_string',
+      actionStatus: 'https://schema.org/PotentialActionStatus'
     },
+    // GEO: Global audience
+    audience: {
+      '@type': 'Audience',
+      audienceType: 'Global AI enthusiasts, professionals, and businesses',
+      geographicArea: 'Worldwide'
+    },
+    // AEO: Multiple content types
+    mainEntity: {
+      '@type': 'ItemList',
+      name: 'AI Tools Directory',
+      description: 'Comprehensive directory of AI tools and software',
+      numberOfItems: 118
+    },
+    // E-E-A-T signals
+    publisher: {
+      '@type': 'Organization',
+      name: 'AI Fuel Hub',
+      url: SITE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/logo.svg`
+      }
+    },
+    // GEO: Language availability
+    inLanguage: ['en', 'es', 'fr', 'de', 'zh-CN', 'ja', 'ko', 'pt', 'it', 'ru'],
+    // AEO: Content categories
+    about: [
+      {
+        '@type': 'Thing',
+        name: 'Artificial Intelligence'
+      },
+      {
+        '@type': 'Thing',
+        name: 'Software Reviews'
+      },
+      {
+        '@type': 'Thing',
+        name: 'Technology Comparison'
+      }
+    ]
   }
 
   return JSON.stringify(schema)
@@ -306,7 +387,69 @@ export function generateOrganizationSchema() {
     url: SITE_URL,
     logo: `${SITE_URL}/logo.svg`,
     description: 'The leading directory for AI tools and software reviews',
-    sameAs: [],
+    // GEO: Global presence
+    areaServed: {
+      '@type': 'Place',
+      name: 'Worldwide'
+    },
+    // AEO: Multiple contact points
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        telephone: '',
+        contactType: 'customer support',
+        email: 'hello@aifuelhub.com',
+        availableLanguage: ['English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Korean']
+      },
+      {
+        '@type': 'ContactPoint',
+        contactType: 'technical support',
+        email: 'support@aifuelhub.com',
+        availableLanguage: ['English']
+      }
+    ],
+    sameAs: [
+      'https://twitter.com/aifuelhub',
+      'https://linkedin.com/company/aifuelhub',
+      'https://facebook.com/aifuelhub'
+    ],
+    // E-E-A-T signals
+    knowsAbout: ['AI Tools', 'Software Reviews', 'Technology Analysis', 'Machine Learning', 'Natural Language Processing'],
+    // GEO: Multiple locations
+    location: [
+      {
+        '@type': 'VirtualLocation',
+        url: SITE_URL
+      }
+    ],
+    // AEO: Services offered
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'AI Tools Directory Services',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'AI Tool Reviews'
+          }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'AI Tool Comparisons'
+          }
+        },
+        {
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: 'AI Industry Insights'
+          }
+        }
+      ]
+    }
   }
 
   return JSON.stringify(schema)

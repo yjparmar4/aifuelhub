@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
+import { generateWorldClassMetadata } from '@/lib/world-class-seo'
 import { JsonLd } from '@/components/json-ld'
 import { db } from '@/lib/db'
 import {
@@ -95,6 +95,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const post = await db.blogPost.findUnique({
     where: { slug, published: true },
+    include: { tags: true },
   })
 
   if (!post) {
@@ -111,13 +112,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const optimizedTitle = enhanceTitle(baseTitle)
   const optimizedDescription = enhanceDescription(baseDescription, baseTitle)
 
-  return generateSEOMetadata({
+  return generateWorldClassMetadata({
     title: optimizedTitle,
     description: optimizedDescription,
-    type: 'article',
-    publishedTime: post.publishedAt?.toISOString(),
-    modifiedTime: post.updatedAt.toISOString(),
-    canonical: `${SITE_URL}/blog/${post.slug}`,
+    path: `/blog/${post.slug}`,
+    contentType: 'article',
+    publishedAt: post.publishedAt?.toISOString(),
+    updatedAt: post.updatedAt.toISOString(),
+    keywords: post.tags?.map(t => t.name),
+    imageUrl: post.coverImage || undefined,
+    author: 'AI Fuel Hub Team', // Or specific author if available
   })
 }
 

@@ -1,6 +1,19 @@
 import { MetadataRoute } from 'next'
 import { db } from '@/lib/db'
 import { SITE_URL } from '@/lib/seo'
+import { SUPPORTED_LOCALES } from '@/lib/international-seo'
+
+// Add alternates for international SEO
+function generateAlternates(path: string) {
+  return {
+    languages: Object.fromEntries(
+      SUPPORTED_LOCALES.map(locale => [
+        locale.code,
+        `${SITE_URL}${path}?lang=${locale.code}`,
+      ])
+    ),
+  }
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_URL
@@ -54,64 +67,73 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     tool.categoryId && categoryCounts[tool.categoryId] > 1
   )
 
-  // Static pages
+  // Static pages with alternates
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,
+      alternates: generateAlternates(''),
     },
     {
       url: `${baseUrl}/ai-tools`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
+      alternates: generateAlternates('/ai-tools'),
     },
     {
       url: `${baseUrl}/categories`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
+      alternates: generateAlternates('/categories'),
     },
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.8,
+      alternates: generateAlternates('/blog'),
     },
     {
       url: `${baseUrl}/compare`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.7,
+      alternates: generateAlternates('/compare'),
     },
     {
       url: `${baseUrl}/best-ai-tools`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
+      alternates: generateAlternates('/best-ai-tools'),
     },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
+      alternates: generateAlternates('/about'),
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
+      alternates: generateAlternates('/contact'),
     },
   ]
 
-  // Tool pages (Priority 0.8)
+  // Tool pages (Priority 0.8) with alternates
   const toolPages: MetadataRoute.Sitemap = tools.map(tool => ({
     url: `${baseUrl}/tool/${tool.slug}`,
     lastModified: tool.updatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
+    alternates: generateAlternates(`/tool/${tool.slug}`),
   }))
 
   // Review pages (Priority 0.8)
@@ -155,12 +177,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // Blog post pages (Priority 0.6)
+  // Blog post pages (Priority 0.8) with alternates
   const blogPages: MetadataRoute.Sitemap = blogPosts.map(post => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: post.updatedAt,
-    changeFrequency: 'monthly' as const,
+    changeFrequency: 'weekly' as const,
     priority: 0.8,
+    alternates: generateAlternates(`/blog/${post.slug}`),
   }))
 
   // Comparison pages (Priority 0.6)

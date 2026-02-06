@@ -462,6 +462,12 @@ export default function BlogPostPage({ post, relatedPosts = [], tools = [], ment
                   </h2>
                 )
               },
+              /* Prevent user content from spawning H1s */
+              h1: ({ children, ...props }) => (
+                <h2 {...props} className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-50">
+                  {children}
+                </h2>
+              ),
               /* Enhanced blockquote with multiple styles */
               blockquote: ({ children, ...props }) => {
                 const childStr = String(children).toLowerCase()
