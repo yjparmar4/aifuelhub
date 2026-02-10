@@ -12,7 +12,7 @@ import { WebVitalsMonitor, PerformanceObserver, SEOPerformanceOptimizations } fr
 import { SITE_URL } from "@/lib/seo";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import Script from "next/script";
-import { generateHreflangTags, generateGeoTargetingSchema } from "@/lib/international-seo";
+import { generateHreflangTags, generateGeoTargetingSchema, SUPPORTED_LOCALES } from "@/lib/international-seo";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -152,6 +152,12 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: SITE_URL,
+    languages: Object.fromEntries(
+      SUPPORTED_LOCALES.map((locale) => [
+        locale.code,
+        `${SITE_URL}?lang=${locale.code}`,
+      ])
+    ),
   },
 };
 
