@@ -93,6 +93,7 @@ export const metadata: Metadata = {
     "pinterest-rich-pin": "true",
     "telegram:channel": "@aifuelhub",
     "whatsapp:share": "true",
+    "Google-Extended": "index, follow",
   },
   manifest: "/manifest.json",
   icons: {

@@ -28,6 +28,8 @@ Allow: /public/
 Allow: /static/
 Allow: /images/
 Allow: /blog/images/
+Allow: /.well-known/
+Allow: /openapi.yaml
 
 # Googlebot specific (enhanced crawling)
 User-agent: Googlebot

@@ -33,6 +33,32 @@ export const TOOL_SAME_AS_LINKS: Record<string, string[]> = {
         'https://en.wikipedia.org/wiki/Gemini_(chatbot)',
         'https://www.crunchbase.com/organization/google',
     ],
+    'jasper': [
+        'https://www.crunchbase.com/organization/jasper-ai',
+    ],
+    'copy-ai': [
+        'https://www.crunchbase.com/organization/copy-ai',
+    ],
+    'writesonic': [
+        'https://www.crunchbase.com/organization/writesonic',
+    ],
+    'runway': [
+        'https://en.wikipedia.org/wiki/Runway_(company)',
+        'https://www.crunchbase.com/organization/runway-ml',
+    ],
+    'pika': [
+        'https://www.crunchbase.com/organization/pika-labs',
+    ],
+    'leonardo-ai': [
+        'https://www.crunchbase.com/organization/leonardo-ai',
+    ],
+    'synthesia': [
+        'https://www.crunchbase.com/organization/synthesia-io',
+    ],
+    'elevenlabs': [
+        'https://en.wikipedia.org/wiki/ElevenLabs',
+        'https://www.crunchbase.com/organization/elevenlabs',
+    ],
     // Add more as needed
 }
 

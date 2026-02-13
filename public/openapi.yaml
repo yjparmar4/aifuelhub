@@ -1,0 +1,176 @@
+openapi: 3.0.1
+info:
+  title: AI Fuel Hub API
+  description: Search and retrieve AI tools and resources from AI Fuel Hub.
+  version: 'v1'
+servers:
+  - url: https://aifuelhub.com
+paths:
+  /api/search:
+    get:
+      operationId: search
+      summary: Search for AI tools, blog posts, and categories
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: true
+          description: The search query (e.g., "chatbot", "image generator")
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [all, tools, blog, categories]
+          required: false
+          description: Type of content to search for (default is 'all')
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          required: false
+          description: Number of results to return
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResults'
+  /api/tools:
+    get:
+      operationId: getTools
+      summary: Get a list of AI tools with filtering options
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+          required: false
+          description: Category slug to filter by (e.g., "writing-assistants")
+        - in: query
+          name: pricingType
+          schema:
+            type: string
+          required: false
+          description: Filter by pricing type (e.g., "Freemium", "Free", "Paid")
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [popular, newest, rating]
+          required: false
+          description: Sort order
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          required: false
+          description: Number of tools to return
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolList'
+  /api/tools/{slug}:
+    get:
+      operationId: getTool
+      summary: Get details of a specific AI tool
+      parameters:
+        - in: path
+          name: slug
+          schema:
+            type: string
+          required: true
+          description: The slug of the tool (e.g., "chatgpt")
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tool'
+        "404":
+          description: Tool not found
+
+components:
+  schemas:
+    SearchResults:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            tools:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tool'
+            blog:
+              type: array
+              items:
+                $ref: '#/components/schemas/BlogPost'
+            categories:
+              type: array
+              items:
+                $ref: '#/components/schemas/Category'
+    
+    ToolList:
+      type: object
+      properties:
+        tools:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tool'
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+            totalPages:
+              type: integer
+
+    Tool:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        tagline:
+          type: string
+        description:
+          type: string
+        pricingType:
+          type: string
+        websiteUrl:
+          type: string
+        rating:
+          type: number
+    
+    BlogPost:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+    
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
