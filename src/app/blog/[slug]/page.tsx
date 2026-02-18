@@ -19,7 +19,7 @@ import { SITE_URL } from '@/lib/seo'
 import { BlogPost, Tool } from '@/types'
 import { GoogleSEOOptimizedContent } from '@/components/google-seo-optimized-content'
 import { AISearchOptimizedContent } from '@/components/ai-search-optimized-content'
-import { QuickAnswer, KeyTakeaways } from '@/components/quick-answer'
+
 import { getRelatedContent, generateInternalLinks as injectInternalLinks } from '@/lib/internal-linking'
 import { analyzeSEOContent } from '@/lib/google-seo-optimization'
 
@@ -203,14 +203,7 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
   // Generate internal links within content
   const optimizedContent = injectInternalLinks(post.content, relatedContent, 5)
 
-  // Prepare Quick Answer and Key Takeaways
-  const quickQuestion = `What are the best aspects of ${post.title}?`
-  const quickAns = post.excerpt || post.content.substring(0, 160).replace(/[#*]/g, '').trim()
-  const takeaways = post.content
-    .split('\n')
-    .filter(line => line.startsWith('- ') || line.startsWith('* '))
-    .slice(0, 5)
-    .map(t => t.replace(/^[-*]\s+/, ''))
+
 
   // Generate interconnected Entity Graph Schema (AEO)
   const postSchema = generateArticleWithGraph({
@@ -266,17 +259,6 @@ export default async function BlogPostDetailPage({ params }: { params: Promise<{
         availableContent={allTools.map(t => ({ type: 'tool', slug: t.slug, title: t.name }))}
       >
         <AISearchOptimizedContent type="blog" data={post as unknown as BlogPost}>
-          <div className="container mx-auto px-4 max-w-4xl mt-8">
-            <QuickAnswer
-              question={quickQuestion}
-              answer={quickAns}
-              readTime={`${Math.ceil(post.content.split(/\s+/).length / 200)} min read`}
-            />
-            <KeyTakeaways
-              title="Executive Summary"
-              takeaways={takeaways}
-            />
-          </div>
           <BlogPostPage
             post={{ ...post, content: optimizedContent } as unknown as BlogPost}
             relatedPosts={relatedPosts as unknown as BlogPost[]}
