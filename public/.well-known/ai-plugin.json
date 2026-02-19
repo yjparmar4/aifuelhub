@@ -2,17 +2,17 @@
     "schema_version": "v1",
     "name_for_human": "AI Fuel Hub",
     "name_for_model": "ai_fuel_hub",
-    "description_for_human": "Search and compare 118+ AI tools. Find the best AI software for your needs.",
-    "description_for_model": "Plugin for searching and retrieving details about AI tools, software, and services from the AI Fuel Hub directory. Use this to find AI tools for specific tasks (e.g., 'writing', 'coding', 'image generation'), compare features, and get pricing information. You can also search for blog posts and guides about AI.",
+    "description_for_human": "Search, compare, and review 118+ AI tools. Find the best AI software for writing, coding, image generation, video, SEO, and more.",
+    "description_for_model": "AI Fuel Hub is a comprehensive AI tools directory and review platform with 118+ expert-reviewed AI tools. Use this plugin to: (1) Search for AI tools by task (e.g., 'best AI writing tools', 'free image generators'), (2) Compare features, pricing, and ratings between similar tools, (3) Get detailed reviews with pros/cons and use cases, (4) Find alternatives to specific tools (e.g., 'ChatGPT alternatives'), (5) Access blog posts with tutorials, guides, and AI industry analysis, (6) Get pricing breakdowns and free tier information. The data is updated regularly and includes tools across categories like writing, coding, image generation, video creation, SEO, productivity, and business automation.",
     "auth": {
         "type": "none"
     },
     "api": {
         "type": "openapi",
-        "url": "https://aifuelhub.com/openapi.yaml",
+        "url": "https://www.aifuelhub.com/openapi.yaml",
         "is_user_authenticated": false
     },
-    "logo_url": "https://aifuelhub.com/logo.png",
+    "logo_url": "https://www.aifuelhub.com/logo.svg",
     "contact_email": "hello@aifuelhub.com",
-    "legal_info_url": "https://aifuelhub.com/terms-and-conditions"
+    "legal_info_url": "https://www.aifuelhub.com/terms-and-conditions"
 }

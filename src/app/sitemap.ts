@@ -3,15 +3,36 @@ import { db } from '@/lib/db'
 import { SITE_URL } from '@/lib/seo'
 import { SUPPORTED_LOCALES } from '@/lib/international-seo'
 
-// Add alternates for international SEO
+// Add alternates for international SEO with x-default
 function generateAlternates(path: string) {
+  const languages: Record<string, string> = {
+    'x-default': `${SITE_URL}${path}`,
+  }
+  
+  for (const locale of SUPPORTED_LOCALES) {
+    languages[locale.code] = `${SITE_URL}${path}?lang=${locale.code}`
+  }
+  
+  return { languages }
+}
+
+// Generate AI-optimized sitemap entries with enhanced metadata
+function generateAIOptimizedEntry(options: {
+  url: string
+  lastModified: Date | string
+  changeFrequency?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never'
+  priority?: number
+  path?: string
+  images?: string[]
+}): MetadataRoute.Sitemap[number] {
   return {
-    languages: Object.fromEntries(
-      SUPPORTED_LOCALES.map(locale => [
-        locale.code,
-        `${SITE_URL}${path}?lang=${locale.code}`,
-      ])
-    ),
+    url: options.url,
+    lastModified: options.lastModified,
+    changeFrequency: options.changeFrequency || 'weekly',
+    priority: options.priority || 0.5,
+    alternates: options.path ? generateAlternates(options.path) : undefined,
+    // Images for image sitemap
+    images: options.images,
   }
 }
 

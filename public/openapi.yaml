@@ -1,38 +1,50 @@
 openapi: 3.0.1
 info:
   title: AI Fuel Hub API
-  description: Search and retrieve AI tools and resources from AI Fuel Hub.
-  version: 'v1'
+  description: >
+    Search, compare, and retrieve detailed information about 118+ AI tools and resources from AI Fuel Hub.
+    Use this API to find AI tools for specific tasks (writing, coding, image generation, video, SEO, etc.),
+    compare features and pricing, read expert reviews, and access blog content with tutorials and guides.
+  version: 'v2'
+  contact:
+    email: hello@aifuelhub.com
+    url: https://www.aifuelhub.com
+  license:
+    name: Proprietary
+    url: https://www.aifuelhub.com/terms-and-conditions
 servers:
-  - url: https://aifuelhub.com
+  - url: https://www.aifuelhub.com
+    description: Production
 paths:
   /api/search:
     get:
       operationId: search
       summary: Search for AI tools, blog posts, and categories
+      description: Full-text search across all content types. Returns matching tools, blog posts, and categories ranked by relevance.
       parameters:
         - in: query
           name: q
           schema:
             type: string
           required: true
-          description: The search query (e.g., "chatbot", "image generator")
+          description: The search query (e.g., "chatbot", "image generator", "free writing tools")
         - in: query
           name: type
           schema:
             type: string
             enum: [all, tools, blog, categories]
           required: false
-          description: Type of content to search for (default is 'all')
+          description: Filter by content type (default is 'all')
         - in: query
           name: limit
           schema:
             type: integer
+            default: 10
           required: false
-          description: Number of results to return
+          description: Number of results to return (max 50)
       responses:
         "200":
-          description: OK
+          description: Search results
           content:
             application/json:
               schema:
@@ -41,35 +53,38 @@ paths:
     get:
       operationId: getTools
       summary: Get a list of AI tools with filtering options
+      description: Browse the complete AI tools directory with category, pricing, and sort filters.
       parameters:
         - in: query
           name: category
           schema:
             type: string
           required: false
-          description: Category slug to filter by (e.g., "writing-assistants")
+          description: Category slug to filter by (e.g., "writing-assistants", "image-generators")
         - in: query
           name: pricingType
           schema:
             type: string
+            enum: [Free, Freemium, Paid, Enterprise]
           required: false
-          description: Filter by pricing type (e.g., "Freemium", "Free", "Paid")
+          description: Filter by pricing model
         - in: query
           name: sort
           schema:
             type: string
             enum: [popular, newest, rating]
           required: false
-          description: Sort order
+          description: Sort order (default is 'popular')
         - in: query
           name: limit
           schema:
             type: integer
+            default: 20
           required: false
-          description: Number of tools to return
+          description: Number of tools to return (max 100)
       responses:
         "200":
-          description: OK
+          description: List of AI tools
           content:
             application/json:
               schema:
@@ -78,22 +93,59 @@ paths:
     get:
       operationId: getTool
       summary: Get details of a specific AI tool
+      description: Returns comprehensive information about an AI tool including features, pricing, pros/cons, ratings, and reviews.
       parameters:
         - in: path
           name: slug
           schema:
             type: string
           required: true
-          description: The slug of the tool (e.g., "chatgpt")
+          description: The URL slug of the tool (e.g., "chatgpt", "midjourney", "cursor")
       responses:
         "200":
-          description: OK
+          description: Tool details
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tool'
         "404":
           description: Tool not found
+  /feed.xml:
+    get:
+      operationId: getRSSFeed
+      summary: Get RSS feed of latest blog posts
+      description: Returns an RSS 2.0 feed with the 50 most recent blog posts, including full content, images, and metadata.
+      responses:
+        "200":
+          description: RSS XML feed
+          content:
+            application/xml:
+              schema:
+                type: string
+  /llms.txt:
+    get:
+      operationId: getLLMsContext
+      summary: Get site context for AI language models
+      description: Returns a structured text file with comprehensive site information optimized for AI language model consumption.
+      responses:
+        "200":
+          description: LLMs context file
+          content:
+            text/plain:
+              schema:
+                type: string
+  /llms-full.txt:
+    get:
+      operationId: getLLMsFullContext
+      summary: Get extended site context for AI language models
+      description: Extended version with complete tool directory, all categories, and recent blog posts with excerpts.
+      responses:
+        "200":
+          description: Full LLMs context file
+          content:
+            text/plain:
+              schema:
+                type: string
 
 components:
   schemas:
@@ -115,7 +167,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Category'
-    
+
     ToolList:
       type: object
       properties:
@@ -138,19 +190,30 @@ components:
           type: string
         name:
           type: string
+          description: Name of the AI tool
         slug:
           type: string
+          description: URL-friendly identifier
         tagline:
           type: string
+          description: Short one-line description
         description:
           type: string
+          description: Detailed description of the tool
         pricingType:
           type: string
+          enum: [Free, Freemium, Paid, Enterprise]
+          description: Pricing model
         websiteUrl:
           type: string
+          description: Official website URL
         rating:
           type: number
-    
+          description: Average rating out of 5
+        category:
+          type: string
+          description: Tool category name
+
     BlogPost:
       type: object
       properties:
@@ -158,11 +221,18 @@ components:
           type: string
         title:
           type: string
+          description: Blog post title
         slug:
           type: string
+          description: URL-friendly identifier
         excerpt:
           type: string
-    
+          description: Short summary of the post
+        publishedAt:
+          type: string
+          format: date-time
+          description: Publication date
+
     Category:
       type: object
       properties:
@@ -170,7 +240,13 @@ components:
           type: string
         name:
           type: string
+          description: Category name
         slug:
           type: string
+          description: URL-friendly identifier
         description:
           type: string
+          description: Category description
+        toolCount:
+          type: integer
+          description: Number of tools in this category

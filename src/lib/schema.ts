@@ -125,13 +125,14 @@ export function generateToolSchema(tool: Tool) {
     },
     // AEO: Educational content
     teaches: [`Using ${tool.name} for productivity`, `Integrating ${tool.name} in workflows`, `Best practices for ${tool.name}`],
-    // GEO: Regional availability
-    offers: {
-      '@type': 'Offer',
-      areaServed: {
-        '@type': 'Place',
-        name: 'Worldwide'
-      }
+    // GEO: Regional availability - merged into main offers
+    areaServed: {
+      '@type': 'Place',
+      name: 'Worldwide'
+    },
+    availableAtOrFrom: {
+      '@type': 'Place',
+      name: 'Worldwide'
     }
   }
 
@@ -322,17 +323,36 @@ export function generateWebSiteSchema() {
     name: 'AI Fuel Hub',
     url: SITE_URL,
     description: 'Discover, compare, and review the best AI tools',
-    // AEO: Enhanced search action
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-        inLanguage: ['en', 'es', 'fr', 'de', 'zh-CN', 'ja', 'ko']
+    // Enhanced Sitelinks Searchbox for Google - Array of search actions
+    potentialAction: [
+      {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+          inLanguage: 'en'
+        },
+        'query-input': 'required name=search_term_string'
       },
-      'query-input': 'required name=search_term_string',
-      actionStatus: 'https://schema.org/PotentialActionStatus'
-    },
+      {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_URL}/ai-tools?search={search_term_string}`,
+          inLanguage: 'en'
+        },
+        'query-input': 'required name=search_term_string'
+      },
+      {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_URL}/blog?search={search_term_string}`,
+          inLanguage: 'en'
+        },
+        'query-input': 'required name=search_term_string'
+      }
+    ],
     // GEO: Global audience
     audience: {
       '@type': 'Audience',
@@ -371,6 +391,36 @@ export function generateWebSiteSchema() {
       {
         '@type': 'Thing',
         name: 'Technology Comparison'
+      }
+    ],
+    // Enhanced Sitelinks Searchbox for Google
+    potentialAction: [
+      {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+          inLanguage: 'en'
+        },
+        'query-input': 'required name=search_term_string'
+      },
+      {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_URL}/ai-tools?search={search_term_string}`,
+          inLanguage: 'en'
+        },
+        'query-input': 'required name=search_term_string'
+      },
+      {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_URL}/blog?search={search_term_string}`,
+          inLanguage: 'en'
+        },
+        'query-input': 'required name=search_term_string'
       }
     ]
   }

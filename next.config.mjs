@@ -33,10 +33,12 @@ const nextConfig = {
             {
                 source: '/:path*',
                 headers: [
+                    // DNS Prefetch
                     {
                         key: 'X-DNS-Prefetch-Control',
                         value: 'on'
                     },
+                    // Security Headers
                     {
                         key: 'X-Frame-Options',
                         value: 'SAMEORIGIN'
@@ -53,14 +55,25 @@ const nextConfig = {
                         key: 'Permissions-Policy',
                         value: 'camera=(), microphone=(), geolocation=()'
                     },
-                    // World-Class SEO: Security headers
+                    // HSTS for security
                     {
                         key: 'Strict-Transport-Security',
-                        value: 'max-age=31536000; includeSubDomains'
+                        value: 'max-age=31536000; includeSubDomains; preload'
                     },
+                    // CSP - Enhanced for AI and global resources
                     {
                         key: 'Content-Security-Policy',
-                        value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com;"
+                        value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://platform.twitter.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://vitals.vercel-insights.com; frame-src https://platform.twitter.com https://www.facebook.com https://www.youtube.com; object-src 'none';"
+                    },
+                    // AI Search Engine Directives
+                    {
+                        key: 'X-Robots-Tag',
+                        value: 'index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1'
+                    },
+                    // Cross-Origin policies
+                    {
+                        key: 'Cross-Origin-Opener-Policy',
+                        value: 'same-origin-allow-popups'
                     }
                 ]
             },

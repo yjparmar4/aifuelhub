@@ -1,21 +1,66 @@
 {
     "name": "AI Fuel Hub",
     "short_name": "AI Fuel Hub",
-    "description": "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives.",
+    "description": "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives. Find the best tool for your needs.",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#ffffff",
+    "background_color": "#0a0a0a",
+    "theme_color": "#6366f1",
+    "orientation": "any",
+    "categories": [
+        "productivity",
+        "utilities",
+        "business",
+        "education"
+    ],
+    "lang": "en",
+    "dir": "ltr",
     "icons": [
         {
             "src": "/icon-192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         },
         {
             "src": "/icon-512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         }
-    ]
+    ],
+    "shortcuts": [
+        {
+            "name": "Browse AI Tools",
+            "short_name": "AI Tools",
+            "url": "/ai-tools",
+            "description": "Browse all 118+ AI tools",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Read Blog",
+            "short_name": "Blog",
+            "url": "/blog",
+            "description": "AI tutorials, guides, and industry insights"
+        },
+        {
+            "name": "Compare Tools",
+            "short_name": "Compare",
+            "url": "/compare",
+            "description": "Side-by-side AI tool comparisons"
+        },
+        {
+            "name": "Categories",
+            "short_name": "Categories",
+            "url": "/categories",
+            "description": "Browse tools by category"
+        }
+    ],
+    "prefer_related_applications": false
 }

@@ -13,6 +13,8 @@ import { SITE_URL } from "@/lib/seo";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import Script from "next/script";
 import { generateHreflangTags, generateGeoTargetingSchema, SUPPORTED_LOCALES } from "@/lib/international-seo";
+import { generateCompleteKnowledgeGraph } from "@/lib/knowledge-graph-optimization";
+import { ULTIMATE_SEO_CONFIG, generateUltimateSchema } from "@/lib/ultimate-seo";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -38,11 +40,17 @@ const merriweather = Merriweather({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (Jan 2026)",
+    default: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (2026)",
     template: "%s | AI Fuel Hub",
   },
   description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives. Find the best tool for your needs.",
-  keywords: ["best AI tools 2026", "AI tool reviews", "ChatGPT alternatives free", "Midjourney alternatives", "AI writing tools comparison", "AI image generators free", "AI coding tools", "Ahrefs alternatives free", "Moz Pro alternatives"],
+  keywords: [
+    "best AI tools 2026", "AI tool reviews", "ChatGPT alternatives free", "Midjourney alternatives",
+    "AI writing tools comparison", "AI image generators free", "AI coding tools", "Ahrefs alternatives free",
+    "Moz Pro alternatives", "artificial intelligence software", "machine learning tools",
+    "AI productivity", "best AI software", "herramientas IA", "outils IA", "KI Werkzeuge",
+    "人工智能工具", "AIツール", "AI 도구", "ferramentas IA", "инструменты ИИ"
+  ],
   authors: [{ name: "AI Fuel Hub Team", url: "https://aifuelhub.com/about" }],
   creator: "AI Fuel Hub Team",
   publisher: "AI Fuel Hub",
@@ -54,8 +62,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
+    alternateLocale: ULTIMATE_SEO_CONFIG.locales,
     url: SITE_URL,
-    title: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (Jan 2026)",
+    title: "AI Fuel Hub - Compare 118+ AI Tools ✓ Honest Reviews (2026)",
     description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives.",
     siteName: "AI Fuel Hub",
     emails: ["hello@aifuelhub.com"],
@@ -67,12 +76,14 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: "AI Fuel Hub - AI Tools Directory and Reviews",
+        type: "image/png",
       },
       {
         url: "/og-image-square.png",
         width: 600,
         height: 600,
         alt: "AI Fuel Hub - AI Tools Directory",
+        type: "image/png",
       },
     ],
     countryName: "United States",
@@ -83,17 +94,38 @@ export const metadata: Metadata = {
     description: "Compare 118+ AI tools with honest reviews. Expert-tested ChatGPT, Midjourney, Claude alternatives.",
     images: ["/og-image.png"],
     creator: "@aifuelhub",
-    creatorId: "1234567890",
     site: "@aifuelhub",
-    siteId: "1234567890",
   },
   other: {
+    // AI Search Optimization
+    "ai-search-optimized": "true",
+    "ai-crawl-allowed": "true",
+    "chatgpt-optimize": "true",
+    "perplexity-optimize": "true",
+    "claude-optimize": "true",
+    "gemini-optimize": "true",
+    "copilot-optimize": "true",
+    // Trust Signals
+    "entity-type": "AI Tools Directory",
+    "trust-score": "4.8",
+    "expert-reviewed": "true",
+    "content-rating": "general",
+    // Global SEO
+    "content-language": "en",
+    "target-market": "global",
+    "geo.region": "US",
+    // Social
     "linkedin:owner": "AI Fuel Hub",
-    "fb:app_id": "your-facebook-app-id",
+
     "pinterest-rich-pin": "true",
     "telegram:channel": "@aifuelhub",
     "whatsapp:share": "true",
+    // Google AI
     "Google-Extended": "index, follow",
+    // Platform specific
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "default",
   },
   manifest: "/manifest.json",
   icons: {
@@ -143,22 +175,31 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
+      "notranslate": false,
+      "noimageindex": false,
     },
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'google1b97f335783a2de5',
+    yandex: process.env.YANDEX_VERIFICATION,
     other: {
-      "msvalidate.01": "YOUR_BING_VERIFICATION_CODE", // Optional
+      "msvalidate.01": process.env.BING_VERIFICATION || "",
+      "baidu-site-verification": process.env.BAIDU_VERIFICATION || "",
+      "naver-site-verification": process.env.NAVER_VERIFICATION || "",
+      "p:domain_verify": process.env.PINTEREST_VERIFICATION || "",
     },
   },
   alternates: {
     canonical: SITE_URL,
-    languages: Object.fromEntries(
-      SUPPORTED_LOCALES.map((locale) => [
-        locale.code,
-        `${SITE_URL}?lang=${locale.code}`,
-      ])
-    ),
+    languages: {
+      'x-default': SITE_URL,
+      ...Object.fromEntries(
+        SUPPORTED_LOCALES.map((locale) => [
+          locale.code,
+          `${SITE_URL}?lang=${locale.code}`,
+        ])
+      ),
+    },
   },
 };
 
@@ -195,15 +236,15 @@ gtag('config', '${gaId}');`,
 
         {/* AdSense Script removed - ads will be added later */}
 
-        {/* AI Search Monitoring */}
+        {/* AI Search Monitoring - Comprehensive */}
         <Script
           id="ai-search-monitoring"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-              // Initialize AI search monitoring
+              // Initialize comprehensive AI search monitoring
               if (typeof window !== 'undefined') {
-                // Track AI search engine referrals
+                // Track AI search engine referrals - All major AI engines
                 function trackAISearchReferral() {
                   const referrer = document.referrer;
                   const engines = {
@@ -211,7 +252,17 @@ gtag('config', '${gaId}');`,
                     'openai.com': 'ChatGPT',
                     'perplexity.ai': 'Perplexity',
                     'claude.ai': 'Claude',
-                    'anthropic.com': 'Claude'
+                    'anthropic.com': 'Claude',
+                    'gemini.google.com': 'Gemini',
+                    'copilot.microsoft.com': 'Copilot',
+                    'bing.com': 'Bing AI',
+                    'you.com': 'You.com',
+                    'phind.com': 'Phind',
+                    'komo.ai': 'Komo',
+                    'andisearch.com': 'Andi',
+                    'deepseek.com': 'DeepSeek',
+                    'meta.ai': 'Meta AI',
+                    'x.ai': 'Grok'
                   };
                   
                   for (const [domain, engine] of Object.entries(engines)) {
@@ -219,17 +270,46 @@ gtag('config', '${gaId}');`,
                       if (window.gtag) {
                         window.gtag('event', 'ai_search_referral', {
                           engine: engine,
-                          page_location: window.location.href
+                          page_location: window.location.href,
+                          page_title: document.title,
+                          traffic_source: 'ai_search'
                         });
                       }
+                      console.log('AI Search Referral:', engine);
                       break;
                     }
                   }
                 }
                 
+                // Track voice search queries
+                function trackVoiceSearch() {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  const voiceQuery = urlParams.get('voice') || urlParams.get('vs');
+                  if (voiceQuery && window.gtag) {
+                    window.gtag('event', 'voice_search', {
+                      query: voiceQuery,
+                      page_location: window.location.href
+                    });
+                  }
+                }
+                
                 // Track immediately and on page load
                 trackAISearchReferral();
-                document.addEventListener('DOMContentLoaded', trackAISearchReferral);
+                trackVoiceSearch();
+                document.addEventListener('DOMContentLoaded', () => {
+                  trackAISearchReferral();
+                  trackVoiceSearch();
+                });
+                
+                // Track page visibility for AI content consumption
+                document.addEventListener('visibilitychange', () => {
+                  if (document.visibilityState === 'hidden' && window.gtag) {
+                    window.gtag('event', 'content_consumed', {
+                      page_location: window.location.href,
+                      time_on_page: Math.round(performance.now() / 1000)
+                    });
+                  }
+                });
               }
             `,
           }}
@@ -246,6 +326,7 @@ gtag('config', '${gaId}');`,
         <JsonLd data={generateWebSiteSchema()} />
         <JsonLd data={generateSiteNavigationSchema()} />
         <JsonLd data={generateGeoTargetingSchema()} />
+        <JsonLd data={generateCompleteKnowledgeGraph()} />
         <PerformanceOptimizations />
         <Navbar />
         <div className="pt-24 min-h-screen">
