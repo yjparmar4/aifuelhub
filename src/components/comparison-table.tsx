@@ -13,9 +13,10 @@ interface ComparisonTableProps {
 }
 
 export function ComparisonTable({ tools }: ComparisonTableProps) {
-  const getList = (jsonString: string | null) => {
+  const getList = (jsonString: string | null | undefined) => {
     try {
-      return JSON.parse(jsonString || '[]') as string[]
+      const parsed = JSON.parse(jsonString || '[]')
+      return Array.isArray(parsed) ? parsed as string[] : []
     } catch {
       return []
     }

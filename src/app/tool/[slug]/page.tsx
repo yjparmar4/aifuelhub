@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     contentType: 'tool',
     keywords: tool.tags?.map(t => t.name),
     imageUrl: `${SITE_URL}/logo.svg`, // Fallback, real implementation might use tool screenshot
-    updatedAt: tool.updatedAt.toISOString(),
+    updatedAt: new Date(tool.updatedAt).toISOString(),
   })
 }
 
@@ -89,19 +89,31 @@ export async function generateStaticParams() {
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const tool = await getTool(slug)
+  let tool;
+  try {
+    tool = await getTool(slug)
+  } catch (e) {
+    console.error(`ERROR IN GETTOOL FOR ${slug}:`, e)
+    throw e
+  }
 
   if (!tool) {
     notFound()
   }
 
   // Fetch related content using the advanced library
-  const relatedContent = await getRelatedContent(
-    'tool',
-    tool.slug,
-    tool.tags?.map(t => t.name) || [],
-    tool.categoryId || undefined
-  )
+  let relatedContent;
+  try {
+    relatedContent = await getRelatedContent(
+      'tool',
+      tool.slug,
+      tool.tags?.map(t => t.name) || [],
+      tool.categoryId || undefined
+    )
+  } catch (e) {
+    console.error(`ERROR IN GETRELATEDCONTENT FOR ${slug}:`, e)
+    throw e
+  }
 
   const relatedTools = relatedContent
     .filter(item => item.type === 'tool')
@@ -136,13 +148,20 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   // Inject internal links into the description
   const optimizedDescription = injectInternalLinks(toolData.description || '', relatedContent, 3)
-  const toolWithLinks = { ...toolData, description: optimizedDescription }
+  const toolWithLinks = {
+    ...toolData,
+    description: optimizedDescription,
+    createdAt: new Date(toolData.createdAt),
+    updatedAt: new Date(toolData.updatedAt)
+  }
 
   const relatedToolsData = relatedTools.map(t => ({
     ...t,
     tagline: t.tagline || undefined,
     // Add other nullable fields if necessary for ToolCard
     rating: t.rating || undefined,
+    createdAt: new Date(t.createdAt),
+    updatedAt: new Date(t.updatedAt),
     category: t.category ? { ...t.category, icon: t.category.icon || undefined } : undefined
   })) as unknown as Tool[]
 
@@ -158,14 +177,17 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   })
 
   let faqSchema: string | null = null
+  let parsedFaqs: any = null
   if (toolData.faqs) {
     try {
-      const faqs = JSON.parse(toolData.faqs)
-      if (Array.isArray(faqs) && faqs.length > 0) {
-        faqSchema = generateFAQSchema(faqs)
+      const faqsList = JSON.parse(toolData.faqs)
+      if (Array.isArray(faqsList) && faqsList.length > 0) {
+        faqSchema = generateFAQSchema(faqsList)
+        parsedFaqs = faqsList
       }
     } catch (e) {
       // Invalid FAQ data
+      parsedFaqs = null
     }
   }
 
@@ -210,10 +232,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <ToolReviewPage tool={toolWithLinks} relatedTools={relatedTools} />
 
         {/* Google FAQ Section */}
-        {toolData.faqs && (
+        {parsedFaqs && (
           <div className="container mx-auto max-w-7xl px-4 pt-8">
             <GoogleFAQSection
-              faqs={JSON.parse(toolData.faqs)}
+              faqs={parsedFaqs}
               title={`Frequently Asked Questions about ${toolData.name}`}
             />
           </div>

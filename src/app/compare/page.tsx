@@ -242,7 +242,9 @@ function CompareContent() {
                                         <Zap className="w-4 h-4 text-amber-500" /> Key Features
                                     </h4>
                                     <div className="grid grid-cols-1 gap-2">
-                                        {tool.features && JSON.parse(tool.features).slice(0, 4).map((f: string, i: number) => (
+                                        {tool.features && (() => {
+                                            try { return JSON.parse(tool.features) } catch { return [] }
+                                        })().slice(0, 4).map((f: string, i: number) => (
                                             <div key={i} className="flex items-center gap-3 text-sm p-3 bg-slate-50 rounded-lg border border-slate-100">
                                                 <div className="w-1.5 h-1.5 bg-violet-400 rounded-full shrink-0" />
                                                 <span className="text-slate-700">{f}</span>

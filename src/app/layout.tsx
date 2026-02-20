@@ -209,6 +209,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-KBW050L12X';
+  const adSenseId = process.env.NEXT_PUBLIC_ADSENSE_ID || 'ca-pub-0000000000000000';
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -234,7 +235,13 @@ gtag('config', '${gaId}');`,
           }}
         />
 
-        {/* AdSense Script removed - ads will be added later */}
+        {/* Google AdSense */}
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseId}`}
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
 
         {/* AI Search Monitoring - Comprehensive */}
         <Script

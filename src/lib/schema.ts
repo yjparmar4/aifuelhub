@@ -5,10 +5,16 @@ import { generateRegionalOrganizationSchema } from '@/lib/international-seo'
 // Product/Review Schema for tools
 // Product/Review Schema for tools
 export function generateToolSchema(tool: Tool) {
-  const features = JSON.parse(tool.features || '[]')
-  // Parse Pros and Cons for Schema
-  const pros = tool.pros ? JSON.parse(tool.pros) : []
-  const cons = tool.cons ? JSON.parse(tool.cons) : []
+  const safeParseList = (str: string | undefined | null, fallback: any[] = []) => {
+    if (!str) return fallback;
+    try {
+      const parsed = JSON.parse(str);
+      return Array.isArray(parsed) ? parsed : fallback;
+    } catch { return fallback; }
+  };
+  const features = safeParseList(tool.features);
+  const pros = safeParseList(tool.pros);
+  const cons = safeParseList(tool.cons);
 
   const toolImageUrl = `${SITE_URL}/logo.svg`
 
@@ -391,36 +397,6 @@ export function generateWebSiteSchema() {
       {
         '@type': 'Thing',
         name: 'Technology Comparison'
-      }
-    ],
-    // Enhanced Sitelinks Searchbox for Google
-    potentialAction: [
-      {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-          inLanguage: 'en'
-        },
-        'query-input': 'required name=search_term_string'
-      },
-      {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${SITE_URL}/ai-tools?search={search_term_string}`,
-          inLanguage: 'en'
-        },
-        'query-input': 'required name=search_term_string'
-      },
-      {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${SITE_URL}/blog?search={search_term_string}`,
-          inLanguage: 'en'
-        },
-        'query-input': 'required name=search_term_string'
       }
     ]
   }

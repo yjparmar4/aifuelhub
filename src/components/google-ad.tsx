@@ -12,6 +12,7 @@ interface GoogleAdProps {
 
 export function GoogleAd({ slot, style, format = 'auto', layoutKey, className }: GoogleAdProps) {
     const adRef = useRef<HTMLModElement>(null);
+    const adSenseId = process.env.NEXT_PUBLIC_ADSENSE_ID || 'ca-pub-0000000000000000';
 
     useEffect(() => {
         // Only attempt to push the ad if the element is empty to prevent duplication on re-renders
@@ -31,7 +32,7 @@ export function GoogleAd({ slot, style, format = 'auto', layoutKey, className }:
             <ins
                 className="adsbygoogle"
                 style={{ display: 'block', ...style }}
-                data-ad-client="ca-pub-0000000000000000" // Placeholder ID - REPLACE ME
+                data-ad-client={adSenseId}
                 data-ad-slot={slot}
                 data-ad-format={format}
                 data-full-width-responsive="true"

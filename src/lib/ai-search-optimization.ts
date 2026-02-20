@@ -106,15 +106,15 @@ export function generateAISearchSummary(
   targetEngine: keyof typeof AI_SEARCH_PATTERNS = 'google_ai'
 ): string {
   const patterns = AI_SEARCH_PATTERNS[targetEngine]
-  
+
   // Extract key sentences that match AI preferences
   const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 20)
-  
+
   // Prioritize sentences with AI-preferred phrases
   const prioritizedSentences = sentences
     .map(sentence => ({
       sentence: sentence.trim(),
-      score: patterns.keyPhrases.reduce((acc, phrase) => 
+      score: patterns.keyPhrases.reduce((acc, phrase) =>
         sentence.toLowerCase().includes(phrase.toLowerCase()) ? acc + 1 : acc, 0
       )
     }))
@@ -126,7 +126,7 @@ export function generateAISearchSummary(
 }
 
 // Generate AI search-friendly FAQ pairs
-export function generateAISearchFAQs(tool: Tool, category?: Category): Array<{question: string, answer: string}> {
+export function generateAISearchFAQs(tool: Tool, category?: Category): Array<{ question: string, answer: string }> {
   const faqs = [
     {
       question: `What is ${tool.name} and how does it work?`,
@@ -168,11 +168,11 @@ export function generateAIMetaDescription(
 ): string {
   const patterns = AI_SEARCH_PATTERNS[targetEngine]
   const summary = generateAISearchSummary(content, targetEngine)
-  
+
   // Include target keywords and AI-preferred phrases
   const keywords = extractKeywords(content)
   const keyPhrase = patterns.keyPhrases[Math.floor(Math.random() * patterns.keyPhrases.length)]
-  
+
   return `${keyPhrase}: ${summary.substring(0, 120)}... ${keywords.slice(0, 3).join(', ')}.`
 }
 
@@ -183,41 +183,51 @@ export function generateAISearchSchema(
   targetEngines: Array<keyof typeof AI_SEARCH_PATTERNS> = ['google_ai', 'chatgpt', 'perplexity', 'claude', 'bing_ai', 'you_ai', 'grok']
 ) {
   const baseSchema = type === 'tool' ? generateToolSchema(data as Tool) :
-                    type === 'blog' ? generateBlogPostSchema(data as BlogPost) :
-                    generateCategorySchema(data as Category, [])
+    type === 'blog' ? generateBlogPostSchema(data as BlogPost) :
+      generateCategorySchema(data as Category, [])
 
   // Add AI-specific optimizations
   const aiOptimizations = {
     // AI search engines prefer fresh content
     dateModified: new Date().toISOString(),
-    
+
     // Add educational level for AI context
     educationalLevel: 'Beginner to Advanced',
-    
+
     // Add learning outcomes for AI understanding
     teaches: extractLearningOutcomes(data),
-    
+
     // Add assessment for AI evaluation
     assessment: generateAIAssessment(data),
-    
+
     // Add AI-friendly description
     description: generateAISearchSummary(
       type === 'tool' ? (data as Tool).description :
-      type === 'blog' ? (data as BlogPost).content :
-      (data as Category).description,
+        type === 'blog' ? (data as BlogPost).content :
+          (data as Category).description,
       'google_ai'
     )
   }
 
+  const safeParseObj = (str: string | undefined | null, fallback: any = {}) => {
+    try { return JSON.parse(str || '{}') } catch { return fallback }
+  }
+
   return {
-    ...JSON.parse(baseSchema),
+    ...safeParseObj(baseSchema),
     ...aiOptimizations
   }
 }
 
 // Helper functions
 function generateWorkingExplanation(tool: Tool): string {
-  const features = JSON.parse(tool.features || '[]')
+  const safeParseList = (str: string | undefined | null) => {
+    try {
+      const parsed = JSON.parse(str || '[]')
+      return Array.isArray(parsed) ? parsed : []
+    } catch { return [] }
+  }
+  const features = safeParseList(tool.features)
   if (features.length > 0) {
     return `leveraging ${features.slice(0, 2).join(' and ')}`
   }
@@ -239,7 +249,13 @@ function generateWorthinessAssessment(tool: Tool): string {
 }
 
 function generateKeyFactors(tool: Tool): string {
-  const features = JSON.parse(tool.features || '[]')
+  const safeParseList = (str: string | undefined | null) => {
+    try {
+      const parsed = JSON.parse(str || '[]')
+      return Array.isArray(parsed) ? parsed : []
+    } catch { return [] }
+  }
+  const features = safeParseList(tool.features)
   return features.slice(0, 3).join(', ') || 'its features, pricing, and ease of use'
 }
 
@@ -267,20 +283,26 @@ function extractKeywords(content: string): string[] {
   // Simple keyword extraction - in production, use NLP
   const words = content.toLowerCase().match(/\b\w{4,}\b/g) || []
   const frequency: Record<string, number> = {}
-  
+
   words.forEach(word => {
     frequency[word] = (frequency[word] || 0) + 1
   })
-  
+
   return Object.entries(frequency)
-    .sort(([,a], [,b]) => b - a)
+    .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
     .map(([word]) => word)
 }
 
 function extractLearningOutcomes(data: any): string[] {
   if ('features' in data) {
-    const features = JSON.parse(data.features || '[]')
+    const safeParseList = (str: string | undefined | null) => {
+      try {
+        const parsed = JSON.parse(str || '[]')
+        return Array.isArray(parsed) ? parsed : []
+      } catch { return [] }
+    }
+    const features = safeParseList(data.features)
     return features.slice(0, 3)
   }
   return ['understanding AI tools', 'making informed decisions', 'improving productivity']

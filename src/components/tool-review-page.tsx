@@ -19,11 +19,18 @@ import { NewsletterSignup } from '@/components/newsletter-signup'
 import { expertiseBadges, getLastUpdatedDate } from '@/lib/eeat-enhancements'
 
 export default function ToolReviewPage({ tool, relatedTools }: { tool: Tool, relatedTools?: Tool[] }) {
-  const features = JSON.parse(tool.features || '[]')
-  const pros = tool.pros ? JSON.parse(tool.pros) : []
-  const cons = tool.cons ? JSON.parse(tool.cons) : []
-  const useCases = tool.useCases ? JSON.parse(tool.useCases) : []
-  const faqs = tool.faqs ? JSON.parse(tool.faqs) : []
+  const safeParseList = (str: string | undefined | null, fallback: any[] = []) => {
+    if (!str) return fallback;
+    try {
+      const parsed = JSON.parse(str);
+      return Array.isArray(parsed) ? parsed : fallback;
+    } catch { return fallback; }
+  };
+  const features = safeParseList(tool.features);
+  const pros = safeParseList(tool.pros);
+  const cons = safeParseList(tool.cons);
+  const useCases = safeParseList(tool.useCases);
+  const faqs = safeParseList(tool.faqs);
   const defaultCompare = relatedTools && relatedTools.length > 0 ? relatedTools[0] : undefined
 
   const takeaways: string[] = [

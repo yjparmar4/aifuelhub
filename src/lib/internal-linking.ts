@@ -184,8 +184,11 @@ export function generateInternalLinks(
 
     // Find natural places to insert links
     const keywords = extractKeywords(item.title)
+    if (keywords.length === 0) return
+
+    const escapedKeywords = keywords.map(kw => kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
     const keywordRegex = new RegExp(
-      `\\b(${keywords.join('|')})\\b`,
+      `\\b(${escapedKeywords.join('|')})\\b`,
       'gi'
     )
 

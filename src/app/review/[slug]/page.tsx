@@ -57,9 +57,16 @@ export default async function ToolReviewSpecificPage({
 
     if (!tool) notFound()
 
-    const pros = tool.pros ? JSON.parse(tool.pros) : []
-    const cons = tool.cons ? JSON.parse(tool.cons) : []
-    const features = JSON.parse(tool.features || '[]')
+    const safeParseList = (str: string | undefined | null, fallback: any[] = []) => {
+        if (!str) return fallback;
+        try {
+            const parsed = JSON.parse(str);
+            return Array.isArray(parsed) ? parsed : fallback;
+        } catch { return fallback; }
+    };
+    const pros = safeParseList(tool.pros);
+    const cons = safeParseList(tool.cons);
+    const features = safeParseList(tool.features);
 
     const breadcrumbSchema = generateBreadcrumbSchema([
         { name: 'Home', url: SITE_URL },

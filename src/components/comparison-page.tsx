@@ -34,6 +34,14 @@ export default function ComparisonPage({
     'Security Features',
   ]
 
+  const safeParseList = (str: string | null | undefined): string[] => {
+    if (!str) return []
+    try {
+      const parsed = JSON.parse(str)
+      return Array.isArray(parsed) ? parsed : []
+    } catch { return [] }
+  }
+
   // Determine winner based on ratings
   const winner = tools.reduce((prev, current) => {
     if (!prev.rating) return current
@@ -246,7 +254,7 @@ export default function ComparisonPage({
                         </h4>
                         {tool.pros ? (
                           <ul className="space-y-3">
-                            {JSON.parse(tool.pros).map((pro: string, idx: number) => (
+                            {safeParseList(tool.pros).map((pro: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-3 text-slate-600 text-sm">
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0" />
                                 {pro}
@@ -261,7 +269,7 @@ export default function ComparisonPage({
                         </h4>
                         {tool.cons ? (
                           <ul className="space-y-3">
-                            {JSON.parse(tool.cons).map((con: string, idx: number) => (
+                            {safeParseList(tool.cons).map((con: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-3 text-slate-600 text-sm">
                                 <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-2 shrink-0" />
                                 {con}
